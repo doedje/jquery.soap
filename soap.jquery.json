@@ -6,7 +6,7 @@
 		"soap",
 		"ajax"
 	],
-	"version": "0.9.0",
+	"version": "0.9.1",
 	"author": {
 		"name": "Remy Blom",
 		"email": "remy.blom@kmt.hku.nl"
