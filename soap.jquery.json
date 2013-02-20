@@ -1,0 +1,29 @@
+{
+	"name": "soap",
+	"title": "jQuery Soap",
+	"description": "jQuery plugin for SOAP requests.",
+	"keywords": [
+		"soap",
+		"ajax"
+	],
+	"version": "1.0.0",
+	"author": {
+		"name": "Remy Blom",
+		"email": "remy.blom@kmt.hku.nl"
+	},
+	"maintainers": [
+		{
+		"name": "Remy Blom",
+		"email": "remy.blom@kmt.hku.nl"
+		}
+	],
+	"licenses": [
+		{
+			"type": "MIT",
+			"url": "https://github.com/doedje/juststuff/MIT-LICENSE.txt"
+		}
+	],
+	"dependencies": {
+		"jquery": ">=1.5"
+	}
+}
