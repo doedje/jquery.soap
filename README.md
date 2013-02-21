@@ -30,6 +30,7 @@ After that I wrapped it all to become a proper jQuery plugin so you can call:
 
 This will create the following XML:
 
+<code>
 &lt;soap:Envelope
   xmlns:xsd="http://www.w3.org/2001/XMLSchema"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -42,6 +43,7 @@ This will create the following XML:
     &lt;/helloWorld&gt;
   &lt;/soap:Body&gt;
 &lt;/soap:Envelope&gt;
+</code>
 
 And this will be send to: url + method
 http://my.server.com/soapservices/helloWorld
