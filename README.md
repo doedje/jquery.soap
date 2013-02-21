@@ -28,6 +28,26 @@ After that I wrapped it all to become a proper jQuery plugin so you can call:
 		}
 	});
 
+This will create the following XML:
+
+<soap:Envelope
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  soap:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+  xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+  <soap:Body>
+    <helloWorld>
+      <name>Elfling</name>
+      <msg>Hi!</msg>
+    </helloWorld>
+  </soap:Body>
+</soap:Envelope>
+
+And this will be send to: url + method
+http://my.server.com/soapservices/helloWorld
+
+When you want to use this plugin crossdomain, you should use a proxy on your local server... Any tips to get rid off this are most welcome! =]
+
 Dependencies:
 If you want the function to return json (ie. convert the response soap/xml to json)
 you will need the jQuery.xml2json.js
