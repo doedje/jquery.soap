@@ -1,6 +1,7 @@
 jQuery SOAP
 =========
 jquery.soap.js
+
 communicating with soap
 
 This script is basically a wrapper for jqSOAPClient.beta.js from proton17
@@ -30,20 +31,18 @@ After that I wrapped it all to become a proper jQuery plugin so you can call:
 
 This will create the following XML:
 
-<code>
-&lt;soap:Envelope
-  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  soap:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
-  xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"&gt;
-  &lt;soap:Body&gt;
-    &lt;helloWorld&gt;
-      &lt;name&gt;Remy Blom&lt;/name&gt;
-      &lt;msg&gt;Hi!&lt;/msg&gt;
-    &lt;/helloWorld&gt;
-  &lt;/soap:Body&gt;
-&lt;/soap:Envelope&gt;
-</code>
+	&lt;soap:Envelope<br />
+	  xmlns:xsd="http://www.w3.org/2001/XMLSchema"<br />
+	  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"<br />
+	  soap:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"<br />
+	  xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"&gt;<br />
+	  &lt;soap:Body&gt;<br />
+	    &lt;helloWorld&gt;<br />
+	      &lt;name&gt;Remy Blom&lt;/name&gt;<br />
+	      &lt;msg&gt;Hi!&lt;/msg&gt;<br />
+	    &lt;/helloWorld&gt;<br />
+	  &lt;/soap:Body&gt;<br />
+	&lt;/soap:Envelope&gt;<br />
 
 And this will be send to: url + method
 http://my.server.com/soapservices/helloWorld
