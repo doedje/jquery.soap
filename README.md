@@ -1,7 +1,7 @@
 jQuery Soap
 ===========
-file: jquery.soap.js
-version: 0.9.2
+**file:** jquery.soap.js
+**version:** 0.9.2
 
 jQuery plugin for communicating with a server using SOAP
 --------------------------------------------------------
@@ -53,7 +53,8 @@ http://my.server.com/soapservices/helloWorld
 
 Dependencies
 -----------
-If you want the function to return json (ie. convert the response soap/xml to json)
+If you want the function to return json
+(ie. convert the response soap/xml to json)
 you will need the jQuery.xml2json.js
 
 
@@ -70,6 +71,8 @@ Original jqSOAPClient.beta.js by proton17
 
 Changelog
 ---------
-0.9.2 - some extra cleaning of stupid code in my part of the script. Now it uses the addNamespace function to properly set namespaces.
-0.9.1 - minor changes to keep LINT happy
-0.9.0 - first version to go on the new jQuery plugin page, changed the name of the function from $.soapRequest to $.soap
+Version | Changes
+--- | ---
+0.9.2 | some extra cleaning of stupid code in my part of the script. Now it uses the addNamespace function to properly set namespaces.
+0.9.1 | minor changes to keep LINT happy
+0.9.0 | first version to go on the new jQuery plugin page, changed the name of the function from $.soapRequest to $.soap
