@@ -30,18 +30,18 @@ After that I wrapped it all to become a proper jQuery plugin so you can call:
 
 This will create the following XML:
 
-<soap:Envelope
+&lt;soap:Envelope
   xmlns:xsd="http://www.w3.org/2001/XMLSchema"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   soap:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
-  xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
-  <soap:Body>
-    <helloWorld>
-      <name>Elfling</name>
-      <msg>Hi!</msg>
-    </helloWorld>
-  </soap:Body>
-</soap:Envelope>
+  xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"&gt;
+  &lt;soap:Body&gt;
+    &lt;helloWorld&gt;
+      &lt;name&gt;Remy Blom&lt;/name&gt;
+      &lt;msg&gt;Hi!&lt;/msg&gt;
+    &lt;/helloWorld&gt;
+  &lt;/soap:Body&gt;
+&lt;/soap:Envelope&gt;
 
 And this will be send to: url + method
 http://my.server.com/soapservices/helloWorld
