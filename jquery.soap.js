@@ -1,19 +1,25 @@
 /*==========================
 jquery.soap.js
-communicating with soap
+version: 0.9.2
+
+jQuery plugin for communicating with a server using SOAP
 
 This script is basically a wrapper for jqSOAPClient.beta.js from proton17
 
-I only fixed a minor bug, and added two functions:
+I only added the code at the top:
 One function to send the soapRequest that takes a complex object as a parameter
-and that deals with the response so you can set actions for success or error.
-Also I made a very basic json2soap function.
-(at the moment it will not deal with arrays properly)
-After that I wrapped it all to become a proper jQuery plugin so you can call:
+which is converted to soap by the json2soap function.
+Diccon Towns fixed it to properly deal with arrays! Thanx for that!
+And that deals with the response so you can set actions for success or error.
+
+After that I wrapped it all to hide stuff from the global namespace
+and it becomes a proper jQuery plugin so you can call:
 
 	$.soap({
 		url: 'http://my.server.com/soapservices/',
 		method: 'helloWorld',
+		namespaceQualifier: 'myns'
+		namespaceUrl: 'urn://service.my.server.com'
 		params: {
 			name: 'Remy Blom',
 			msg: 'Hi!'
@@ -27,10 +33,29 @@ After that I wrapped it all to become a proper jQuery plugin so you can call:
 		}
 	});
 
-Dependencies:
+This will create the following XML:
+
+	<soap:Envelope
+		xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+		xmlns:myns="urn://service.my.server.com">
+		<soap:Body>
+			<myns:helloWorld>
+				<name>Remy Blom</name>
+				<msg>Hi!</msg>
+			</myns:helloWorld>
+		</soap:Body>
+	</soap:Envelope>
+
+And this will be send to: url + method
+http://my.server.com/soapservices/helloWorld
+
+Dependencies
+-----------
 If you want the function to return json (ie. convert the response soap/xml to json)
 you will need the jQuery.xml2json.js
 
+Authors
+-------
 created at: Dec 03, 2009
 scripted by:
 
@@ -42,7 +67,9 @@ www.hku.nl
 remy.blom@kmt.hku.nl
 
 amended: 31 October 2011
-by: Diccon Towns - dtowns@reapit.com
+by: Diccon Towns - dtowns@reapit.com - THANX! =]
+
+Original code: jqSOAPClient.beta.js by proton17
 ==========================*/
 
 (function($) {
@@ -54,8 +81,10 @@ by: Diccon Towns - dtowns@reapit.com
 		if (options) $.extend(config, options);
 
 		var mySoapObject = json2soap(new SOAPObject(config.namespaceQualifier + ':' + config.method), config.params);
-		var soapRequest = new SOAPRequest(null, mySoapObject, config.namespaceUrl, config.namespaceQualifier);
-
+		var soapRequest = new SOAPRequest(null, mySoapObject);
+		if (!!config.namespaceQualifier && !!config.namespaceUrl) {
+			soapRequest.addNamespace(config.namespaceQualifier, config.namespaceUrl);
+		}
 		SOAPClient.Proxy = config.url;
 		if(config.appendMethodToURL){// added by DT
 			SOAPClient.Proxy += config.method;
@@ -65,8 +94,7 @@ by: Diccon Towns - dtowns@reapit.com
 			if(config.returnJson) {
 				var jdata = $.xml2json(data);
 				if (jdata.Body && jdata.Body.Fault){
-					// options.error(jdata.Body.Fault.faultstring);
-					options.error(jdata.Body.Fault); // wel gewoon hele soap error object teruggeven in json
+					options.error(jdata.Body.Fault);
 				} else if (jdata.Body) {
 					options.success(jdata.Body);
 				} else {
@@ -105,10 +133,11 @@ by: Diccon Towns - dtowns@reapit.com
 			}
 		}
 		return soapObject;
-	}
+	};
 
 /*
 All code below this point is proton17's
+(with some minor changes to keep LINT happy)
 
 		ORIGINAL LICENSE:
 
@@ -158,35 +187,29 @@ All code below this point is proton17's
 					var content = soapReq.toString();
 					SOAPClient.ContentLength = content.length;
 
-					function getResponse(xData) {
+					getResponse = function (xData) {
 						if(!!_tId) {clearTimeout(_tId);}
 							SOAPClient.Status = xhrReq.status;
 							SOAPClient.ResponseText = xhrReq.responseText;
 							SOAPClient.ResponseXML = xhrReq.responseXML;
 						if(typeof(callback) === "function") {
-							if(xData.responseXML == null) {
+							if(xData.responseXML === undefined) {
 								callback(xData.responseText);
 							} else {
 								callback(xData.responseXML);
 							}
 						}
-					}
+					};
 					var xhrReq = $.ajax({
-						 type: "POST",
-						 url: SOAPClient.Proxy,
-						 dataType: "xml",
-						 processData: false,
-						 data: content,
-						 complete: getResponse,
-						 contentType: SOAPClient.ContentType + "; charset=\"" + SOAPClient.CharSet + "\"",
-						 beforeSend: function(req) {
+						type: "POST",
+						url: SOAPClient.Proxy,
+						dataType: "xml",
+						processData: false,
+						data: content,
+						complete: getResponse,
+						contentType: SOAPClient.ContentType + "; charset=\"" + SOAPClient.CharSet + "\"",
+						beforeSend: function(req) {
 							req.setRequestHeader("Method", "POST");
-
-/*
-	req.setRequestHeader("Content-Length", SOAPClient.ContentLength);
-Messing around with those [Connection andContent-Length] could expose various request smuggling attacks, so the browser always uses its own values. There's no need or reason to try to set the request length, as the browser can do that accurately from the length of data you pass to send()
-*/
-
 							req.setRequestHeader("SOAPServer", SOAPClient.SOAPServer);
 							req.setRequestHeader("SOAPAction", soapReq.Action);
 							if(!!httpHeaders) {
@@ -198,7 +221,7 @@ Messing around with those [Connection andContent-Length] could expose various re
 									}
 								}
 							}
-						 }
+						}
 					});
 				}
 			},
@@ -222,16 +245,16 @@ Messing around with those [Connection andContent-Length] could expose various re
 						}
 						//Node Attributes
 						if(soapObj.attributes.length > 0) {
-							 var cAttr;
-							 var aLen=soapObj.attributes.length-1;
-							 do {
-								 cAttr=soapObj.attributes[aLen];
-								 if(isNSObj) {
+							var cAttr;
+							var aLen=soapObj.attributes.length-1;
+							do {
+								cAttr=soapObj.attributes[aLen];
+								if(isNSObj) {
 									out.push(" "+soapObj.ns.name+":"+cAttr.name+"=\""+cAttr.value+"\"");
-								 } else {
+								} else {
 									out.push(" "+cAttr.name+"=\""+cAttr.value+"\"");
-								 }
-							 } while(aLen--);
+								}
+							} while(aLen--);
 						}
 						out.push(">");
 						//Node children
@@ -255,7 +278,7 @@ Messing around with those [Connection andContent-Length] could expose various re
 		return _self;
 	})();
 	//Soap request - this is what being sent using SOAPClient.SendRequest
-	var SOAPRequest=function(action, soapObj, namespace, namespaceQualifier) {
+	var SOAPRequest=function(action, soapObj) {
 		this.Action=action;
 		var nss=[];
 		var headers=[];
@@ -265,10 +288,7 @@ Messing around with those [Connection andContent-Length] could expose various re
 		this.addBody=function(soapObj){bodies.push(soapObj);};
 		this.toString=function() {
 			var soapEnv = new SOAPObject("soap:Envelope");
-				if(namespace && namespaceQualifier) {
-					soapEnv.attr("xmlns:" + namespaceQualifier, namespace);
-				}
-				soapEnv.attr("xmlns:soap","http://schemas.xmlsoap.org/soap/envelope/");
+			soapEnv.attr("xmlns:soap","http://schemas.xmlsoap.org/soap/envelope/");
 			//Add Namespace(s)
 			if(nss.length>0){
 				var tNs, tNo;
