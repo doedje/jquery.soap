@@ -18,8 +18,8 @@ and it becomes a proper jQuery plugin so you can call:
 	$.soap({
 		url: 'http://my.server.com/soapservices/',
 		method: 'helloWorld',
-		namespaceQualifier: 'myns'
-		namespaceUrl: 'urn://service.my.server.com'
+		namespaceQualifier: 'myns',
+		namespaceUrl: 'urn://service.my.server.com',
 		params: {
 			name: 'Remy Blom',
 			msg: 'Hi!'
