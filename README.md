@@ -38,14 +38,14 @@ and it becomes a proper jQuery plugin so you can call:
 This will create the following XML:
 
 	<soap:Envelope
-	  xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
-	  xmlns:myns="urn://service.my.server.com">
-	  <soap:Body>
-	    <myns:helloWorld>
-	      <name>Remy Blom</name>
-	      <msg>Hi!</msg>
-	    </myns:helloWorld>
-	  </soap:Body>
+		xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+		xmlns:myns="urn://service.my.server.com">
+		<soap:Body>
+			<myns:helloWorld>
+				<name>Remy Blom</name>
+				<msg>Hi!</msg>
+			</myns:helloWorld>
+		</soap:Body>
 	</soap:Envelope>
 
 And this will be send to: url + method
@@ -55,7 +55,7 @@ Dependencies
 -----------
 If you want the function to return json
 (ie. convert the response soap/xml to json)
-you will need the jQuery.xml2json.js
+you will need the **jQuery.xml2json.js**
 
 
 Authors
