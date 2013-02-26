@@ -1,6 +1,6 @@
 /*==========================
 jquery.soap.js
-version: 0.9.3
+version: 0.9.4
 
 jQuery plugin for communicating with a server using SOAP
 
@@ -174,7 +174,7 @@ All code below this point is proton17's
 			Proxy: "",
 			SOAPServer: "",
 			ContentType: "text/xml",
-			CharSet: "utf-8",
+			CharSet: "UTF-8",
 			ResponseXML: null,
 			ResponseText: "",
 			Status: 0,
@@ -216,7 +216,7 @@ All code below this point is proton17's
 						processData: false,
 						data: content,
 						complete: getResponse,
-						contentType: SOAPClient.ContentType + "; charset=\"" + SOAPClient.CharSet + "\"",
+						contentType: SOAPClient.ContentType + "; charset=" + SOAPClient.CharSet,
 						beforeSend: function(req) {
 							req.setRequestHeader("Method", "POST");
 							req.setRequestHeader("SOAPServer", SOAPClient.SOAPServer);

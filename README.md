@@ -1,7 +1,7 @@
 jQuery Soap
 ===========
 **file:** jquery.soap.js
-**version:** 0.9.3
+**version:** 0.9.4
 
 jQuery plugin for communicating with a server using SOAP
 --------------------------------------------------------
@@ -127,6 +127,7 @@ Changelog
 ---------
 Version | Changes
 --- | ---
+0.9.4 | changed the charset of soapRequest to UTF-8 and removed the " quotes
 0.9.3 | Added the possibility to call **$.soap** just to set extra config values.
 0.9.2 | some extra cleaning of stupid code in my part of the script. Now it uses the addNamespace function to properly set namespaces.
 0.9.1 | minor changes to keep LINT happy.
