@@ -1,6 +1,6 @@
 /*==========================
 jquery.soap.js
-version: 0.9.2
+version: 0.9.3
 
 jQuery plugin for communicating with a server using SOAP
 
@@ -74,47 +74,58 @@ Original code: jqSOAPClient.beta.js by proton17
 
 (function($) {
 	$.soap = function(options) {
-		var config = {
-			returnJson: false,
-			appendMethodToURL: true // added by DT - method is appended to URL as option - default true
-		};
-		if (options) $.extend(config, options);
-
-		var mySoapObject = json2soap(new SOAPObject(config.namespaceQualifier + ':' + config.method), config.params);
-		var soapRequest = new SOAPRequest(null, mySoapObject);
-		if (!!config.namespaceQualifier && !!config.namespaceUrl) {
-			soapRequest.addNamespace(config.namespaceQualifier, config.namespaceUrl);
+		var config = {};
+		if (!this.globalConfig) {
+			this.globalConfig = {
+				returnJson: false, // default set to false, so no dependencie by default
+				appendMethodToURL: true // added by DT - method is appended to URL as option - default true
+			};
 		}
-		SOAPClient.Proxy = config.url;
-		if(config.appendMethodToURL){// added by DT
-			SOAPClient.Proxy += config.method;
+		if (options && !options.method) {
+			$.extend(this.globalConfig, options);
+		} else {
+			$.extend(config, this.globalConfig, options);
 		}
-
-		SOAPClient.SendRequest(soapRequest, function (data) {
-			if(config.returnJson) {
-				var jdata = $.xml2json(data);
-				if (jdata.Body && jdata.Body.Fault){
-					options.error(jdata.Body.Fault);
-				} else if (jdata.Body) {
-					options.success(jdata.Body);
-				} else {
-					options.error('Unexpected data received:'+ data);
-				}
-			} else {
-				// fix for IE
-				if (!window.DOMParser) {
-					var xmlDoc=new ActiveXObject("Microsoft.XMLDOM");
-					xmlDoc.async="false";
-					xmlDoc.loadXML(data);
-					data = $(xmlDoc).children()[0];
-				}
-				if ($(data).find('faultstring').length > 0) {
-					options.error($(data).find('faultstring'));
-				} else {
-					options.success(data);
-				}
+		if (!!config.method && !!config.url) {
+			var myObjectName = config.method;
+			if (!!config.namespaceQualifier) {
+				myObjectName = config.namespaceQualifier + ':' + myObjectName;
 			}
-		});
+			var mySoapObject = json2soap(new SOAPObject(myObjectName), config.params);
+			var soapRequest = new SOAPRequest(null, mySoapObject);
+			if (!!config.namespaceQualifier && !!config.namespaceUrl) {
+				soapRequest.addNamespace(config.namespaceQualifier, config.namespaceUrl);
+			}
+			SOAPClient.Proxy = config.url;
+			if(config.appendMethodToURL){ // added by DT
+				SOAPClient.Proxy += config.method;
+			}
+			SOAPClient.SendRequest(soapRequest, function (data) {
+				if(config.returnJson) {
+					var jdata = $.xml2json(data);
+					if (jdata.Body && jdata.Body.Fault){
+						config.error(jdata.Body.Fault);
+					} else if (jdata.Body) {
+						config.success(jdata.Body);
+					} else {
+						config.error('Unexpected data received: '+ data);
+					}
+				} else {
+					// fix for IE
+					if (!window.DOMParser) {
+						var xmlDoc=new ActiveXObject("Microsoft.XMLDOM");
+						xmlDoc.async="false";
+						xmlDoc.loadXML(data);
+						data = $(xmlDoc).children()[0];
+					}
+					if ($(data).find('fault').length > 0) {
+						config.error($(data).find('fault'));
+					} else {
+						config.success(data);
+					}
+				}
+			});
+		}
 	};
 	var json2soap = function (soapObject, params) {
 		for (var x in params) {
@@ -153,9 +164,9 @@ All code below this point is proton17's
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
 */
 
+	//Singleton SOAP Client
 	var SOAPClient = (function() {
 		var httpHeaders = {};
 		var _tId = null;
@@ -183,10 +194,8 @@ All code below this point is proton17's
 					SOAPClient.ResponseText = "";
 					SOAPClient.ResponseXML = null;
 					SOAPClient.Status = 0;
-
 					var content = soapReq.toString();
 					SOAPClient.ContentLength = content.length;
-
 					getResponse = function (xData) {
 						if(!!_tId) {clearTimeout(_tId);}
 							SOAPClient.Status = xhrReq.status;
