@@ -103,7 +103,7 @@ But it won't stop you from doing a call to a completely different soapserver wit
 		}
 	});
 
-_NOTE: the **method** is used as a key. If no method is specified in the options passed to **$.soap** all options are stored in the globalConfig, there won't be a soapRequest. When a method is specified the globalConfig will be used and all options passed to **$.soap** will overrule those in globalConfig, but keep in mind, they won't be overwritten!_
+_**NOTE**: the **method** is used as a key. If no method is specified in the options passed to **$.soap** all options are stored in the globalConfig, there won't be a soapRequest. When a method is specified the globalConfig will be used and all options passed to **$.soap** will overrule those in globalConfig, but keep in mind, they won't be overwritten!_
 
 Dependencies
 ------------
