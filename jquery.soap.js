@@ -77,7 +77,7 @@ Original code: jqSOAPClient.beta.js by proton17
 		var config = {};
 		if (!this.globalConfig) {
 			this.globalConfig = {
-				returnJson: false, // default set to false, so no dependencie by default
+				returnJson: false, // default set to false, so no dependencies by default
 				appendMethodToURL: true // added by DT - method is appended to URL as option - default true
 			};
 		}
@@ -88,14 +88,21 @@ Original code: jqSOAPClient.beta.js by proton17
 		}
 		if (!!config.method && !!config.url) {
 			var myObjectName = config.method;
-			if (!!config.namespaceQualifier) {
-				myObjectName = config.namespaceQualifier + ':' + myObjectName;
-			}
-			var mySoapObject = json2soap(new SOAPObject(myObjectName), config.params);
-			var soapRequest = new SOAPRequest(null, mySoapObject);
+//wrapper code improperly renames element instead of implementing original namespace support
+//			if (!!config.namespaceQualifier) {
+//				myObjectName = config.namespaceQualifier + ':' + myObjectName;
+//			}
+			var prefix = !!config.namespaceQualifier ? config.namespaceQualifier+':' : '';//get prefix to show in child elements of complex objects
+			var mySoapObject = json2soap(new SOAPObject(myObjectName), config.params, prefix);
+//original code prefers handling namespaces this way...
 			if (!!config.namespaceQualifier && !!config.namespaceUrl) {
-				soapRequest.addNamespace(config.namespaceQualifier, config.namespaceUrl);
+				mySoapObject.ns = SOAPClient.Namespace(config.namespaceQualifier, config.namespaceUrl);
 			}
+			var soapRequest = new SOAPRequest(null, mySoapObject);
+//added to object instead of request
+//			if (!!config.namespaceQualifier && !!config.namespaceUrl) {
+//				soapRequest.addNamespace(config.namespaceQualifier, config.namespaceUrl);
+//			}
 			SOAPClient.Proxy = config.url;
 			if(config.appendMethodToURL){ // added by DT
 				SOAPClient.Proxy += config.method;
@@ -127,20 +134,20 @@ Original code: jqSOAPClient.beta.js by proton17
 			});
 		}
 	};
-	var json2soap = function (soapObject, params) {
+	var json2soap = function (soapObject, params, prefix) {
 		for (var x in params) {
 			if (typeof params[x] == 'object') {
 				// added by DT - check if object is in fact an Array and treat accordingly
 				if(params[x].constructor.toString().indexOf("Array") != -1) {// type is array
 					for(var y in params[x]) {
-						soapObject.addParameter(x, params[x][y]);
+						soapObject.addParameter(prefix+x, params[x][y]);
 					}
 				} else {
-					myParam = json2soap(new SOAPObject(x), params[x]);
+					myParam = json2soap(new SOAPObject(prefix+x), params[x], prefix);
 					soapObject.appendChild(myParam);
 				}
 			} else {
-				soapObject.addParameter(x, params[x]);
+				soapObject.addParameter(prefix+x, params[x]);
 			}
 		}
 		return soapObject;
