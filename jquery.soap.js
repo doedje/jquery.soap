@@ -1,6 +1,6 @@
 /*==========================
 jquery.soap.js
-version: 0.9.4
+version: 0.9.5
 
 jQuery plugin for communicating with a server using SOAP
 
@@ -70,44 +70,98 @@ amended: 31 October 2011
 by: Diccon Towns - dtowns@reapit.com - THANX! =]
 
 Original code: jqSOAPClient.beta.js by proton17
+ORIGINAL LICENSE:
+
+		This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ==========================*/
+
+/*====================
+
+options {
+	url: 'http://my.server.com/soapservices/',		//endpoint address for the service
+	method: 'helloWorld',							// service operation name 
+	 												// 1) will be appended to url if appendMethodToURL=true
+	 												// 2) will be used for request element name when building xml from 'params' unless 'elementName' is provided
+	namespaceQualifier: 'myns',						// used as namespace prefix for all elements in request (when request is built from 'params')
+	namespaceUrl: 'urn://service.my.server.com',	// namespace url added to parent request element (when request is built from 'params')
+	elementName: 'requestElementName',				// optional string to use for the name xml element (see 'method') 
+	xml: someVariableString,						// fully built XML structure for request (alternative to internal build of XML from 'params') 
+	params: {										// JSON structure used to build request XML - SHOULD be coupled with ('namespaceQualifier' + 'namespaceUrl') and ('method' or 'elementName')  
+		name: 'Remy Blom',
+		msg: 'Hi!'
+	},
+	returnJson: false, 								// defaults to false to avoid additional plugin dependencies
+	appendMethodToURL: true, 						// method name will be appended to URL defaults to true
+	soap12: false, 									// use SOAP 1.2 namespace and HTTP headers - default to false
+	request: function (data) {						// callback function - request object is passed back prior to ajax call 
+		// do stuff with data
+	},
+	success: function (data) {						// callback function to handle successful return
+		// do stuff with data
+	},
+	error: function (string) {						// callback function to handle fault return
+		// show error
+	}
+}
+
+======================*/
 
 (function($) {
 	$.soap = function(options) {
 		var config = {};
 		if (!this.globalConfig) {
 			this.globalConfig = {
-				returnJson: false, // default set to false, so no dependencies by default
-				appendMethodToURL: true // added by DT - method is appended to URL as option - default true
+				returnJson: false,
+				appendMethodToURL: true,
+				soap12: false
 			};
 		}
-		if (options && !options.method) {
+		if (options && !options.method) { //needs further qualification since 'method' is actually optional 
 			$.extend(this.globalConfig, options);
-		} else {
-			$.extend(config, this.globalConfig, options);
-		}
-		if (!!config.method && !!config.url) {
-			var myObjectName = config.method;
-//wrapper code improperly renames element instead of implementing original namespace support
-//			if (!!config.namespaceQualifier) {
-//				myObjectName = config.namespaceQualifier + ':' + myObjectName;
-//			}
+		} 
+		$.extend(config, this.globalConfig, options);
+		var soapRequest;
+		if (!!config.xml && (/\S/.test(config.xml))) {//is an xml parameter given that contains more than whitespace?
+			if (SOAPTool.isWrappedWithEnvelope(config.xml)) {
+				soapRequest = config.xml;
+			} else { //wrap with appropriate soap envelope if necessary
+				soapRequest = SOAPTool.wrapWithEnvelope(config.xml, config.soap12);
+			}
+		} else if (!!config.params && (!!config.method || !!config.elementName)) {//build soapRequest from params...
+			var name = !!config.elementName ? config.elementName : config.method;
 			var prefix = !!config.namespaceQualifier ? config.namespaceQualifier+':' : '';//get prefix to show in child elements of complex objects
-			var mySoapObject = json2soap(new SOAPObject(myObjectName), config.params, prefix);
-//original code prefers handling namespaces this way...
+			var mySoapObject = SOAPTool.json2soap(new SOAPObject(name), config.params, prefix);
 			if (!!config.namespaceQualifier && !!config.namespaceUrl) {
-				mySoapObject.ns = SOAPClient.Namespace(config.namespaceQualifier, config.namespaceUrl);
+				mySoapObject.ns = SOAPTool.Namespace(config.namespaceQualifier, config.namespaceUrl);
 			}
-			var soapRequest = new SOAPRequest(null, mySoapObject);
-//added to object instead of request
-//			if (!!config.namespaceQualifier && !!config.namespaceUrl) {
-//				soapRequest.addNamespace(config.namespaceQualifier, config.namespaceUrl);
-//			}
-			SOAPClient.Proxy = config.url;
-			if(config.appendMethodToURL){ // added by DT
-				SOAPClient.Proxy += config.method;
+			soapRequest = new SOAPRequest(null, mySoapObject);
+			if (config.soap12) {
+				soapRequest.soapNamespace = SOAPTool.SOAP12_NAMESPACE;
 			}
-			SOAPClient.SendRequest(soapRequest, function (data) {
+		} else {
+			//no request
+		}
+		if (!!soapRequest && !!config.request && (typeof(config.request)=="function")) {
+			config.request(soapRequest);
+		}
+		if (!!config.url && !!soapRequest) {//we have a request and somewhere to send it
+			var client = new SOAPClient();
+			client.Proxy = config.url;
+			if(config.appendMethodToURL && !!config.method){
+				client.Proxy += config.method;
+			}
+			client.SendRequest(soapRequest, function (data) {
 				if(config.returnJson) {
 					var jdata = $.xml2json(data);
 					if (jdata.Body && jdata.Body.Fault){
@@ -134,114 +188,127 @@ Original code: jqSOAPClient.beta.js by proton17
 			});
 		}
 	};
-	var json2soap = function (soapObject, params, prefix) {
-		for (var x in params) {
-			if (typeof params[x] == 'object') {
-				// added by DT - check if object is in fact an Array and treat accordingly
-				if(params[x].constructor.toString().indexOf("Array") != -1) {// type is array
-					for(var y in params[x]) {
-						soapObject.addParameter(prefix+x, params[x][y]);
-					}
-				} else {
-					myParam = json2soap(new SOAPObject(prefix+x), params[x], prefix);
-					soapObject.appendChild(myParam);
-				}
-			} else {
-				soapObject.addParameter(prefix+x, params[x]);
+
+
+	var SOAPClient = function() {
+		this.typeOf="SOAPClient";
+		this.httpHeaders = {};
+		this._tId = null;
+		this.Proxy = "";
+		this.SOAPServer = "";
+		this.CharSet = "UTF-8";
+		this.ResponseText = "";
+		this.ResponseXML = null;
+		this.Status = 0;
+		this.Timeout = 0;
+		this.SetHTTPHeader = function(name, value){
+			var re = /^[\w]{1,20}$/;
+			if((typeof(name) === "string") && re.test(name)) {
+				this.httpHeaders[name] = value;
 			}
-		}
-		return soapObject;
-	};
-
-/*
-All code below this point is proton17's
-(with some minor changes to keep LINT happy)
-
-		ORIGINAL LICENSE:
-
-		This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
-	//Singleton SOAP Client
-	var SOAPClient = (function() {
-		var httpHeaders = {};
-		var _tId = null;
-		var _self = {
-			Proxy: "",
-			SOAPServer: "",
-			ContentType: "text/xml",
-			CharSet: "UTF-8",
-			ResponseXML: null,
-			ResponseText: "",
-			Status: 0,
-			ContentLength: 0,
-			Timeout: 0,
-			SetHTTPHeader: function(name, value){
-				var re = /^[\w]{1,20}$/;
-				if((typeof(name) === "string") && re.test(name)) {
-					httpHeaders[name] = value;
+		};
+		this.SendRequest = function(soapReq, callback) {
+			if(!!this.Proxy) {
+				this.ResponseText = "";
+				this.ResponseXML = null;
+				this.Status = 0;
+				var content;
+				var action = "";
+				var contentType = SOAPTool.SOAP11_TYPE;
+				if (typeof(soapReq)==='string') {
+					content = soapReq;
+				} else {
+					content = soapReq.toString();
+					action = soapReq.Action;
 				}
+				if (SOAPTool.isSOAP12(content)) {
+					contentType = SOAPTool.SOAP12_TYPE;
+				}
+				getResponse = function (xData) {
+					if(!!this._tId) {clearTimeout(this._tId);}
+					this.Status = xhrReq.status;
+					this.ResponseText = xhrReq.responseText;
+					this.ResponseXML = xhrReq.responseXML;
+					if(typeof(callback) === "function") {
+						if(xData.responseXML === undefined) {
+							callback(xData.responseText);
+						} else {
+							callback(xData.responseXML);
+						}
+					}
+				};
+				var xhrReq = $.ajax({
+					type: "POST",
+					url: this.Proxy,
+					dataType: "xml",
+					processData: false,
+					data: content,
+					complete: getResponse,
+					contentType: contentType + "; charset=" + this.CharSet,
+					beforeSend: function(req) {
+						req.setRequestHeader("Method", "POST");
+						req.setRequestHeader("SOAPServer", this.SOAPServer);
+						if (contentType === SOAPTool.SOAP11_TYPE) {
+							req.setRequestHeader("SOAPAction", action);
+						}
+						if(!!this.httpHeaders) {
+							var hh = null, ch = null;
+							for(hh in this.httpHeaders) {
+								if (!this.httpHeaders.hasOwnProperty || this.httpHeaders.hasOwnProperty(hh)) {
+									ch = this.httpHeaders[hh];
+									req.setRequestHeader(hh, ch.value);
+								}
+							}
+						}
+					}
+				});
+			}
+		};
+	};
+	
+	//Singleton SOAP Tool
+	var SOAPTool=(function(){
+		var _self = {
+			SOAP11_TYPE: "text/xml",
+			SOAP12_TYPE: "application/soap+xml",
+			SOAP11_NAMESPACE: "http://schemas.xmlsoap.org/soap/envelope/",
+			SOAP12_NAMESPACE: "http://www.w3.org/2003/05/soap-envelope",
+			isSOAP11: function(xml) {
+				return (xml.indexOf(SOAPTool.SOAP11_NAMESPACE) !== -1);
+			},
+			isSOAP12: function(xml) {
+				return (xml.indexOf(SOAPTool.SOAP12_NAMESPACE) !== -1);
+			},
+			isWrappedWithEnvelope: function(xml) {
+				return (this.isSOAP11(xml) || this.isSOAP12(xml));
+			},
+			wrapWithEnvelope: function(xml, isSoap12) {
+				var ns = (isSoap12) ? this.SOAP12_NAMESPACE : this.SOAP11_NAMESPACE ;
+				var wrapped = "<soap:Envelope xmlns:soap=\""+ns+"\"><soap:Body>"+xml+"</soap:Body></soap:Envelope>";
+				return wrapped;
+			},
+			json2soap: function (soapObject, params, prefix) {
+				for (var x in params) {
+					if (typeof params[x] == 'object') {
+						// added by DT - check if object is in fact an Array and treat accordingly
+						if(params[x].constructor.toString().indexOf("Array") != -1) {// type is array
+							for(var y in params[x]) {
+								soapObject.addParameter(prefix+x, params[x][y]);
+							}
+						} else {
+							myParam = this.json2soap(new SOAPObject(prefix+x), params[x], prefix);
+							soapObject.appendChild(myParam);
+						}
+					} else {
+						soapObject.addParameter(prefix+x, params[x]);
+					}
+				}
+				return soapObject;
 			},
 			Namespace: function(name, uri) {
 				return {"name":name, "uri":uri};
 			},
-			SendRequest: function(soapReq, callback) {
-				if(!!SOAPClient.Proxy) {
-					SOAPClient.ResponseText = "";
-					SOAPClient.ResponseXML = null;
-					SOAPClient.Status = 0;
-					var content = soapReq.toString();
-					SOAPClient.ContentLength = content.length;
-					getResponse = function (xData) {
-						if(!!_tId) {clearTimeout(_tId);}
-							SOAPClient.Status = xhrReq.status;
-							SOAPClient.ResponseText = xhrReq.responseText;
-							SOAPClient.ResponseXML = xhrReq.responseXML;
-						if(typeof(callback) === "function") {
-							if(xData.responseXML === undefined) {
-								callback(xData.responseText);
-							} else {
-								callback(xData.responseXML);
-							}
-						}
-					};
-					var xhrReq = $.ajax({
-						type: "POST",
-						url: SOAPClient.Proxy,
-						dataType: "xml",
-						processData: false,
-						data: content,
-						complete: getResponse,
-						contentType: SOAPClient.ContentType + "; charset=" + SOAPClient.CharSet,
-						beforeSend: function(req) {
-							req.setRequestHeader("Method", "POST");
-							req.setRequestHeader("SOAPServer", SOAPClient.SOAPServer);
-							req.setRequestHeader("SOAPAction", soapReq.Action);
-							if(!!httpHeaders) {
-								var hh = null, ch = null;
-								for(hh in httpHeaders) {
-									if (!httpHeaders.hasOwnProperty || httpHeaders.hasOwnProperty(hh)) {
-										ch = httpHeaders[hh];
-										req.setRequestHeader(hh, ch.value);
-									}
-								}
-							}
-						}
-					});
-				}
-			},
-			ToXML: function(soapObj) {
+			soap2xml: function(soapObj) {
 				var out = [];
 				var isNSObj=false;
 				try {
@@ -278,7 +345,7 @@ All code below this point is proton17's
 							var cPos, cObj;
 							for(cPos in soapObj.children){
 								cObj = soapObj.children[cPos];
-								if(typeof(cObj)==="object"){out.push(SOAPClient.ToXML(cObj));}
+								if(typeof(cObj)==="object"){out.push(SOAPTool.soap2xml(cObj));}
 							}
 						}
 						//Node Value
@@ -288,23 +355,28 @@ All code below this point is proton17's
 						else {out.push("</"+soapObj.name+">");}
 						return out.join("");
 					}
-				} catch(e){alert("Unable to process SOAPObject! Object must be an instance of SOAPObject");}
+				} catch(e){
+					alert("Unable to process SOAPObject! Object must be an instance of SOAPObject");
+				}
 			}
-		};
+		}
 		return _self;
 	})();
+	
 	//Soap request - this is what being sent using SOAPClient.SendRequest
 	var SOAPRequest=function(action, soapObj) {
+		this.typeOf="SOAPRequest";
 		this.Action=action;
+		this.soapNamespace = SOAPTool.SOAP11_NAMESPACE;
 		var nss=[];
 		var headers=[];
 		var bodies=(!!soapObj)?[soapObj]:[];
-		this.addNamespace=function(ns, uri){nss.push(new SOAPClient.Namespace(ns, uri));};
+		this.addNamespace=function(ns, uri){nss.push(new SOAPTool.Namespace(ns, uri));};
 		this.addHeader=function(soapObj){headers.push(soapObj);};
 		this.addBody=function(soapObj){bodies.push(soapObj);};
 		this.toString=function() {
 			var soapEnv = new SOAPObject("soap:Envelope");
-			soapEnv.attr("xmlns:soap","http://schemas.xmlsoap.org/soap/envelope/");
+			soapEnv.attr("xmlns:soap",this.soapNamespace);
 			//Add Namespace(s)
 			if(nss.length>0){
 				var tNs, tNo;
@@ -339,7 +411,7 @@ All code below this point is proton17's
 		this.addParameter=function(name,value){var obj=new SOAPObject(name);obj.val(value);this.appendChild(obj);};
 		this.hasChildren=function(){return (this.children.length > 0)?true:false;};
 		this.val=function(v){if(!v){return this.value;}else{this.value=v;return this;}};
-		this.toString=function(){return SOAPClient.ToXML(this);};
+		this.toString=function(){return SOAPTool.soap2xml(this);};
 	};
 
 })(jQuery);
