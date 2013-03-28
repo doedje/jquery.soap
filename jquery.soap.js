@@ -15,7 +15,7 @@ SOAPResponse.toJSON() depends on jQuery.xml2json.js
 Authors / History
 -----------------
 
-2013-03
+2013-03 >> update internal OO structure, enable XML & object input as well as JSON
 Zach Shelton == zachofalltrades.net  
 https://github.com/zachofalltrades/jquery.soap
 
