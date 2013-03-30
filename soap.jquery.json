@@ -1,8 +1,10 @@
 {
 	"name": "soap",
 	"title": "jQuery Soap",
-	"version": "0.9.4",
-	"description": "jQuery plugin for communicating with a server using SOAP. This script is basically a wrapper for jqSOAPClient.beta.js from proton17. I only added some code: One function to send the soapRequest that takes a complex object as a parameter which is converted to soap by the json2soap function. Diccon Towns fixed it to properly deal with arrays! Thanx for that! And that deals with the response so you can set actions for success or error. After that I wrapped it all to hide stuff from the global namespace and it becomes a proper jQuery plugin. Thanx to proton17 and DT! Let's $.soap()!",
+	"version": "0.10.0",
+	"description": "jQuery plugin for communicating with a web service using SOAP.
+		This script uses $.ajax to do a soapRequest. It can take XML DOM, XML string or JSON as input and the response can be returned as either XML DOM, XML string or JSON too.
+		Thanx to proton17, Diccon Towns and Zach Shelton! Let's $.soap()!",
 	"keywords": [
 		"soap",
 		"ajax"
@@ -26,6 +28,6 @@
 		}
 	],
 	"dependencies": {
-		"jquery": ">=1.5"
+		"jquery": ">=1.6"
 	}
 }

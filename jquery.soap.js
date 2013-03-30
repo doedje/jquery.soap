@@ -16,13 +16,13 @@ Authors / History
 -----------------
 
 2013-03 >> update internal OO structure, enable XML & object input as well as JSON
-Zach Shelton == zachofalltrades.net  
+Zach Shelton == zachofalltrades.net
 https://github.com/zachofalltrades/jquery.soap
 
 2013-02-19 >> published to plugins.jquery.com/soap/
 Remy Blom == https://github.com/doedje/jquery.soap
 
-2011-10-31 >> fix handling of arrays in JSON paramaters 
+2011-10-31 >> fix handling of arrays in JSON paramaters
 Diccon Towns == dtowns@reapit.com
 
 2009-12-03 >> wrap jqSOAPClient as plugin
@@ -52,16 +52,16 @@ ORIGINAL LICENSE:
 
 options {
 	url: 'http://my.server.com/soapservices/',		//endpoint address for the service
-	method: 'helloWorld',							// service operation name 
-	 												// 1) will be appended to url if appendMethodToURL=true
-	 												// 2) will be used for request element name when building xml from JSON 'params' (unless 'elementName' is provided)
-	appendMethodToURL: true, 						// method name will be appended to URL defaults to true
-	soap12: false, 									// use SOAP 1.2 namespace and HTTP headers - default to false
+	method: 'helloWorld',							// service operation name
+													// 1) will be appended to url if appendMethodToURL=true
+													// 2) will be used for request element name when building xml from JSON 'params' (unless 'elementName' is provided)
+	appendMethodToURL: true,						// method name will be appended to URL defaults to true
+	soap12: false,									// use SOAP 1.2 namespace and HTTP headers - default to false
 
 	//params can be XML DOM, XML String, or JSON
-	params: domXmlObject,							// XML DOM object 
-	params: xmlString,								// XML String for request (alternative to internal build of XML from JSON 'params') 
-	params: {										// JSON structure used to build request XML - SHOULD be coupled with ('namespaceQualifier' AND 'namespaceUrl') AND ('method' OR 'elementName')  
+	params: domXmlObject,							// XML DOM object
+	params: xmlString,								// XML String for request (alternative to internal build of XML from JSON 'params')
+	params: {										// JSON structure used to build request XML - SHOULD be coupled with ('namespaceQualifier' AND 'namespaceUrl') AND ('method' OR 'elementName')
 		name: 'Remy Blom',
 		msg: 'Hi!'
 	},
@@ -81,7 +81,7 @@ options {
 
 (function($) {
 	var enableLogging = true;
-	
+
 	$.soap = function(options) {
 		var config = {};
 		if (!this.globalConfig) { //this setup once
@@ -90,17 +90,17 @@ options {
 				soap12: false
 			};
 		}
-		
+
 		//a configuration call will not have 'params' specified
-		if (options && !options.params) { 
+		if (options && !options.params) {
 			$.extend(this.globalConfig, options);//update global config
 			return;
-		} 
+		}
 		$.extend(config, this.globalConfig, options);
-		
+
 		var soapRequest; //will be created defined based on type of 'params' received
-		
-		if ($.type(config.params) === "string") { 
+
+		if ($.type(config.params) === "string") {
 			//ensure that string is not empty and contains more than whitespace
 			if (/\S/.test(config.params)) {
 				//it had better be a well formed XML string, but we'll trust that it is
@@ -114,21 +114,21 @@ options {
 				//override the toString method of SOAPRequest
 				soapRequest.toString = function(){
 					return xml;
-				}; 
+				};
 			} else {
-				//soapRequest is left undefined  
+				//soapRequest is left undefined
 			}
-			
+
 		} else if ($.isXMLDoc(config.params)) {
 			soapRequest = config.params;
 			soapRequest = new SOAPRequest();
 			//override the toString method of SOAPRequest
 			soapRequest.toString = function(){
 				return SOAPTool.dom2String(config.params);
-			}; 
-			
+			};
+
 		} else if ($.isPlainObject(config.params)) {
-			//build from JSON 
+			//build from JSON
 			if (!!config.method || !!config.elementName) {
 				var name = !!config.elementName ? config.elementName : config.method;
 				var prefix = !!config.namespaceQualifier ? config.namespaceQualifier+':' : '';//get prefix to show in child elements of complex objects
@@ -141,15 +141,15 @@ options {
 					soapRequest.soapNamespace = SOAPTool.SOAP12_NAMESPACE;
 				}
 			}
-			
+
 		} else {
 			//no request
 		}
-		
+
 		if (!!soapRequest && $.isFunction(config.request)) {
 			config.request(soapRequest);
 		}
-		
+
 		if (!!config.url && !!soapRequest) {//we have a request and somewhere to send it
 			if (!$.isFunction(config.error)) {
 				throw new Error ("error callback function was not provided");
@@ -248,7 +248,7 @@ options {
 			}
 		};
 	};
-	
+
 	//Singleton SOAP Tool
 	var SOAPTool=(function(){
 		var _self = {
@@ -349,10 +349,10 @@ options {
 					alert("Unable to process SOAPObject! Object must be an instance of SOAPObject");
 				}
 			}
-		}
+		};
 		return _self;
 	})();
-	
+
 	//Soap request - this is what being sent using SOAPClient.SendRequest
 	var SOAPRequest=function(soapObj) {
 		this.typeOf="SOAPRequest";
@@ -416,7 +416,7 @@ options {
 			}
 			throw new Error("Missing JQuery Plugin 'xml2json'");
 		};
-	}
+	};
 
 	//Soap Object - Used to build body envelope and other structures
 	var SOAPObject = function(name) {
@@ -441,6 +441,6 @@ options {
 			}
 		}
 	}
-	
+
 })(jQuery);
 
