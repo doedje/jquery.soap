@@ -165,8 +165,8 @@ http://archive.plugins.jquery.com/project/jqSOAPClient
 
 Changelog
 ---------
-Version | Changes
---- | ---
+Version | Date | Changes
+--- | --- | ---
 0.10.0 | 2013-03-29 | The **First Zach Shelton version**, better code, XML DOM, XML string and JSON in and out
 0.9.4 | 2013-02-26 | changed the charset of soapRequest to UTF-8 and removed the " quotes
 0.9.3 | 2013-02-26 | Added the possibility to call **$.soap** just to set extra config values.
