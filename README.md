@@ -132,7 +132,7 @@ _**NOTE**: the **param** is used as a key. If no param is specified in the optio
 
 Updating from 0.9.x
 -------------------
-To update to 1.0.0 is not quite a drop-in replacement. The return value from the $.soap() will be a SOAPResponse object. This object has toXML, toJSON, and toString methods -- meaning that the 'returnJSON' input parameter is no longer required (or used). It is also now possible to use XML (dom), xml (string), or JSON as the 'params' element when the options are passed in.
+To update to 0.10.0 is not quite a drop-in replacement. The return value from the $.soap() will be a SOAPResponse object. This object has toXML, toJSON, and toString methods -- meaning that the 'returnJSON' input parameter is no longer required (or used). It is also now possible to use XML (dom), xml (string), or JSON as the 'params' element when the options are passed in.
 
 Same Origin Policy
 ------------------
