@@ -7,7 +7,7 @@ jQuery plugin for communicating with a web service using SOAP.
 --------------------------------------------------------------
 This script uses $.ajax to do a soapRequest. It can take XML DOM, XML string or JSON as input and the response can be returned as either XML DOM, XML string or JSON too.
 
--**NOTE:** I just pulled in Zach Shelton's changes, made some quick changes to the README so this would at least reflect the current version of jquery.soap.js, but it might still contain errors AND be incomplete. I'll will test the script myself and make sure the README is right next week!_
+_**NOTE:** I just pulled in Zach Shelton's changes, made some quick changes to the README so this would at least reflect the current version of jquery.soap.js, but it might still contain errors AND be incomplete. I'll will test the script myself and make sure the README is right next week!_
 
 Example
 -------
