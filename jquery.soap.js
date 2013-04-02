@@ -1,6 +1,6 @@
 /*==========================
 jquery.soap.js  http://plugins.jquery.com/soap/
-version: 1.0.0
+version: 1.0.1
 
 jQuery plugin for communicating with a web service using SOAP.
 
