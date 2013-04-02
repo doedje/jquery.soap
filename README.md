@@ -182,6 +182,7 @@ Changelog
 ---------
 Version | Date | Changes
 --- | --- | ---
+1.0.2 | 2013-04-02 | Fix to the manifest file, new version# needed to publish to plugins.jquery.com
 1.0.1 | 2013-04-02 | Fix to the manifest file, new version# needed to publish to plugins.jquery.com
 1.0.0 | 2013-04-02 | Minor fix (return for dom2string in reponse)
 0.10.0 | 2013-03-29 | The **First Zach Shelton version**, better code, XML DOM, XML string and JSON in and out
