@@ -1,6 +1,6 @@
 jQuery Soap
 ===========
-**file:** jquery.soap.js
+**file:** jquery.soap.js  
 **version:** 1.0.0
 
 jQuery plugin for communicating with a web service using SOAP.
@@ -27,7 +27,7 @@ $.soap({
 	},
 	success: function (soapResponse) {
 		// do stuff with soapResponse
-		// if you want the response to be JSON use soapResponse.toJSON();
+		// if you want to have the response as JSON use soapResponse.toJSON();
 		// or soapResponse.toString() to get XML string
 		// or soapResponse.toXML() to get XML DOM
 	},
@@ -95,8 +95,7 @@ $.soap({
 	url: 'http://my.server.com/soapservices/',
 	namespaceQualifier: 'myns',
 	namespaceUrl: 'urn://service.my.server.com',
-	returnJson: true,
-	error: function (string) {
+	error: function (soapResponse) {
 		// show error
 	}
 });
@@ -107,8 +106,8 @@ $.soap({
 		name: 'Remy Blom',
 		msg: 'Hi!'
 	},
-	success: function (data) {
-		// do stuff with data
+	success: function (soapResponse) {
+		// do stuff with soapResponse
 	}
 });
 ```
@@ -118,9 +117,9 @@ The code above will do exactly the same as the first example, but when you want 
 ```Javascript
 $.soap({
 	method: 'doSomethingElse',
-	params: {},
-	success: function (data) {
-		// do stuff with data
+	params: {...},
+	success: function (soapResponse) {
+		// do stuff with soapResponse
 	}
 });
 ```
@@ -135,10 +134,10 @@ $.soap({
 		name: 'Remy Blom',
 		msg: 'Hi!'
 	},
-	success: function (data) {
-		// do stuff with data
+	success: function (soapResponse) {
+		// do stuff with soapResponse
 	},
-	error: function (data) {
+	error: function (soapResponse) {
 		alert('that other server might be down...')
 	}
 });
@@ -156,27 +155,27 @@ You won't be able to have a page on http://www.example.com do an ajax call ($.so
 
 Dependencies
 ------------
-jQuery -- built and tested with v1.9.1, MAY work back to v1.6
+jQuery -- built and tested with v1.9.1, MAY work back to v1.6  
 SOAPResponse.toJSON() depends on **jQuery.xml2json.js**
 
 Authors / History
 -----------------
 
-2013-03 >> update internal OO structure, enable XML & object input as well as JSON
-Zach Shelton == zachofalltrades.net
+2013-03 >> update internal OO structure, enable XML & object input as well as JSON  
+Zach Shelton == zachofalltrades.net  
 https://github.com/zachofalltrades/jquery.soap
 
-2013-02-19 >> published to plugins.jquery.com/soap/
+2013-02-19 >> published to plugins.jquery.com/soap/  
 Remy Blom == https://github.com/doedje/jquery.soap
 
-2011-10-31 >> fix handling of arrays in JSON paramaters
+2011-10-31 >> fix handling of arrays in JSON paramaters  
 Diccon Towns == dtowns@reapit.com
 
-2009-12-03 >> wrap jqSOAPClient as plugin
-Remy Blom == www.hku.nl == remy.blom@kmt.hku.nl
+2009-12-03 >> wrap jqSOAPClient as plugin  
+Remy Blom == www.hku.nl == remy.blom@kmt.hku.nl  
 Utrecht School of Arts,The Netherlands
 
-2007-12-20 >> jqSOAPClient.beta.js by proton17
+2007-12-20 >> jqSOAPClient.beta.js by proton17  
 http://archive.plugins.jquery.com/project/jqSOAPClient
 
 Changelog
