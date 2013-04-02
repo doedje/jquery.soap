@@ -1,11 +1,15 @@
 jQuery Soap
 ===========
 **file:** jquery.soap.js
-**version:** 0.10.0
+**version:** 1.0.0
 
 jQuery plugin for communicating with a web service using SOAP.
 --------------------------------------------------------------
 This script uses $.ajax to do a soapRequest. It can take XML DOM, XML string or JSON as input and the response can be returned as either XML DOM, XML string or JSON too.
+
+Thanx to proton17, Diccon Towns and Zach Shelton!
+
+**Let's $.soap()!**
 
 _**NOTE:** I just pulled in Zach Shelton's changes, made some quick changes to the README so this would at least reflect the current version of jquery.soap.js, but it might still contain errors AND be incomplete. I'll will test the script myself and make sure the README is right next week!_
 
@@ -136,7 +140,7 @@ To update to 0.10.0 is not quite a drop-in replacement. The return value from th
 
 Same Origin Policy
 ------------------
-You won't be able to have a page on http://www.example.com do an ajax call ($.soap is using $.ajax internally) to http://www.anotherdomain.com due to Same Origin Policy. To overcome this you should either install a proxy on http://www.example.com or use CORS.
+You won't be able to have a page on http://www.example.com do an ajax call ($.soap is using $.ajax internally) to http://www.anotherdomain.com due to Same Origin Policy. To overcome this you should either install a proxy on http://www.example.com or use CORS. Keep in mind that it also not allowed to go from http://www.example.com to http://soap.example.com or even http://www.example.com:8080
 
 Dependencies
 ------------

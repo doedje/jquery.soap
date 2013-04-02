@@ -1,6 +1,6 @@
 /*==========================
 jquery.soap.js  http://plugins.jquery.com/soap/
-version: 0.10.0
+version: 1.0.0
 
 jQuery plugin for communicating with a web service using SOAP.
 
@@ -400,7 +400,7 @@ options {
 				return this.content;
 			}
 			if ($.isXMLDoc(this.content)) {
-				SOAPTool.dom2string(this.content);
+				return SOAPTool.dom2string(this.content);
 			}
 			throw new Error("Unexpected Content: " + $.type(this.content));
 		};
