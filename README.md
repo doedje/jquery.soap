@@ -1,7 +1,7 @@
 jQuery Soap
 ===========
 **file:** jquery.soap.js  
-**version:** 1.0.4
+**version:** 1.0.5
 
 jQuery plugin for communicating with a web service using SOAP.
 --------------------------------------------------------------
@@ -82,10 +82,10 @@ Options
 	//callback functions
 	request: function (SOAPRequest)  {},			// callback function - request object is passed back prior to ajax call (optional)
 	success: function (SOAPResponse) {},			// callback function to handle successful return (required)
-	error:   function (SOAPResponse) {},				// callback function to handle fault return (required)
+	error:   function (SOAPResponse) {},			// callback function to handle fault return (required)
 
 	// debugging
-	enableLogging: true						// to enable the local log function set to true, defaults to false (optional)
+	enableLogging: true								// to enable the local log function set to true, defaults to false (optional)
 }
 ```
 
@@ -202,6 +202,7 @@ Changelog
 ---------
 Version | Date | Changes
 --- | --- | ---
+1.0.5 | 2013-06-20 | enableLogging is an option, changed namespaceUrl to namespaceURL (with fallback)
 1.0.4 | 2013-06-20 | Fix to the manifest file, new version# needed to publish to plugins.jquery.com
 1.0.3 | 2013-06-20 | Included a little demo and fixed SOAPServer and SOAPAction request headers
 1.0.2 | 2013-04-02 | Fix to the manifest file, new version# needed to publish to plugins.jquery.com
