@@ -56,39 +56,43 @@ options {
 													// 1) will be appended to url if appendMethodToURL=true
 													// 2) will be used for request element name when building xml from JSON 'params' (unless 'elementName' is provided)
 	appendMethodToURL: true,						// method name will be appended to URL defaults to true
-	SOAPAction: 'action',						// manually set the Request Header 'SOAPAction', defaults to the method specified above
+	SOAPAction: 'action',							// manually set the Request Header 'SOAPAction', defaults to the method specified above (optional)
 	soap12: false,									// use SOAP 1.2 namespace and HTTP headers - default to false
 
 	//params can be XML DOM, XML String, or JSON
 	params: domXmlObject,							// XML DOM object
 	params: xmlString,								// XML String for request (alternative to internal build of XML from JSON 'params')
-	params: {										// JSON structure used to build request XML - SHOULD be coupled with ('namespaceQualifier' AND 'namespaceUrl') AND ('method' OR 'elementName')
+	params: {										// JSON structure used to build request XML - SHOULD be coupled with ('namespaceQualifier' AND 'namespaceURL') AND ('method' OR 'elementName')
 		name: 'Remy Blom',
 		msg: 'Hi!'
 	},
 
 	//these options ONLY apply when the request XML is going to be built from JSON 'params'
-	namespaceQualifier: 'myns',						// used as namespace prefix for all elements in request (required)
-	namespaceUrl: 'urn://service.my.server.com',	// namespace url added to parent request element (required)
+	namespaceQualifier: 'myns',						// used as namespace prefix for all elements in request (optional)
+	namespaceURL: 'urn://service.my.server.com',	// namespace url added to parent request element (optional)
 	elementName: 'requestElementName',				// override 'method' as outer element (optional)
 
 	//callback functions
 	request: function (SOAPRequest)  {},			// callback function - request object is passed back prior to ajax call (optional)
 	success: function (SOAPResponse) {},			// callback function to handle successful return (required)
-	error:   function (SOAPResponse) {}				// callback function to handle fault return (required)
+	error:   function (SOAPResponse) {},				// callback function to handle fault return (required)
+
+	// debugging
+	enableLogging: false						// to enable the local log function set to true, defaults to false (optional
 }
 
 ======================*/
 
 (function($) {
-	var enableLogging = true;
+	var enableLogging; // set by config/options
 
 	$.soap = function(options) {
 		var config = {};
 		if (!this.globalConfig) { //this setup once
 			this.globalConfig = {
 				appendMethodToURL: true,
-				soap12: false
+				soap12: false,
+				enableLogging: false
 			};
 		}
 
@@ -98,6 +102,8 @@ options {
 			return;
 		}
 		$.extend(config, this.globalConfig, options);
+
+		enableLogging = config.enableLogging;
 
 		var soapRequest; //will be created defined based on type of 'params' received
 
@@ -134,8 +140,13 @@ options {
 				var name = !!config.elementName ? config.elementName : config.method;
 				var prefix = !!config.namespaceQualifier ? config.namespaceQualifier+':' : '';//get prefix to show in child elements of complex objects
 				var mySoapObject = SOAPTool.json2soap(new SOAPObject(name), config.params, prefix);
-				if (!!config.namespaceQualifier && !!config.namespaceUrl) {
-					mySoapObject.ns = SOAPTool.Namespace(config.namespaceQualifier, config.namespaceUrl);
+				// fallback for changing namespaceUrl to namespaceURL
+				if (!config.namespaceURL && !!config.namespaceUrl) {
+					log('namespaceUrl is deprecated, use namespaceURL instead!')
+					config.namespaceURL = config.namespaceUrl;
+				}
+				if (!!config.namespaceQualifier && !!config.namespaceURL) {
+					mySoapObject.ns = SOAPTool.Namespace(config.namespaceQualifier, config.namespaceURL);
 				}
 				soapRequest = new SOAPRequest(mySoapObject);
 				if (config.soap12) {

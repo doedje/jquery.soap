@@ -19,12 +19,12 @@ Example
 $.soap({
 	url: 'http://my.server.com/soapservices/',
 	method: 'helloWorld',
-	namespaceQualifier: 'myns',
-	namespaceUrl: 'urn://service.my.server.com',
+
 	params: {
 		name: 'Remy Blom',
 		msg: 'Hi!'
 	},
+	
 	success: function (soapResponse) {
 		// do stuff with soapResponse
 		// if you want to have the response as JSON use soapResponse.toJSON();
@@ -41,13 +41,12 @@ This will create the following XML:
 
 ```XML
 <soap:Envelope
-	xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
-	xmlns:myns="urn://service.my.server.com">
+	xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
 	<soap:Body>
-		<myns:helloWorld>
+		<helloWorld>
 			<name>Remy Blom</name>
 			<msg>Hi!</msg>
-		</myns:helloWorld>
+		</helloWorld>
 	</soap:Body>
 </soap:Envelope>
 ```
@@ -64,26 +63,29 @@ Options
 													// 1) will be appended to url if appendMethodToURL=true
 													// 2) will be used for request element name when building xml from JSON 'params' (unless 'elementName' is provided)
 	appendMethodToURL: true,						// method name will be appended to URL defaults to true
-	SOAPAction: 'action',						// manually set the Request Header 'SOAPAction', defaults to the method specified above
+	SOAPAction: 'action',							// manually set the Request Header 'SOAPAction', defaults to the method specified above (optional)
 	soap12: false,									// use SOAP 1.2 namespace and HTTP headers - default to false
 
 	//params can be XML DOM, XML String, or JSON
 	params: domXmlObject,							// XML DOM object
 	params: xmlString,								// XML String for request (alternative to internal build of XML from JSON 'params')
-	params: {										// JSON structure used to build request XML - SHOULD be coupled with ('namespaceQualifier' AND 'namespaceUrl') AND ('method' OR 'elementName')
+	params: {										// JSON structure used to build request XML - SHOULD be coupled with ('namespaceQualifier' AND 'namespaceURL') AND ('method' OR 'elementName')
 		name: 'Remy Blom',
 		msg: 'Hi!'
 	},
 
 	//these options ONLY apply when the request XML is going to be built from JSON 'params'
-	namespaceQualifier: 'myns',						// used as namespace prefix for all elements in request (required)
-	namespaceUrl: 'urn://service.my.server.com',	// namespace url added to parent request element (required)
+	namespaceQualifier: 'myns',						// used as namespace prefix for all elements in request (optional)
+	namespaceURL: 'urn://service.my.server.com',	// namespace url added to parent request element (optional)
 	elementName: 'requestElementName',				// override 'method' as outer element (optional)
 
 	//callback functions
 	request: function (SOAPRequest)  {},			// callback function - request object is passed back prior to ajax call (optional)
 	success: function (SOAPResponse) {},			// callback function to handle successful return (required)
-	error:   function (SOAPResponse) {}				// callback function to handle fault return (required)
+	error:   function (SOAPResponse) {},				// callback function to handle fault return (required)
+
+	// debugging
+	enableLogging: true						// to enable the local log function set to true, defaults to false (optional)
 }
 ```
 
@@ -95,7 +97,7 @@ Since version 0.9.3 it is possible to make a call to **$.soap** just to set extr
 $.soap({
 	url: 'http://my.server.com/soapservices/',
 	namespaceQualifier: 'myns',
-	namespaceUrl: 'urn://service.my.server.com',
+	namespaceURL: 'urn://service.my.server.com',
 	error: function (soapResponse) {
 		// show error
 	}
@@ -153,6 +155,10 @@ To update to 1.0.0 is not quite a drop-in replacement. The return value from the
 Same Origin Policy
 ------------------
 You won't be able to have a page on http://www.example.com do an ajax call ($.soap is using $.ajax internally) to http://www.anotherdomain.com due to Same Origin Policy. To overcome this you should either install a proxy on http://www.example.com or use CORS. Keep in mind that it also not allowed to go from http://www.example.com to http://soap.example.com or even to http://www.example.com:8080
+
+Demo page
+---------
+I included a simple demo page that you can use for testing. It allows you to play around with all the options for $.soap. Please take note that to make it work with your SOAP services you are bound by the same origin policy.
 
 Dependencies
 ------------
