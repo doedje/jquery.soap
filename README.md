@@ -196,6 +196,7 @@ Changelog
 ---------
 Version | Date | Changes
 --- | --- | ---
+1.0.4 | 2013-06-20 | Fix to the manifest file, new version# needed to publish to plugins.jquery.com
 1.0.3 | 2013-06-20 | Included a little demo and fixed SOAPServer and SOAPAction request headers
 1.0.2 | 2013-04-02 | Fix to the manifest file, new version# needed to publish to plugins.jquery.com
 1.0.1 | 2013-04-02 | Fix to the manifest file, new version# needed to publish to plugins.jquery.com
