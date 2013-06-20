@@ -1,6 +1,6 @@
 /*==========================
 jquery.soap.js  http://plugins.jquery.com/soap/
-version: 1.0.2
+version: 1.0.3
 
 jQuery plugin for communicating with a web service using SOAP.
 
@@ -8,7 +8,7 @@ One function to send the soapRequest that takes a complex object as a parameter
 
 Dependencies
 -----------
-jQuery -- built and tested with v1.9.1, MAY work back to v1.6
+jQuery -- built and tested with v1.9.1 and v1.10.1, MAY work back to v1.6
 SOAPResponse.toJSON() depends on jQuery.xml2json.js
 
 
@@ -56,6 +56,7 @@ options {
 													// 1) will be appended to url if appendMethodToURL=true
 													// 2) will be used for request element name when building xml from JSON 'params' (unless 'elementName' is provided)
 	appendMethodToURL: true,						// method name will be appended to URL defaults to true
+	SOAPAction: 'action',						// manually set the Request Header 'SOAPAction', defaults to the method specified above
 	soap12: false,									// use SOAP 1.2 namespace and HTTP headers - default to false
 
 	//params can be XML DOM, XML String, or JSON
@@ -162,7 +163,11 @@ options {
 			if(config.appendMethodToURL && !!config.method){
 				client.Proxy += config.method;
 			}
-			client.SendRequest(config.method, soapRequest, function (response) {
+			var action = config.method;
+			if (!!config.SOAPAction) {
+				action = config.SOAPAction;
+			}
+			client.SendRequest(action, soapRequest, function (response) {
 				log(response);
 				if (response.status !== 'success') {
 					config.error(response);
@@ -181,14 +186,8 @@ options {
 		this.SOAPServer = "";
 		this.CharSet = "UTF-8";
 		this.Timeout = 0;
-//		this.httpHeaders = {};
-//		this.SetHTTPHeader = function(name, value){
-//			var re = /^[\w]{1,20}$/;
-//			if((typeof(name) === "string") && re.test(name)) {
-//				this.httpHeaders[name] = value;
-//			}
-//		};
 		this.SendRequest = function(action, soapReq, callback) {
+
 			if (!$.isFunction(callback)) {
 				throw new Error("callback function was not specified");
 			}
@@ -198,6 +197,7 @@ options {
 				if (SOAPTool.isSOAP12(content)) {
 					contentType = SOAPTool.SOAP12_TYPE;
 				}
+				var SOAPServer = this.SOAPServer;
 				var xhr = $.ajax({//see http://api.jquery.com/jQuery.ajax/
 					type: "POST",
 					url: this.Proxy,
@@ -207,19 +207,10 @@ options {
 					contentType: contentType + "; charset=" + this.CharSet,
 					beforeSend: function(req) {
 						req.setRequestHeader("Method", "POST");
-						req.setRequestHeader("SOAPServer", this.SOAPServer);
+						req.setRequestHeader("SOAPServer", SOAPServer);
 						if (contentType === SOAPTool.SOAP11_TYPE) {
 							req.setRequestHeader("SOAPAction", action);
 						}
-//						if(!!this.httpHeaders) {
-//							var hh = null, ch = null;
-//							for(hh in this.httpHeaders) {
-//								if (!this.httpHeaders.hasOwnProperty || this.httpHeaders.hasOwnProperty(hh)) {
-//									ch = this.httpHeaders[hh];
-//									req.setRequestHeader(hh, ch.value);
-//								}
-//							}
-//						}
 					}
 				});
 				xhr.always(function(a, status, c){

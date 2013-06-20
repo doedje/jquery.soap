@@ -1,0 +1,61 @@
+<!doctype html>
+
+<html>
+	<head>
+		<title>jQuery.soap demo page</title>
+		<!-- jquery from cdn at (mt) Media Temple -->
+		<script type='text/javascript' src='http://code.jquery.com/jquery-1.10.0.min.js'></script>
+		<script type='text/javascript' src='./../jquery.soap.js'></script>
+		<script type='text/javascript'>
+			$(document).ready(function() {
+				var url = 'fake-soap-response.xml';
+				$('#test').click(function() {
+					$.soap({
+						url: url,
+						method: 'helloWorld',
+						appendMethodToURL: false,
+						params: {
+							test: 'some text here...'
+						},
+						request: function(SOAPRequest) {
+							$('#request').text(SOAPRequest);
+						},
+						success: function(SOAPResponse) {
+							$('#feedbackHeader').html('Success!');
+							$('#feedback').text(SOAPResponse.toString());
+						},
+						error: function(SOAPResponse) {
+							$('#feedbackHeader').html('Error!');
+							$('#feedback').text(SOAPResponse.toString());
+						}
+					});
+				});
+			});
+		</script>
+		<style>
+			pre, code {
+				padding:30px;
+				box-sizing:border-box;
+				-moz-box-sizing:border-box;
+				webkit-box-sizing:border-box;
+				display:block; 
+				white-space: pre-wrap;  
+				white-space: -moz-pre-wrap; 
+				white-space: -pre-wrap; 
+				white-space: -o-pre-wrap; 
+				word-wrap: break-word; 
+				width:100%; overflow-x:auto;
+			}
+		</style>
+	</head>
+	<body>
+		<h1>jQuery.soap demo page</h1>
+		<button id='test'>Start jQuery.soap Test!!</button>
+		<hr />
+		<div id='requestUrl'></div>
+		<pre id='request'></pre>
+		<hr />
+		<h2 id='feedbackHeader'></h2>
+		<pre id='feedback'></pre>
+	</body>
+</html>

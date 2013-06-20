@@ -11,7 +11,7 @@ Thanx to proton17, Diccon Towns and Zach Shelton!
 
 **Let's $.soap()!**
 
-_**NOTE:** I just pulled in Zach Shelton's changes, made some quick changes to the README so this would at least reflect the current version of jquery.soap.js, but it might still contain errors AND be incomplete. I'll will test the script myself and make sure the README is right next week!_
+_**NOTE:** Please see my note on contacting me about issues, bugs, problems or any other questions below before sending me mail...._
 
 Example
 -------
@@ -64,6 +64,7 @@ Options
 													// 1) will be appended to url if appendMethodToURL=true
 													// 2) will be used for request element name when building xml from JSON 'params' (unless 'elementName' is provided)
 	appendMethodToURL: true,						// method name will be appended to URL defaults to true
+	SOAPAction: 'action',						// manually set the Request Header 'SOAPAction', defaults to the method specified above
 	soap12: false,									// use SOAP 1.2 namespace and HTTP headers - default to false
 
 	//params can be XML DOM, XML String, or JSON
@@ -158,6 +159,19 @@ Dependencies
 jQuery -- built and tested with v1.9.1, MAY work back to v1.6  
 SOAPResponse.toJSON() depends on **jQuery.xml2json.js**
 
+Contacting me
+-------------
+Please note I don't mind you contacting me when you run into trouble implementing this plugin. But to keep things nice for me too, just follow these simple guidelines when you do:
+
+- check the issues on https://github.com/doedje/jquery.soap/issues/ to see if someone else already had your problem, if not
+- open an issue on https://github.com/doedje/jquery.soap/issues/ instead of sending me mail. This way others can learn from your case too! Please include the following:
+	- the versions of your jquery and jquery.soap
+	- your $.soap call
+	- the request as sent to the server
+	- the response from the server
+
+**I also have a dayjob with deadlines and I'm a dad of two lovely girls, so please understand I am not always able to reply to you... Thanx for understanding!! =]**
+
 Authors / History
 -----------------
 
@@ -182,6 +196,7 @@ Changelog
 ---------
 Version | Date | Changes
 --- | --- | ---
+1.0.3 | 2013-06-20 | Included a little demo and fixed SOAPServer and SOAPAction request headers
 1.0.2 | 2013-04-02 | Fix to the manifest file, new version# needed to publish to plugins.jquery.com
 1.0.1 | 2013-04-02 | Fix to the manifest file, new version# needed to publish to plugins.jquery.com
 1.0.0 | 2013-04-02 | Minor fix (return for dom2string in reponse)
