@@ -170,7 +170,7 @@ Please note I don't mind you contacting me when you run into trouble implementin
 	- the request as sent to the server
 	- the response from the server
 
-**I also have a dayjob with deadlines and I'm a dad of two lovely girls, so please understand I am not always able to reply to you... Thanx for understanding!! =]**
+_I also have a dayjob with deadlines and I'm a dad of two lovely little girls, so please understand I am not always able to reply to you... **Thanx for understanding!! =]**_
 
 Authors / History
 -----------------
