@@ -1,7 +1,7 @@
 jQuery Soap
 ===========
 **file:** jquery.soap.js  
-**version:** 1.0.5
+**version:** 1.0.6
 
 jQuery plugin for communicating with a web service using SOAP.
 --------------------------------------------------------------
@@ -181,6 +181,10 @@ _I also have a dayjob with deadlines and I'm a dad of two lovely little girls, s
 Authors / History
 -----------------
 
+2013-06 >> fix for SOAPServer and SOAPAction headers, better params object to SOAPObject function  
+Remy Blom == www.hku.nl == remy.blom@kmt.hku.nl  
+Utrecht School of Arts,The Netherlands
+
 2013-03 >> update internal OO structure, enable XML & object input as well as JSON  
 Zach Shelton == zachofalltrades.net  
 https://github.com/zachofalltrades/jquery.soap
@@ -202,6 +206,7 @@ Changelog
 ---------
 Version | Date | Changes
 --- | --- | ---
+1.0.6 | 2013-06-27 | params object to SOAPObject code fixed for complex object/array combi's
 1.0.5 | 2013-06-20 | enableLogging is an option, changed namespaceUrl to namespaceURL (with fallback)
 1.0.4 | 2013-06-20 | Fix to the manifest file, new version# needed to publish to plugins.jquery.com
 1.0.3 | 2013-06-20 | Included a little demo and fixed SOAPServer and SOAPAction request headers

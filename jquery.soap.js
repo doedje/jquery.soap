@@ -1,6 +1,6 @@
 /*==========================
 jquery.soap.js  http://plugins.jquery.com/soap/
-version: 1.0.5
+version: 1.0.6
 
 jQuery plugin for communicating with a web service using SOAP.
 
@@ -14,6 +14,10 @@ SOAPResponse.toJSON() depends on jQuery.xml2json.js
 
 Authors / History
 -----------------
+
+2013-06 >> fix for SOAPServer and SOAPAction headers, better params object to SOAPObject function
+Remy Blom == www.hku.nl == remy.blom@kmt.hku.nl
+Utrecht School of Arts,The Netherlands
 
 2013-03 >> update internal OO structure, enable XML & object input as well as JSON
 Zach Shelton == zachofalltrades.net
