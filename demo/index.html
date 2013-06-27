@@ -47,7 +47,7 @@
 				$('#test').click(function() {
 					var params = $('#params').val();
 					if ($('#paramsType').val() == 'json') {
-						params = eval('params = ' + params);
+						eval('params = ' + params);
 					}
 					$.soap({
 						url: $('#url').val(),
@@ -60,7 +60,7 @@
 						params: params,
 						
 						namespaceQualifier:  $('#namespaceQualifier').val(),
-						namespaceURL: $('#namespaceUrl').val(),
+						namespaceURL: $('#namespaceURL').val(),
 						elementName: $('#elementName').val(),
 
 						enableLogging: $('#enableLogging').prop('checked'),
@@ -119,7 +119,7 @@
 		<fieldset>
 			<label>namespace:</label>
 			<input type='text' id='namespaceQualifier' value='myns' class='no_width' size='5' />
-			<input type='text' id='namespaceUrl' value='urn://service.my.server.com' class='no_width' size='50' />
+			<input type='text' id='namespaceURL' value='urn://service.my.server.com' class='no_width' size='50' />
 		</fieldset>
 		<fieldset>
 			<label>elementName:</label>
@@ -127,7 +127,7 @@
 		</fieldset>
 		<fieldset>
 			<label>enableLogging:</label>
-			<input type='checkbox' id='enableLogging' class='no_width' />
+			<input type='checkbox' id='enableLogging' class='no_width' checked='checked' />
 		</fieldset>
 		<fieldset>
 			<label>&nbsp;</label>

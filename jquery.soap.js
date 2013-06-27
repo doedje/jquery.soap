@@ -103,7 +103,8 @@ options {
 		}
 		$.extend(config, this.globalConfig, options);
 
-		enableLogging = config.enableLogging;
+		enableLogging = config.enableLogging;// function log will only work below this line!
+		log(config);
 
 		var soapRequest; //will be created defined based on type of 'params' received
 
@@ -139,10 +140,10 @@ options {
 			if (!!config.method || !!config.elementName) {
 				var name = !!config.elementName ? config.elementName : config.method;
 				var prefix = !!config.namespaceQualifier ? config.namespaceQualifier+':' : '';//get prefix to show in child elements of complex objects
-				var mySoapObject = SOAPTool.json2soap(new SOAPObject(name), config.params, prefix);
+				var mySoapObject = SOAPTool.json2soap(name, config.params, prefix);
 				// fallback for changing namespaceUrl to namespaceURL
 				if (!config.namespaceURL && !!config.namespaceUrl) {
-					log('namespaceUrl is deprecated, use namespaceURL instead!')
+					warn('jquery.soap: namespaceUrl is deprecated, use namespaceURL instead!');
 					config.namespaceURL = config.namespaceUrl;
 				}
 				if (!!config.namespaceQualifier && !!config.namespaceURL) {
@@ -272,21 +273,26 @@ options {
 				var wrapped = "<soap:Envelope xmlns:soap=\""+ns+"\"><soap:Body>"+xml+"</soap:Body></soap:Envelope>";
 				return wrapped;
 			},
-			json2soap: function (soapObject, params, prefix) {
-				for (var x in params) {
-					if (typeof params[x] == 'object') {
-						// added by DT - check if object is in fact an Array and treat accordingly
-						if(params[x].constructor.toString().indexOf("Array") != -1) {// type is array
-							for(var y in params[x]) {
-								soapObject.addParameter(prefix+x, params[x][y]);
-							}
-						} else {
-							myParam = this.json2soap(new SOAPObject(prefix+x), params[x], prefix);
-							soapObject.appendChild(myParam);
+			json2soap: function (name, params, prefix,parentNode) {
+				var soapObject;
+				var childObject;
+				if (typeof params == 'object') {
+					// added by DT - check if object is in fact an Array and treat accordingly
+					if(params.constructor.toString().indexOf("Array") != -1) {// type is array
+						for(var x in params) {
+							childObject = this.json2soap(prefix+name, params[x], prefix, parentNode);
+							parentNode.appendChild(childObject);
 						}
 					} else {
-						soapObject.addParameter(prefix+x, params[x]);
+						soapObject = new SOAPObject(name);
+						for(var y in params) {
+							childObject = this.json2soap(prefix+y, params[y], prefix, soapObject);
+							soapObject.appendChild(childObject);
+						}
 					}
+				} else {
+					soapObject = new SOAPObject(name);
+					soapObject.val(''+params);
 				}
 				return soapObject;
 			},
@@ -440,6 +446,14 @@ options {
 		if (enableLogging && typeof(console)==='object') {
 			if ($.isFunction(console.log)) {
 				console.log(x);
+			}
+		}
+	}
+
+	function warn(x) {
+		if (typeof(console)==='object') {
+			if ($.isFunction(console.warn)) {
+				console.warn(x);
 			}
 		}
 	}
