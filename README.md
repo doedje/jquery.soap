@@ -1,7 +1,7 @@
 jQuery Soap
 ===========
 **file:** jquery.soap.js  
-**version:** 1.0.6
+**version:** 1.0.7
 
 jQuery plugin for communicating with a web service using SOAP.
 --------------------------------------------------------------
@@ -178,6 +178,26 @@ Please note I don't mind you contacting me when you run into trouble implementin
 
 _I also have a dayjob with deadlines and I'm a dad of two lovely little girls, so please understand I am not always able to reply to you... **Thanx for understanding!! =]**_
 
+License
+-------
+
+jquery.soap is based on jqSOAPClient.beta.js which was licensed under GNU/GPLv3
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+**I may consider permitting uses outside of the license terms on a by-case basis.**
+
 Authors / History
 -----------------
 
@@ -206,6 +226,7 @@ Changelog
 ---------
 Version | Date | Changes
 --- | --- | ---
+1.0.7 | 2013-07-03 | Changed the license to GNU GPLv3, I could never have used the MIT license since jqSOAPClient.beta.js is already licensed GNU GPLv3
 1.0.6 | 2013-06-27 | params object to SOAPObject code fixed for complex object/array combi's
 1.0.5 | 2013-06-20 | enableLogging is an option, changed namespaceUrl to namespaceURL (with fallback)
 1.0.4 | 2013-06-20 | Fix to the manifest file, new version# needed to publish to plugins.jquery.com
