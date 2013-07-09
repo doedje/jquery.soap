@@ -165,6 +165,41 @@ options {
 			//no request
 		}
 
+		// WSS
+		if (!!config.wss && !!config.wss.username && !!config.wss.password) {
+			// create nodes
+			var wssSecurity = new SOAPObject('Soap:Security');
+			var wssUsernameToken = new SOAPObject('wsse:UsernameToken');
+			var wssUsername = new SOAPObject('wsse:Username');
+			var wssPassword = new SOAPObject('wsse:Password');
+			var wssNonce = new SOAPObject('wsse:Nonce');
+			var wsuCreated = new SOAPObject('wsu:Created');
+
+			// give them namespaces and Type attributes
+			wssSecurity.attr('xmlns:wsse', 'http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd');
+			wssSecurity.attr('xmlns:wsu', 'http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd');
+			wssUsername.attr('Type', 'http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd');
+			wssPassword.attr('Type', 'http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordText');
+			wssNonce.attr('Type', 'http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd');
+			wsuCreated.attr('Type', 'http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd');
+
+			// fill the nodes
+			wssUsername.val(config.wss.username);
+			wssPassword.val(config.wss.password);
+			wssNonce.val(config.wss.nonce);
+			wsuCreated.val(config.wss.created);
+
+			// put them in eachother...
+			wssUsernameToken.appendChild(wssUsername);
+			wssUsernameToken.appendChild(wssPassword);
+			wssUsernameToken.appendChild(wssNonce);
+			wssUsernameToken.appendChild(wsuCreated);
+			wssSecurity.appendChild(wssUsernameToken);
+
+			// add to soapRequest
+			soapRequest.addHeader(wssSecurity);
+		}
+
 		if (!!soapRequest && $.isFunction(config.request)) {
 			config.request(soapRequest);
 		}

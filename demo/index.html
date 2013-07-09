@@ -11,16 +11,24 @@
 			h1, h2 {
 				padding: 15px 25px;
 			}
+			form {
+				width: 50%;
+				float: left;
+			}
+			div#feedbackpanel {
+				width: 49%;
+				float: right;
+			}
 			fieldset {
 				border: 0;
 				padding: 8px 15px 8px 25px;
 			}
 			label {
 				display: inline-block;
-				width: 25%;
+				width: 35%;
 			}
 			input, textarea, select, button {
-				width: 70%;
+				width: 60%;
 			}
 			input.no_width {
 				width: auto;
@@ -36,7 +44,11 @@
 				white-space: -pre-wrap; 
 				white-space: -o-pre-wrap; 
 				word-wrap: break-word; 
-				width:100%; overflow-x:auto;
+				width:100%;
+				overflow-x:auto;
+			}
+			footer {
+				clear: both;
 			}
 		</style>
 		<!-- jquery from cdn at (mt) Media Temple -->
@@ -44,10 +56,22 @@
 		<script type='text/javascript' src='./../jquery.soap.js'></script>
 		<script type='text/javascript'>
 			$(document).ready(function() {
-				$('#test').click(function() {
+				$('#test').click(function(e) {
+					// stop the form to be submitted...
+					e.preventDefault();
 					var params = $('#params').val();
 					if ($('#paramsType').val() == 'json') {
-						eval('params = ' + params);
+						// eval('params = ' + params);
+						params = eval("("+params+")");
+					}
+					var wss = {};
+					if ($('#enableWSS').prop('checked')) {
+						wss = {
+							username: $('#wssUsername').val(),
+							password: $('#wssPassword').val(),
+							nonce: 'aepfhvaepifha3p4iruaq349fu34r9q',
+							created: new Date().getTime()
+						};
 					}
 					$.soap({
 						url: $('#url').val(),
@@ -58,6 +82,7 @@
 						soap12: $('#soap12').prop('checked'),
 
 						params: params,
+						wss: wss,
 						
 						namespaceQualifier:  $('#namespaceQualifier').val(),
 						namespaceURL: $('#namespaceURL').val(),
@@ -83,62 +108,81 @@
 	</head>
 	<body>
 		<h1>jQuery.soap demo page</h1>
-		More info on this plugin at <a href='https://github.com/doedje/jquery.soap'>github.com/doedje/jquery.soap</a>
 		<hr />
-		<fieldset>
-			<label>url:</label>
-			<input type='text' id='url' value='fake-soap-response.xml' size='70' />
-		</fieldset>
-		<fieldset>
-			<label>method:</label>
-			<input type='text' id='method' value='helloWorld' />
-		</fieldset>
-		<fieldset>
-			<label>appendMethodToURL:</label>
-			<input type='checkbox' id='appendMethodToURL' class='no_width' />
-		</fieldset>
-		<fieldset>
-			<label>SOAPAction:</label>
-			<input type='text' id='SOAPAction' value='' />
-		</fieldset>
-		<fieldset>
-			<label>soap12:</label>
-			<input type='checkbox' id='soap12' class='no_width' />
-		</fieldset>
-		<fieldset>
-			<label>params:</label> 
-			<select id='paramsType'>
-				<option value='xml'>XML String</option>
-				<option value='json'>JSON</option>
-			</select>
-		</fieldset>
-		<fieldset>
-			<label>XML String:<br />&lt;test&gt;some text here...&lt;/test&gt;<br /><br />JSON example:<br />{ test: 'some text here...' }</label>
-			<textarea id='params' rows='10' cols='50'><test>some text here...</test></textarea>
-		</fieldset>
-		<fieldset>
-			<label>namespace:</label>
-			<input type='text' id='namespaceQualifier' value='myns' class='no_width' size='5' />
-			<input type='text' id='namespaceURL' value='urn://service.my.server.com' class='no_width' size='50' />
-		</fieldset>
-		<fieldset>
-			<label>elementName:</label>
-			<input type='text' id='elementName' value='' />
-		</fieldset>
-		<fieldset>
-			<label>enableLogging:</label>
-			<input type='checkbox' id='enableLogging' class='no_width' checked='checked' />
-		</fieldset>
-		<fieldset>
-			<label>&nbsp;</label>
-			<button id='test'>Start jQuery.soap Test!!</button>
-		</fieldset>
-		<hr />
-		<div id='requestUrl'></div>
-		<pre id='request'></pre>
-		
-		<hr />
-		<h2 id='feedbackHeader'></h2>
-		<pre id='feedback'></pre>
+		<form>
+			<fieldset>
+				<label>url:</label>
+				<input type='text' id='url' value='fake-soap-response.xml' size='70' />
+			</fieldset>
+			<fieldset>
+				<label>method:</label>
+				<input type='text' id='method' value='helloWorld' />
+			</fieldset>
+			<fieldset>
+				<label>appendMethodToURL:</label>
+				<input type='checkbox' id='appendMethodToURL' class='no_width' />
+			</fieldset>
+			<fieldset>
+				<label>SOAPAction:</label>
+				<input type='text' id='SOAPAction' value='' />
+			</fieldset>
+			<fieldset>
+				<label>soap12:</label>
+				<input type='checkbox' id='soap12' class='no_width' />
+			</fieldset>
+			<fieldset>
+				<label>params:</label> 
+				<select id='paramsType'>
+					<option value='xml'>XML String</option>
+					<option value='json'>JSON</option>
+				</select>
+			</fieldset>
+			<fieldset>
+				<label>XML String:<br />&lt;test&gt;some text here...&lt;/test&gt;<br /><br />JSON example:<br />{ test: 'some text here...' }</label>
+				<textarea id='params' rows='10' cols='50'><test>some text here...</test></textarea>
+			</fieldset>
+			<fieldset>
+				<label>namespace:</label>
+				<input type='text' id='namespaceQualifier' value='myns' class='no_width' size='5' />
+				<input type='text' id='namespaceURL' value='urn://service.my.server.com' class='no_width' size='30' />
+			</fieldset>
+			<fieldset>
+				<label>elementName:</label>
+				<input type='text' id='elementName' value='' />
+			</fieldset>
+			<fieldset>
+				<label>enableLogging:</label>
+				<input type='checkbox' id='enableLogging' class='no_width' checked='checked' />
+			</fieldset>
+			<h2>WSS</h2>
+			<fieldset>
+				<label>enableWSS:</label>
+				<input type='checkbox' id='enableWSS' class='no_width' />
+			</fieldset>
+			<fieldset>
+				<label>username:</label>
+				<input type='text' id='wssUsername' value='' />
+			</fieldset>
+			<fieldset>
+				<label>password:</label>
+				<input type='text' id='wssPassword' value='' />
+			</fieldset>
+			<fieldset>
+				<label>&nbsp;</label>
+				<button id='test'>Start jQuery.soap Test!!</button>
+			</fieldset>
+		</form>
+		<div id='feedbackpanel'>
+			<div id='requestUrl'></div>
+			<pre id='request'></pre>
+			
+			<hr />
+			<h2 id='feedbackHeader'></h2>
+			<pre id='feedback'></pre>
+		</div>
+		<footer>
+			<hr />
+			More info on this plugin at <a href='https://github.com/doedje/jquery.soap'>github.com/doedje/jquery.soap</a>
+		</footer>
 	</body>
 </html>
