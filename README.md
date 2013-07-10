@@ -148,10 +148,6 @@ $.soap({
 
 _**NOTE**: the **param** is used as a key. If no param is specified in the options passed to **$.soap** all options are stored in the globalConfig, there won't be a soapRequest. When a method is specified the globalConfig will be used and all options passed to **$.soap** will overrule those in globalConfig, but keep in mind, they won't be overwritten!_
 
-Updating from 0.9.x
--------------------
-To update to 1.0.0 is not quite a drop-in replacement. The return value from the $.soap() will be a SOAPResponse object. This object has toXML, toJSON, and toString methods -- meaning that the 'returnJSON' input parameter is no longer required (or used). It is also now possible to use XML (dom), xml (string), or JSON as the 'params' element when the options are passed in.
-
 Same Origin Policy
 ------------------
 You won't be able to have a page on http://www.example.com do an ajax call ($.soap is using $.ajax internally) to http://www.anotherdomain.com due to Same Origin Policy. To overcome this you should either install a proxy on http://www.example.com or use CORS. Keep in mind that it also not allowed to go from http://www.example.com to http://soap.example.com or even to http://www.example.com:8080

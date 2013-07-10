@@ -268,13 +268,19 @@ options {
 				});
 				xhr.always(function(a, status, c){
 					var response;
+					var a_type = 'data';
+					var c_type = 'jqXHR';
 					log("status: " + $.type(status) + " '" + status + "'");
-					log("a:" + $.type(a) + "  isXMLDoc(a):" + $.isXMLDoc(a) + "  a.responseText:" + $.type(a.responseText) + "  isXMLDoc(a.responseText):" + $.isXMLDoc(a.responseText) + "  a.responseXML:" + $.type(a.responseXML) + "  isXMLDoc(a.responseXML):" + $.isXMLDoc(a.responseXML));
-					log("c:" + $.type(c) + "  isXMLDoc(c):" + $.isXMLDoc(c) + "  c.responseText:" + $.type(c.responseText) + "  isXMLDoc(c.responseText):" + $.isXMLDoc(c.responseText) + "  c.responseXML:" + $.type(c.responseXML) + "  isXMLDoc(c.responseXML):" + $.isXMLDoc(c.responseXML));
-					log("--a--");
+					if (status !== 'success') {
+						a_type = 'jqXHR';
+						c_type = 'errorThrown';
+					}
+					log("-- a: " + a_type + " --");
 					log(a);
-					log("--c--");
+					log("-- c: " + c_type + " --");
 					log(c);
+					log("a: " + a_type + ": " + $.type(a) + "  isXMLDoc(a):" + $.isXMLDoc(a) + "  a.responseText:" + $.type(a.responseText) + "  isXMLDoc(a.responseText):" + $.isXMLDoc(a.responseText) + "  a.responseXML:" + $.type(a.responseXML) + "  isXMLDoc(a.responseXML):" + $.isXMLDoc(a.responseXML));
+					log("c: " + c_type + ": " + $.type(c) + "  isXMLDoc(c):" + $.isXMLDoc(c) + "  c.responseText:" + $.type(c.responseText) + "  isXMLDoc(c.responseText):" + $.isXMLDoc(c.responseText) + "  c.responseXML:" + $.type(c.responseXML) + "  isXMLDoc(c.responseXML):" + $.isXMLDoc(c.responseXML));
 					if ($.isXMLDoc(a)) {
 						response = new SOAPResponse(status, c);
 						response.content = SOAPTool.dom2string(a);

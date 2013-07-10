@@ -61,7 +61,6 @@
 					e.preventDefault();
 					var params = $('#params').val();
 					if ($('#paramsType').val() == 'json') {
-						// eval('params = ' + params);
 						params = eval("("+params+")");
 					}
 					var wss = {};
