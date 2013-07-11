@@ -1,6 +1,6 @@
 /*==========================
 jquery.soap.js  http://plugins.jquery.com/soap/ or https://github.com/doedje/jquery.soap
-version: 1.0.7
+version: 1.1.0
 
 jQuery plugin for communicating with a web service using SOAP.
 
@@ -77,6 +77,14 @@ options {
 	namespaceQualifier: 'myns',						// used as namespace prefix for all elements in request (optional)
 	namespaceURL: 'urn://service.my.server.com',	// namespace url added to parent request element (optional)
 	elementName: 'requestElementName',				// override 'method' as outer element (optional)
+
+	// WS-Security
+	wss: {
+		username: 'user',
+		password: 'pass',
+		nonce: 'w08370jf7340qephufqp3r4',
+		created: new Date().getTime()
+	},
 
 	//callback functions
 	request: function (SOAPRequest)  {},			// callback function - request object is passed back prior to ajax call (optional)

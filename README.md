@@ -1,7 +1,7 @@
 jQuery Soap
 ===========
 **file:** jquery.soap.js  
-**version:** 1.0.7
+**version:** 1.1.0
 
 jQuery plugin for communicating with a web service using SOAP.
 --------------------------------------------------------------
@@ -79,6 +79,14 @@ Options
 	namespaceURL: 'urn://service.my.server.com',	// namespace url added to parent request element (optional)
 	elementName: 'requestElementName',				// override 'method' as outer element (optional)
 
+	// WS-Security
+	wss: {
+		username: 'user',
+		password: 'pass',
+		nonce: 'w08370jf7340qephufqp3r4',
+		created: new Date().getTime()
+	},
+
 	//callback functions
 	request: function (SOAPRequest)  {},			// callback function - request object is passed back prior to ajax call (optional)
 	success: function (SOAPResponse) {},			// callback function to handle successful return (required)
@@ -147,6 +155,23 @@ $.soap({
 ```
 
 _**NOTE**: the **param** is used as a key. If no param is specified in the options passed to **$.soap** all options are stored in the globalConfig, there won't be a soapRequest. When a method is specified the globalConfig will be used and all options passed to **$.soap** will overrule those in globalConfig, but keep in mind, they won't be overwritten!_
+
+WS-Security
+-----------
+As from version 1.1.0 jQuery.soap supports a very basic form of WSS. This feature was requested (issue #9) and rather easy to implement, but I don't have a way to test it properly. So if you run into problems, please let me know (see below)
+```
+$.soap({
+	// other parameters..
+
+	// WS-Security
+	wss: {
+		username: 'user',
+		password: 'pass',
+		nonce: 'w08370jf7340qephufqp3r4',
+		created: new Date().getTime()
+	}
+});
+```
 
 Same Origin Policy
 ------------------
@@ -222,6 +247,7 @@ Changelog
 ---------
 Version | Date | Changes
 --- | --- | ---
+1.1.0 | 2013-07-11 | Added WSS functionality
 1.0.7 | 2013-07-03 | Changed the license to GNU GPLv3, I could never have used the MIT license since jqSOAPClient.beta.js is already licensed GNU GPLv3
 1.0.6 | 2013-06-27 | params object to SOAPObject code fixed for complex object/array combi's
 1.0.5 | 2013-06-20 | enableLogging is an option, changed namespaceUrl to namespaceURL (with fallback)
