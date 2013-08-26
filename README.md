@@ -67,7 +67,7 @@ Options
 	soap12: false,									// use SOAP 1.2 namespace and HTTP headers - default to false
 
 	//params can be XML DOM, XML String, or JSON
-https://github.com/doedje/jquery.soap/edit/master/README.md#	params: domXmlObject,							// XML DOM object
+	params: domXmlObject,							// XML DOM object
 	params: xmlString,								// XML String for request (alternative to internal build of XML from JSON 'params')
 	params: {										// JSON structure used to build request XML - SHOULD be coupled with ('namespaceQualifier' AND 'namespaceURL') AND ('method' OR 'elementName')
 		name: 'Remy Blom',

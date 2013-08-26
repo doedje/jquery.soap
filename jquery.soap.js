@@ -76,7 +76,7 @@ options {
 	//these options ONLY apply when the request XML is going to be built from JSON 'params'
 	namespaceQualifier: 'myns',						// used as namespace prefix for all elements in request (optional)
 	namespaceURL: 'urn://service.my.server.com',	// namespace url added to parent request element (optional)
-	noPrefix: false,							// set to true if you don't want the namespaceQualifier to be the prefix for the nodes in params. defaults to false (optional)
+	noPrefix: false,								// set to true if you don't want the namespaceQualifier to be the prefix for the nodes in params. defaults to false (optional)
 	elementName: 'requestElementName',				// override 'method' as outer element (optional)
 
 	// WS-Security
