@@ -85,6 +85,7 @@
 						
 						namespaceQualifier:  $('#namespaceQualifier').val(),
 						namespaceURL: $('#namespaceURL').val(),
+						noPrefix: $('#noPrefix').prop('checked'),
 						elementName: $('#elementName').val(),
 
 						enableLogging: $('#enableLogging').prop('checked'),
@@ -145,6 +146,10 @@
 				<label>namespace:</label>
 				<input type='text' id='namespaceQualifier' value='myns' class='no_width' size='5' />
 				<input type='text' id='namespaceURL' value='urn://service.my.server.com' class='no_width' size='30' />
+			</fieldset>
+			<fieldset>
+				<label>noPrefix:</label>
+				<input type='checkbox' id='noPrefix' class='no_width' />
 			</fieldset>
 			<fieldset>
 				<label>elementName:</label>

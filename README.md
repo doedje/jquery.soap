@@ -1,7 +1,7 @@
 jQuery Soap
 ===========
 **file:** jquery.soap.js  
-**version:** 1.1.0
+**version:** 1.2.0
 
 jQuery plugin for communicating with a web service using SOAP.
 --------------------------------------------------------------
@@ -77,6 +77,7 @@ Options
 	//these options ONLY apply when the request XML is going to be built from JSON 'params'
 	namespaceQualifier: 'myns',						// used as namespace prefix for all elements in request (optional)
 	namespaceURL: 'urn://service.my.server.com',	// namespace url added to parent request element (optional)
+	noPrefix: false,							// set to true if you don't want the namespaceQualifier to be the prefix for the nodes in params. defaults to false (optional)
 	elementName: 'requestElementName',				// override 'method' as outer element (optional)
 
 	// WS-Security
@@ -250,8 +251,11 @@ http://archive.plugins.jquery.com/project/jqSOAPClient
 
 Changelog
 ---------
+Version numbers are [semver](http://semver.org/) compatible from version 1.0.0 and up.
+
 Version | Date | Changes
 --- | --- | ---
+1.2.0 | 2013-08-26 | added noPrefix option and fixed bug of double namespace prefixes for nested objects (#13, #15)
 1.1.0 | 2013-07-11 | Added WSS functionality
 1.0.7 | 2013-07-03 | Changed the license to GNU GPLv3, I could never have used the MIT license since jqSOAPClient.beta.js is already licensed GNU GPLv3
 1.0.6 | 2013-06-27 | params object to SOAPObject code fixed for complex object/array combi's

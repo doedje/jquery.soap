@@ -1,6 +1,6 @@
 /*==========================
 jquery.soap.js  http://plugins.jquery.com/soap/ or https://github.com/doedje/jquery.soap
-version: 1.1.0
+version: 1.2.0
 
 jQuery plugin for communicating with a web service using SOAP.
 
@@ -76,6 +76,7 @@ options {
 	//these options ONLY apply when the request XML is going to be built from JSON 'params'
 	namespaceQualifier: 'myns',						// used as namespace prefix for all elements in request (optional)
 	namespaceURL: 'urn://service.my.server.com',	// namespace url added to parent request element (optional)
+	noPrefix: false,							// set to true if you don't want the namespaceQualifier to be the prefix for the nodes in params. defaults to false (optional)
 	elementName: 'requestElementName',				// override 'method' as outer element (optional)
 
 	// WS-Security
@@ -92,7 +93,7 @@ options {
 	error:   function (SOAPResponse) {},				// callback function to handle fault return (required)
 
 	// debugging
-	enableLogging: false						// to enable the local log function set to true, defaults to false (optional
+	enableLogging: false						// to enable the local log function set to true, defaults to false (optional)
 }
 
 ======================*/
@@ -105,6 +106,7 @@ options {
 		if (!this.globalConfig) { //this setup once
 			this.globalConfig = {
 				appendMethodToURL: true,
+				noPrefix: false,
 				soap12: false,
 				enableLogging: false
 			};
@@ -153,7 +155,9 @@ options {
 			//build from JSON
 			if (!!config.method || !!config.elementName) {
 				var name = !!config.elementName ? config.elementName : config.method;
-				var prefix = !!config.namespaceQualifier ? config.namespaceQualifier+':' : '';//get prefix to show in child elements of complex objects
+				//get prefix to show in child elements of complex objects
+				//unless the config.noPrefix is set to true
+				var prefix = (!!config.namespaceQualifier && !config.noPrefix) ? config.namespaceQualifier+':' : '';
 				var mySoapObject = SOAPTool.json2soap(name, config.params, prefix);
 				// fallback for changing namespaceUrl to namespaceURL
 				if (!config.namespaceURL && !!config.namespaceUrl) {
@@ -328,26 +332,26 @@ options {
 				var wrapped = "<soap:Envelope xmlns:soap=\""+ns+"\"><soap:Body>"+xml+"</soap:Body></soap:Envelope>";
 				return wrapped;
 			},
-			json2soap: function (name, params, prefix,parentNode) {
+			json2soap: function (name, params, prefix, parentNode) {
 				var soapObject;
 				var childObject;
 				if (typeof params == 'object') {
 					// added by DT - check if object is in fact an Array and treat accordingly
 					if(params.constructor.toString().indexOf("Array") != -1) {// type is array
 						for(var x in params) {
-							childObject = this.json2soap(prefix+name, params[x], prefix, parentNode);
+							childObject = this.json2soap(name, params[x], prefix, parentNode);
 							parentNode.appendChild(childObject);
 						}
 					} else {
-						soapObject = new SOAPObject(name);
+						soapObject = new SOAPObject(prefix+name);
 						for(var y in params) {
-							childObject = this.json2soap(prefix+y, params[y], prefix, soapObject);
+							childObject = this.json2soap(y, params[y], prefix, soapObject);
 							soapObject.appendChild(childObject);
 						}
 					}
 				} else {
-					soapObject = new SOAPObject(name);
-					soapObject.val(''+params);
+					soapObject = new SOAPObject(prefix+name);
+					soapObject.val(''+params); // the ''+ is added to fix issues with falsey values.
 				}
 				return soapObject;
 			},
@@ -366,18 +370,15 @@ options {
 				var isNSObj=false;
 				try {
 					if(!!soapObj&&typeof(soapObj)==="object"&&soapObj.typeOf==="SOAPObject") {
+						out.push("<"+soapObj.name);
 						//Namespaces
 						if(!!soapObj.ns) {
 							if(typeof(soapObj.ns)==="object") {
 								isNSObj=true;
-								out.push("<"+soapObj.ns.name+":"+soapObj.name);
 								out.push(" xmlns:"+soapObj.ns.name+"=\""+soapObj.ns.uri+"\"");
 							} else  {
-								out.push("<"+soapObj.name);
 								out.push(" xmlns=\""+soapObj.ns+"\"");
 							}
-						} else {
-							out.push("<"+soapObj.name);
 						}
 						//Node Attributes
 						if(soapObj.attributes.length > 0) {
@@ -404,8 +405,7 @@ options {
 						//Node Value
 						if(!!soapObj.value){out.push(soapObj.value);}
 						//Close Tag
-						if(isNSObj){out.push("</"+soapObj.ns.name+":"+soapObj.name+">");}
-						else {out.push("</"+soapObj.name+">");}
+						out.push("</"+soapObj.name+">");
 						return out.join("");
 					}
 				} catch(e){
