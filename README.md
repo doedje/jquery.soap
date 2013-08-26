@@ -177,9 +177,14 @@ Same Origin Policy
 ------------------
 You won't be able to have a page on http://www.example.com do an ajax call ($.soap is using $.ajax internally) to http://www.anotherdomain.com due to Same Origin Policy. To overcome this you should either install a proxy on http://www.example.com or use CORS. Keep in mind that it also not allowed to go from http://www.example.com to http://soap.example.com or even to http://www.example.com:8080
 
+Some links on **circumventing same origin policy**
+
+http://stackoverflow.com/questions/3076414/ways-to-circumvent-the-same-origin-policy  
+http://usamadar.com/2012/06/24/getting-around-browsers-same-origin-policy-sop-with-proxies-script-injection-jsonp-and-cors/  
+
 Demo page
 ---------
-I included a simple demo page that you can use for testing. It allows you to play around with all the options for $.soap. Please take note that to make it work with your SOAP services you are bound by the same origin policy.
+I included a simple demo page that you can use for testing. It allows you to play around with all the options for $.soap. Please take note that to make it work with your SOAP services you are agaijn bound by the **same origin policy**.
 
 Dependencies
 ------------
