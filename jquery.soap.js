@@ -180,7 +180,7 @@ options {
 		// WSS
 		if (!!config.wss && !!config.wss.username && !!config.wss.password) {
 			// create nodes
-			var wssSecurity = new SOAPObject('Soap:Security');
+			var wssSecurity = new SOAPObject('wsse:Security');
 			var wssUsernameToken = new SOAPObject('wsse:UsernameToken');
 			var wssUsername = new SOAPObject('wsse:Username');
 			var wssPassword = new SOAPObject('wsse:Password');
