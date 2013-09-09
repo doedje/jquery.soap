@@ -1,7 +1,7 @@
 jQuery Soap
 ===========
 **file:** jquery.soap.js  
-**version:** 1.2.0
+**version:** 1.2.1
 
 jQuery plugin for communicating with a web service using SOAP.
 --------------------------------------------------------------
@@ -255,8 +255,9 @@ Version numbers are [semver](http://semver.org/) compatible from version 1.0.0 a
 
 Version | Date | Changes
 --- | --- | ---
+1.2.1 | 2013-09-09 | fixed WSS namespace: from Soap:Security to wsse:Security (pull request #17)
 1.2.0 | 2013-08-26 | added noPrefix option and fixed bug of double namespace prefixes for nested objects (#13, #15)
-1.1.0 | 2013-07-11 | Added WSS functionality
+1.1.0 | 2013-07-11 | Added WSS functionality (issue #9)
 1.0.7 | 2013-07-03 | Changed the license to GNU GPLv3, I could never have used the MIT license since jqSOAPClient.beta.js is already licensed GNU GPLv3
 1.0.6 | 2013-06-27 | params object to SOAPObject code fixed for complex object/array combi's
 1.0.5 | 2013-06-20 | enableLogging is an option, changed namespaceUrl to namespaceURL (with fallback)
