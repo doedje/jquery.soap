@@ -194,7 +194,7 @@ SOAPResponse.toJSON() depends on **jQuery.xml2json.js**
 
 Contacting me
 -------------
-Please note I don't mind you contacting me when you run into trouble implementing this plugin. But to keep things nice for me too, just follow these simple guidelines when you do:
+Please note I don't mind you contacting me when you run into trouble implementing this plugin, ut to keep things nice for me too, just follow these simple guidelines when you do:
 
 - First make sure you're not getting an error because of **same origin policy**!
 - Check the [issues section](https://github.com/doedje/jquery.soap/issues/) and the [closed issues section](https://github.com/doedje/jquery.soap/issues?page=1&state=closed) to see if someone else already had your problem, if not
@@ -208,7 +208,7 @@ Please note I don't mind you contacting me when you run into trouble implementin
 
 _I also have a dayjob with deadlines and I'm a dad of two lovely little girls, so please understand I am not always able to reply to you asap..._
 
-**Thanx for understanding!! =]**_
+_**Thanx for understanding!! =]**
 
 License
 -------
