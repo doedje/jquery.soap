@@ -206,7 +206,7 @@ Please note I don't mind you contacting me when you run into trouble implementin
 - Being polite helps, especially when you want me to help you with your problems. So please take the time to formulate something like a question. Opening an issue with just some code sniplets and error messages will be regarded as **unpolite** and will receive a ditto reply. 
 (I just don't like receiving stuff like [issue #18](https://github.com/doedje/jquery.soap/issues/18) on a sunday)
 
-_I also have a dayjob with deadlines and I'm a dad of two lovely little girls, so please understand I am not always able to reply to you asap... 
+_I also have a dayjob with deadlines and I'm a dad of two lovely little girls, so please understand I am not always able to reply to you asap..._
 
 **Thanx for understanding!! =]**_
 
