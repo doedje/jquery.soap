@@ -100,24 +100,23 @@ options {
 
 (function($) {
 	var enableLogging; // set by config/options
+	var globalConfig = { //this setup once
+		headers: {},
+		appendMethodToURL: true,
+		noPrefix: false,
+		soap12: false,
+		enableLogging: false
+	};
 
 	$.soap = function(options) {
 		var config = {};
-		if (!this.globalConfig) { //this setup once
-			this.globalConfig = {
-				appendMethodToURL: true,
-				noPrefix: false,
-				soap12: false,
-				enableLogging: false
-			};
-		}
 
 		//a configuration call will not have 'params' specified
 		if (options && !options.params) {
-			$.extend(this.globalConfig, options);//update global config
+			$.extend(globalConfig, options);//update global config
 			return;
 		}
-		$.extend(config, this.globalConfig, options);
+		$.extend(config, globalConfig, options);
 
 		enableLogging = config.enableLogging;// function log will only work below this line!
 		log(config);
@@ -248,7 +247,6 @@ options {
 		this.typeOf="SOAPClient";
 		this._tId = null;
 		this.Proxy = "";
-		this.SOAPServer = "";
 		this.CharSet = "UTF-8";
 		this.Timeout = 0;
 		this.SendRequest = function(action, soapReq, callback) {
@@ -262,7 +260,6 @@ options {
 				if (SOAPTool.isSOAP12(content)) {
 					contentType = SOAPTool.SOAP12_TYPE;
 				}
-				var SOAPServer = this.SOAPServer;
 				var xhr = $.ajax({//see http://api.jquery.com/jQuery.ajax/
 					type: "POST",
 					url: this.Proxy,
@@ -271,8 +268,6 @@ options {
 					data: content,
 					contentType: contentType + "; charset=" + this.CharSet,
 					beforeSend: function(req) {
-						req.setRequestHeader("Method", "POST");
-						req.setRequestHeader("SOAPServer", SOAPServer);
 						if (contentType === SOAPTool.SOAP11_TYPE) {
 							req.setRequestHeader("SOAPAction", action);
 						}
