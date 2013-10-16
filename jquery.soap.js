@@ -119,6 +119,7 @@ options {
 		$.extend(config, globalConfig, options);
 
 		enableLogging = config.enableLogging;// function log will only work below this line!
+		SOAPTool.settings = !!config.soap12 ? SOAP12 : SOAP11;
 		log(config);
 
 		var soapRequest; //will be created defined based on type of 'params' received
@@ -131,7 +132,7 @@ options {
 				if (SOAPTool.isWrappedWithEnvelope(config.params)) {
 					xml = config.params;
 				} else {
-					xml = SOAPTool.wrapWithEnvelope(config.params, config.soap12);
+					xml = SOAPTool.wrapWithEnvelope(config.params);
 				}
 				soapRequest = new SOAPRequest();
 				//override the toString method of SOAPRequest
@@ -167,9 +168,6 @@ options {
 					mySoapObject.ns = SOAPTool.Namespace(config.namespaceQualifier, config.namespaceURL);
 				}
 				soapRequest = new SOAPRequest(mySoapObject);
-				if (config.soap12) {
-					soapRequest.soapNamespace = SOAPTool.SOAP12_NAMESPACE;
-				}
 			}
 
 		} else {
@@ -256,10 +254,7 @@ options {
 			}
 			if(!!this.Proxy) {
 				var content = soapReq.toString();
-				var contentType = SOAPTool.SOAP11_TYPE;
-				if (SOAPTool.isSOAP12(content)) {
-					contentType = SOAPTool.SOAP12_TYPE;
-				}
+				var contentType = SOAPTool.settings.type;
 				var xhr = $.ajax({//see http://api.jquery.com/jQuery.ajax/
 					type: "POST",
 					url: this.Proxy,
@@ -268,7 +263,7 @@ options {
 					data: content,
 					contentType: contentType + "; charset=" + this.CharSet,
 					beforeSend: function(req) {
-						if (contentType === SOAPTool.SOAP11_TYPE) {
+						if (contentType === SOAP11.type) {
 							req.setRequestHeader("SOAPAction", action);
 						}
 					}
@@ -306,26 +301,34 @@ options {
 		};
 	};
 
+	var SOAP11 = {
+		type: "text/xml",
+		prefix: "SOAP-ENV",
+		namespace: "http://schemas.xmlsoap.org/soap/envelope/"
+	},
+	SOAP12 = {
+		type: "application/soap+xml",
+		prefix: "env",
+		namespace: "http://www.w3.org/2003/05/soap-envelope"
+	};
+
 	//Singleton SOAP Tool
 	var SOAPTool=(function(){
 		var _self = {
-			SOAP11_TYPE: "text/xml",
-			SOAP12_TYPE: "application/soap+xml",
-			SOAP11_NAMESPACE: "http://schemas.xmlsoap.org/soap/envelope/",
-			SOAP12_NAMESPACE: "http://www.w3.org/2003/05/soap-envelope",
+			settings: SOAP11,
 			isSOAP11: function(xml) {
-				return (xml.indexOf(SOAPTool.SOAP11_NAMESPACE) !== -1);
+				return (xml.indexOf(SOAP11.namespace) !== -1);
 			},
 			isSOAP12: function(xml) {
-				return (xml.indexOf(SOAPTool.SOAP12_NAMESPACE) !== -1);
+				return (xml.indexOf(SOAP12.namespace) !== -1);
 			},
 			isWrappedWithEnvelope: function(xml) {
 				return (this.isSOAP11(xml) || this.isSOAP12(xml));
 			},
-			wrapWithEnvelope: function(xml, isSoap12) {
-				var ns = (isSoap12) ? this.SOAP12_NAMESPACE : this.SOAP11_NAMESPACE ;
-				var wrapped = "<soap:Envelope xmlns:soap=\""+ns+"\"><soap:Body>"+xml+"</soap:Body></soap:Envelope>";
-				return wrapped;
+			wrapWithEnvelope: function(xml) {
+				var prefix = this.settings.prefix,
+					namespace = this.settings.namespace;
+				return "<" + prefix + ":Envelope xmlns:" + prefix + "=\"" + namespace + "\"><" + prefix + ":Body>" + xml + "</" + prefix + ":Body></" + prefix + ":Envelope>";
 			},
 			json2soap: function (name, params, prefix, parentNode) {
 				var soapObject;
@@ -414,7 +417,8 @@ options {
 	//Soap request - this is what being sent using SOAPClient.SendRequest
 	var SOAPRequest=function(soapObj) {
 		this.typeOf="SOAPRequest";
-		this.soapNamespace = SOAPTool.SOAP11_NAMESPACE;
+		var soapNamespace = SOAPTool.settings.namespace;
+		var soapPrefix = SOAPTool.settings.namespace;
 		var nss=[];
 		var headers=[];
 		var bodies=(!!soapObj)?[soapObj]:[];
@@ -422,8 +426,8 @@ options {
 		this.addHeader=function(soapObj){headers.push(soapObj);};
 		this.addBody=function(soapObj){bodies.push(soapObj);};
 		this.toString=function() {
-			var soapEnv = new SOAPObject("soap:Envelope");
-			soapEnv.attr("xmlns:soap",this.soapNamespace);
+			var soapEnv = new SOAPObject(soapPrefix + ":Envelope");
+			soapEnv.attr("xmlns:" + soapPrefix, soapNamespace);
 			//Add Namespace(s)
 			if(nss.length>0){
 				var tNs, tNo;
