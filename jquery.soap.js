@@ -64,6 +64,11 @@ options {
 	appendMethodToURL: true,						// method name will be appended to URL defaults to true
 	SOAPAction: 'action',							// manually set the Request Header 'SOAPAction', defaults to the method specified above (optional)
 	soap12: false,									// use SOAP 1.2 namespace and HTTP headers - default to false
+	soapConfig: {									// configuration  for soap envelop node element
+		type: string,
+		prefix: string,
+		namespace: string
+	},
 
 	//params can be XML DOM, XML String, or JSON
 	params: domXmlObject,							// XML DOM object
@@ -102,6 +107,7 @@ options {
 	var enableLogging; // set by config/options
 	var globalConfig = { //this setup once
 		headers: {},
+		soapConfig: {},
 		appendMethodToURL: true,
 		noPrefix: false,
 		soap12: false,
@@ -120,6 +126,11 @@ options {
 
 		enableLogging = config.enableLogging;// function log will only work below this line!
 		SOAPTool.settings = !!config.soap12 ? SOAP12 : SOAP11;
+
+		$.extend(SOAPTool.settings, globalConfig.soapConfig);
+		if ($.type(options.soapConfig) === 'object') {
+			$.extend(SOAPTool.settings, options.soapConfig);
+		}
 		log(config);
 
 		var soapRequest; //will be created defined based on type of 'params' received
