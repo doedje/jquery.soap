@@ -70,19 +70,9 @@ options {
 		namespace: string
 	},
 
-	//params can be XML DOM, XML String, or JSON
+	//params can be XML DOM, XML String
 	params: domXmlObject,							// XML DOM object
-	params: xmlString,								// XML String for request (alternative to internal build of XML from JSON 'params')
-	params: {										// JSON structure used to build request XML - SHOULD be coupled with ('namespaceQualifier' AND 'namespaceURL') AND ('method' OR 'elementName')
-		name: 'Remy Blom',
-		msg: 'Hi!'
-	},
-
-	//these options ONLY apply when the request XML is going to be built from JSON 'params'
-	namespaceQualifier: 'myns',						// used as namespace prefix for all elements in request (optional)
-	namespaceURL: 'urn://service.my.server.com',	// namespace url added to parent request element (optional)
-	noPrefix: false,								// set to true if you don't want the namespaceQualifier to be the prefix for the nodes in params. defaults to false (optional)
-	elementName: 'requestElementName',				// override 'method' as outer element (optional)
+	params: xmlString,								// XML String for request
 
 	// WS-Security
 	wss: {
@@ -109,7 +99,6 @@ options {
 		headers: {},
 		soapConfig: {},
 		appendMethodToURL: true,
-		noPrefix: false,
 		soap12: false,
 		enableLogging: false
 	};
@@ -161,25 +150,6 @@ options {
 			soapRequest.toString = function(){
 				return SOAPTool.dom2String(config.params);
 			};
-
-		} else if ($.isPlainObject(config.params)) {
-			//build from JSON
-			if (!!config.method || !!config.elementName) {
-				var name = !!config.elementName ? config.elementName : config.method;
-				//get prefix to show in child elements of complex objects
-				//unless the config.noPrefix is set to true
-				var prefix = (!!config.namespaceQualifier && !config.noPrefix) ? config.namespaceQualifier+':' : '';
-				var mySoapObject = SOAPTool.json2soap(name, config.params, prefix);
-				// fallback for changing namespaceUrl to namespaceURL
-				if (!config.namespaceURL && !!config.namespaceUrl) {
-					warn('jquery.soap: namespaceUrl is deprecated, use namespaceURL instead!');
-					config.namespaceURL = config.namespaceUrl;
-				}
-				if (!!config.namespaceQualifier && !!config.namespaceURL) {
-					mySoapObject.ns = SOAPTool.Namespace(config.namespaceQualifier, config.namespaceURL);
-				}
-				soapRequest = new SOAPRequest(mySoapObject);
-			}
 
 		} else {
 			//no request
@@ -236,10 +206,7 @@ options {
 			if(config.appendMethodToURL && !!config.method){
 				client.Proxy += config.method;
 			}
-			var action = config.method;
-			if (!!config.SOAPAction) {
-				action = config.SOAPAction;
-			}
+			var action = config.SOAPAction || config.method;
 			client.SendRequest(action, soapRequest, function (response) {
 				log(response);
 				if (response.status !== 'success') {
@@ -340,29 +307,6 @@ options {
 				var prefix = this.settings.prefix,
 					namespace = this.settings.namespace;
 				return "<" + prefix + ":Envelope xmlns:" + prefix + "=\"" + namespace + "\"><" + prefix + ":Body>" + xml + "</" + prefix + ":Body></" + prefix + ":Envelope>";
-			},
-			json2soap: function (name, params, prefix, parentNode) {
-				var soapObject;
-				var childObject;
-				if (typeof params == 'object') {
-					// added by DT - check if object is in fact an Array and treat accordingly
-					if(params.constructor.toString().indexOf("Array") != -1) {// type is array
-						for(var x in params) {
-							childObject = this.json2soap(name, params[x], prefix, parentNode);
-							parentNode.appendChild(childObject);
-						}
-					} else {
-						soapObject = new SOAPObject(prefix+name);
-						for(var y in params) {
-							childObject = this.json2soap(y, params[y], prefix, soapObject);
-							soapObject.appendChild(childObject);
-						}
-					}
-				} else {
-					soapObject = new SOAPObject(prefix+name);
-					soapObject.val(''+params); // the ''+ is added to fix issues with falsey values.
-				}
-				return soapObject;
 			},
 			Namespace: function(name, uri) {
 				return {"name":name, "uri":uri};
