@@ -65,7 +65,7 @@ options {
 	soapConfig: {									// configuration  for soap envelop node element
 		type: string,
 		headers: string,
-		addNs: [],
+		customNS: {},
 		prefix: string,
 		namespace: string
 	},
@@ -106,56 +106,24 @@ options {
 		var config = {};
 
 		//a configuration call will not have 'params' specified
-		if (options && $.type(options.params) !== "string") {
+		if (options && !options.params || ($.type(options.params) !== "string" || !$.isXMLDoc(config.params))) {
 			$.extend(globalConfig, options);//update global config
 			return;
 		}
+
 		$.extend(config, globalConfig, options);
-
 		enableLogging = config.enableLogging;// function log will only work below this line!
-		SOAPTool.settings = !!config.soap12 ? SOAP12 : SOAP11;
 
-		$.extend(SOAPTool.settings, globalConfig.soapConfig);
+		//a configuration Soap
+		$.extend(SOAPTool.settings, !!config.soap12 ? SOAP12 : SOAP11, globalConfig.soapConfig);
 		if ($.type(options.soapConfig) === 'object') {
 			$.extend(SOAPTool.settings, options.soapConfig);
 		}
 		log(config);
+		log(SOAPTool.settings);
 
-		var boolWSS = (!!config.wss && !!config.wss.username && !!config.wss.password);
-		config.params = $.isXMLDoc(config.params) ? SOAPTool.dom2String(config.params) : config.params;
 		SOAPTool.startEnvelope();
-
-		if (boolWSS || SOAPTool.settings.headrs) {
-			SOAPTool.startHeaders();
-			// WSS
-			if (boolWSS) {
-				// create nodes
-				var wssSecurity = "wsse:Security", wssUsernameToken = "wsse:UsernameToken", wssUsername = "wsse:Username", wssPassword = "wsse:Password", wssNonce = "wsse:Nonce", wsuCreated = "wsu:Created";
-
-				var wsse = SOAPTool.settings.xml;
-				wsse.push("<", wssSecurity, " ", "xmlns:wsse", "=", "\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd\"", ">");
-				wsse.push("<", wssUsernameToken, " ", "xmlns:wsu", "=", "\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd\"", ">");
-				wsse.push("<", wssUsername, " ", "Type", "=", "\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd\"", ">");
-					wsse.push(config.wss.username);
-				wsse.push("</", wssUsername, ">");
-				wsse.push("<", wssPassword, " ", "Type", "=", "\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordText\"", ">");
-					wsse.push(config.wss.password);
-				wsse.push("</", wssPassword, ">");
-				if (config.wss.nonce) {
-					wsse.push("<", wssNonce, " ", "Type", "=", "\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd\"", ">");
-						wsse.push(config.wss.nonce);
-					wsse.push("</", wssNonce, ">");
-				}
-				if (config.wss.created) {
-					wsse.push("<", wsuCreated, " ", "Type", "=", "\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd\"", ">");
-						wsse.push(config.wss.created);
-					wsse.push("</", wsuCreated, ">");
-				}
-				wsse.push("</", wssSecurity, ">");
-			}
-			SOAPTool.endHeaders();
-		}
-
+		SOAPTool.pushHeaders(config.wss);
 		SOAPTool.pushBody(config.params);
 		SOAPTool.endEnvelope();
 
@@ -167,12 +135,12 @@ options {
 				throw new Error ("success callback function was not provided");
 			}
 			var client = new SOAPClient();
-			client.Proxy = config.url;
+			var url = client.Proxy = config.url;
 			if(config.appendMethodToURL && !!config.method){
-				client.Proxy += config.method;
+				url += config.method;
 			}
 			var action = config.SOAPAction || config.method;
-			client.SendRequest(action, function (response) {
+			client.SendRequest(action, url, function (response) {
 				log(response);
 				if (response.status !== 'success') {
 					config.error(response);
@@ -186,24 +154,20 @@ options {
 
 	var SOAPClient = function() {
 		this.typeOf="SOAPClient";
-		this._tId = null;
-		this.Proxy = "";
-		this.CharSet = "UTF-8";
-		this.Timeout = 0;
-		this.SendRequest = function(action, callback) {
+		this.SendRequest = function(action, url, callback) {
 
 			if (!$.isFunction(callback)) {
 				throw new Error("callback function was not specified");
 			}
-			if(!!this.Proxy) {
+			if(!!url) {
 				var contentType = SOAPTool.settings.type;
 				var xhr = $.ajax({//see http://api.jquery.com/jQuery.ajax/
 					type: "POST",
-					url: this.Proxy,
+					url: url,
 					dataType: "xml",
 					processData: false,
 					data: SOAPTool.xml.join(""),
-					contentType: contentType + "; charset=" + this.CharSet,
+					contentType: contentType + "; charset=UTF-8",
 					beforeSend: function(req) {
 						if (contentType === SOAP11.type) {
 							req.setRequestHeader("SOAPAction", action);
@@ -246,43 +210,80 @@ options {
 	var SOAP11 = {
 		type: "text/xml",
 		headers: "",
-		addNs: [],
+		customNS: {},
 		prefix: "SOAP-ENV",
 		namespace: "http://schemas.xmlsoap.org/soap/envelope/"
 	},
 	SOAP12 = {
 		type: "application/soap+xml",
 		headers: "",
-		addNs: [],
+		customNS: {},
 		prefix: "env",
 		namespace: "http://www.w3.org/2003/05/soap-envelope"
+	},
+	WSSconst = {
+		security: "wsse:Security",
+		securityNS: "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd",
+		usernameToken: "wsse:UsernameToken",
+		usernameTokenNS: "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd",
+		username: "wsse:Username",
+		usernameType: "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd",
+		password: "wsse:Password",
+		passwordType: "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordText",
+		nonce: "wsse:Nonce",
+		nonceType: "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd",
+		wsuCreated: "wsu:Created",
+		wsuCreatedType: "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd"
 	};
 
 	//Singleton SOAP Tool
 	var SOAPTool=(function(){
 		var _self = {
 			xml: [],
-			settings: SOAP11,
+			settings: {},
 			startEnvelope: function () {
 				var prefix = this.settings.prefix,
-					namespace = this.settings.namespace;
-				this.xml = ["<", prefix, ":Envelope xmlns:", prefix, "=\"", namespace, "\">"];
+					namespace = this.settings.namespace,
+					customNS = this.settings.customNS;
+				this.xml = ["<", prefix, ":Envelope xmlns:", prefix, "=\"", namespace, "\" "];
+				for (ns in customNS) {
+					if (customNS.hasOwnProperty(ns)) {
+						this.xml.push(ns, "=\"", customNS[ns], "\" ");
+					}
+				}
+				this.xml.push(">");
 			},
 			endEnvelope: function () {
 				var prefix = this.settings.prefix;
 				this.xml.push("</", prefix, ":Envelope>");
 			},
-			startHeaders: function () {
-				var prefix = this.settings.prefix;
-				this.xml.push("<", prefix, ":Header>", (this.settings.headers || ""));
-			},
-			endHeaders: function () {
-				var prefix = this.settings.prefix;
-				this.xml.push("</", prefix, ":Header>");
+			pushHeaders: function (wss) {
+				var boolWSS = (!!wss && !!wss.username && !!wss.password),
+					prefix = this.settings.prefix;
+				if (boolWSS || this.settings.headrs) {
+					this.xml.push("<", prefix, ":Header>", (this.settings.headers || ""));
+					if (boolWSS) {
+						var wss = WSSconst;
+
+						this.xml.push("<", wss.security, " ", "xmlns:wsse", "=\"", wss.securityNS, "\">");
+						this.xml.push("<", wss.usernameToken, " ", "xmlns:wsu", "=\"", wss.usernameTokenNS, "\">");
+						this.xml.push("<", wss.username, " ", "Type", "=\"", wss.usernameType, "\">", wss.username, "</", wss.username, ">");
+						this.xml.push("<", wss.password, " ", "Type", "=\"", wss.passwordType, "\">", wss.password, "</", wss.password, ">");
+						if (wss.nonce) {
+							this.xml.push("<", wss.nonce, " ", "Type", "=\"", wss.nonceType, "\">", wss.nonce, "</", wss.nonce, ">");
+						}
+						if (wss.created) {
+							this.xml.push("<", wss.wsuCreated, " ", "Type", "=\"", wss.wsuCreatedType, "\">", wss.created, "</", wss.wsuCreated, ">");
+						}
+						this.xml.push("</", wss.usernameToken, ">");
+						this.xml.push("</", wss.security, ">");
+					}
+					this.xml.push("</", prefix, ":Header>");
+				}
 			},
 			pushBody: function (xml) {
 				var prefix = this.settings.prefix;
-				this.xml.push("<", prefix, ":Body>", xml, "</", prefix, ":Body>");
+				this.xml.push("<", prefix, ":Body>", $.isXMLDoc(xml) ? this.dom2String(xml) : xml, "</", prefix, ":Body>");
 			},
 			dom2string: function(dom) {
 				if (window.XMLSerializer) {
