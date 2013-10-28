@@ -189,12 +189,12 @@ I included a simple demo page that you can use for testing. It allows you to pla
 
 Dependencies
 ------------
-jQuery -- built and tested with v1.9.1, MAY work back to v1.6  
+jQuery -- built and tested with v1.10.1, MAY work back to v1.6  
 SOAPResponse.toJSON() depends on **jQuery.xml2json.js**
 
 Contacting me
 -------------
-Please note I don't mind you contacting me when you run into trouble implementing this plugin, ut to keep things nice for me too, just follow these simple guidelines when you do:
+Please note I don't mind you contacting me when you run into trouble implementing this plugin, but to keep things nice for me too, just follow these simple guidelines when you do:
 
 - First make sure you're not getting an error because of **same origin policy**!
 - Check the [issues section](https://github.com/doedje/jquery.soap/issues/) and the [closed issues section](https://github.com/doedje/jquery.soap/issues?page=1&state=closed) to see if someone else already had your problem, if not
@@ -203,12 +203,12 @@ Please note I don't mind you contacting me when you run into trouble implementin
 	- your $.soap call
 	- the request as sent to the server
 	- the response from the server
-- Being polite helps, especially when you want me to help you with your problems. So please take the time to formulate something like a question. Opening an issue with just some code sniplets and error messages will be regarded as **unpolite** and will receive a ditto reply. 
+- Being polite helps, especially when you want me to help you with _your_ problems. So please take the time to formulate something like a question. Opening an issue with just some code sniplets and error messages will be regarded as **unpolite** and will receive a ditto reply. 
 (I just don't like receiving stuff like [issue #18](https://github.com/doedje/jquery.soap/issues/18) on a sunday)
 
 _I also have a dayjob with deadlines and I'm a dad of two lovely little girls, so please understand I am not always able to reply to you asap..._
 
-_**Thanx for understanding!! =]**
+**Thanx for understanding!! =]**
 
 License
 -------
