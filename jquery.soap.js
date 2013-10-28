@@ -61,6 +61,7 @@ options {
 	method: 'helloWorld',							// service operation name
 													// 1) will be appended to url if appendMethodToURL=true
 													// 2) will be used for request element name when building xml from JSON 'params' (unless 'elementName' is provided)
+													// 3) will be used to set SOAPAction request header if no SOAPAction is specified
 	appendMethodToURL: true,						// method name will be appended to URL defaults to true
 	SOAPAction: 'action',							// manually set the Request Header 'SOAPAction', defaults to the method specified above (optional)
 	soap12: false,									// use SOAP 1.2 namespace and HTTP headers - default to false
@@ -89,8 +90,8 @@ options {
 
 	//callback functions
 	request: function (SOAPRequest)  {},			// callback function - request object is passed back prior to ajax call (optional)
-	success: function (SOAPResponse) {},			// callback function to handle successful return (required)
-	error:   function (SOAPResponse) {},				// callback function to handle fault return (required)
+	success: function (SOAPResponse) {},			// callback function to handle successful return (optional)
+	error:   function (SOAPResponse) {},				// callback function to handle fault return (optional)
 
 	// debugging
 	enableLogging: false						// to enable the local log function set to true, defaults to false (optional)
@@ -99,334 +100,85 @@ options {
 ======================*/
 
 (function($) {
-	var enableLogging; // set by config/options
+	var enableLogging;
+	var globalConfig = { // this setup once, defaults go here
+		appendMethodToURL: true,
+		noPrefix: false,
+		soap12: false,
+		enableLogging: false
+	};
 
 	$.soap = function(options) {
 		var config = {};
-		if (!this.globalConfig) { //this setup once
-			this.globalConfig = {
-				appendMethodToURL: true,
-				noPrefix: false,
-				soap12: false,
-				enableLogging: false
-			};
-		}
 
-		//a configuration call will not have 'params' specified
-		if (options && !options.params) {
-			$.extend(this.globalConfig, options);//update global config
+		// a configuration call will not have 'data' specified ('params' is used for backwards compatibility)
+		if (options && !options.params && !options.data) {
+			$.extend(globalConfig, options); // update global config
 			return;
 		}
-		$.extend(config, this.globalConfig, options);
+		$.extend(config, globalConfig, options);
+		// function log will only work below this line!
+		enableLogging = config.enableLogging;
 
-		enableLogging = config.enableLogging;// function log will only work below this line!
-		log(config);
-
-		var soapRequest; //will be created defined based on type of 'params' received
-
-		if ($.type(config.params) === "string") {
-			//ensure that string is not empty and contains more than whitespace
-			if (/\S/.test(config.params)) {
-				//it had better be a well formed XML string, but we'll trust that it is
-				var xml;
-				if (SOAPTool.isWrappedWithEnvelope(config.params)) {
-					xml = config.params;
-				} else {
-					xml = SOAPTool.wrapWithEnvelope(config.params, config.soap12);
-				}
-				soapRequest = new SOAPRequest();
-				//override the toString method of SOAPRequest
-				soapRequest.toString = function(){
-					return xml;
-				};
-			} else {
-				//soapRequest is left undefined
-			}
-
-		} else if ($.isXMLDoc(config.params)) {
-			soapRequest = config.params;
-			soapRequest = new SOAPRequest();
-			//override the toString method of SOAPRequest
-			soapRequest.toString = function(){
-				return SOAPTool.dom2String(config.params);
-			};
-
-		} else if ($.isPlainObject(config.params)) {
-			//build from JSON
-			if (!!config.method || !!config.elementName) {
-				var name = !!config.elementName ? config.elementName : config.method;
-				//get prefix to show in child elements of complex objects
-				//unless the config.noPrefix is set to true
-				var prefix = (!!config.namespaceQualifier && !config.noPrefix) ? config.namespaceQualifier+':' : '';
-				var mySoapObject = SOAPTool.json2soap(name, config.params, prefix);
-				// fallback for changing namespaceUrl to namespaceURL
-				if (!config.namespaceURL && !!config.namespaceUrl) {
-					warn('jquery.soap: namespaceUrl is deprecated, use namespaceURL instead!');
-					config.namespaceURL = config.namespaceUrl;
-				}
-				if (!!config.namespaceQualifier && !!config.namespaceURL) {
-					mySoapObject.ns = SOAPTool.Namespace(config.namespaceQualifier, config.namespaceURL);
-				}
-				soapRequest = new SOAPRequest(mySoapObject);
-				if (config.soap12) {
-					soapRequest.soapNamespace = SOAPTool.SOAP12_NAMESPACE;
-				}
-			}
-
-		} else {
-			//no request
+		// fallbacks for changed properties: (the old names will deprecate at version 2.0.0!)
+		// namespaceUrl to namespaceURL
+		if (!config.namespaceURL && !!config.namespaceUrl) {
+			warn('jquery.soap: namespaceUrl is deprecated, use namespaceURL instead!');
+			config.namespaceURL = config.namespaceUrl;
+		}
+		// params to data
+		if (!config.data && !!config.params) {
+			warn('jquery.soap: params is deprecated, use data instead!');
+			config.data = config.params;
 		}
 
-		// WSS
-		if (!!config.wss && !!config.wss.username && !!config.wss.password) {
-			// create nodes
-			var wssSecurity = new SOAPObject('wsse:Security');
-			var wssUsernameToken = new SOAPObject('wsse:UsernameToken');
-			var wssUsername = new SOAPObject('wsse:Username');
-			var wssPassword = new SOAPObject('wsse:Password');
-			var wssNonce = new SOAPObject('wsse:Nonce');
-			var wsuCreated = new SOAPObject('wsu:Created');
+		var soapRequest = SOAPTool.processData(config);
+		// will be created defined based on type of 'data' received
 
-			// give them namespaces and Type attributes
-			wssSecurity.attr('xmlns:wsse', 'http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd');
-			wssSecurity.attr('xmlns:wsu', 'http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd');
-			wssUsername.attr('Type', 'http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd');
-			wssPassword.attr('Type', 'http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordText');
-			wssNonce.attr('Type', 'http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd');
-			wsuCreated.attr('Type', 'http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd');
-
-			// fill the nodes
-			wssUsername.val(config.wss.username);
-			wssPassword.val(config.wss.password);
-			wssNonce.val(config.wss.nonce);
-			wsuCreated.val(config.wss.created);
-
-			// put them in eachother...
-			wssUsernameToken.appendChild(wssUsername);
-			wssUsernameToken.appendChild(wssPassword);
-			wssUsernameToken.appendChild(wssNonce);
-			wssUsernameToken.appendChild(wsuCreated);
-			wssSecurity.appendChild(wssUsernameToken);
-
-			// add to soapRequest
-			soapRequest.addHeader(wssSecurity);
-		}
-
-		if (!!soapRequest && $.isFunction(config.request)) {
-			config.request(soapRequest);
-		}
-
-		if (!!config.url && !!soapRequest) {//we have a request and somewhere to send it
-			if (!$.isFunction(config.error)) {
-				throw new Error ("error callback function was not provided");
+		if (!!soapRequest) {
+			// WSS
+			if (!!config.wss && !!config.wss.username && !!config.wss.password) {
+				// add to soapRequest
+				soapRequest.addHeader(SOAPTool.createWSSHeader(config.wss));
 			}
-			if (!$.isFunction(config.success)) {
-				throw new Error ("success callback function was not provided");
+			// function to preview the soapRequest before it is send to the server
+			if ($.isFunction(config.request)) {
+				config.request(soapRequest);
 			}
-			var client = new SOAPClient();
-			client.Proxy = config.url;
-			if(config.appendMethodToURL && !!config.method){
-				client.Proxy += config.method;
-			}
-			var action = config.method;
-			if (!!config.SOAPAction) {
-				action = config.SOAPAction;
-			}
-			client.SendRequest(action, soapRequest, function (response) {
-				log(response);
-				if (response.status !== 'success') {
-					config.error(response);
-				} else {
-					config.success(response);
+
+			if (!!config.url && !!soapRequest) { // we have a request and somewhere to send it
+				if(!!config.appendMethodToURL && !!config.method){
+					config.url += config.method;
 				}
-			});
-		}
-	};
-
-
-	var SOAPClient = function() {
-		this.typeOf="SOAPClient";
-		this._tId = null;
-		this.Proxy = "";
-		this.SOAPServer = "";
-		this.CharSet = "UTF-8";
-		this.Timeout = 0;
-		this.SendRequest = function(action, soapReq, callback) {
-
-			if (!$.isFunction(callback)) {
-				throw new Error("callback function was not specified");
-			}
-			if(!!this.Proxy) {
-				var content = soapReq.toString();
-				var contentType = SOAPTool.SOAP11_TYPE;
-				if (SOAPTool.isSOAP12(content)) {
-					contentType = SOAPTool.SOAP12_TYPE;
-				}
-				var SOAPServer = this.SOAPServer;
-				var xhr = $.ajax({//see http://api.jquery.com/jQuery.ajax/
-					type: "POST",
-					url: this.Proxy,
-					dataType: "xml",
-					processData: false,
-					data: content,
-					contentType: contentType + "; charset=" + this.CharSet,
-					beforeSend: function(req) {
-						req.setRequestHeader("Method", "POST");
-						req.setRequestHeader("SOAPServer", SOAPServer);
-						if (contentType === SOAPTool.SOAP11_TYPE) {
-							req.setRequestHeader("SOAPAction", action);
+				return soapRequest.send({
+					url: config.url,
+					action: (!!config.SOAPAction) ? config.SOAPAction : config.method,
+					error: function (response) {
+						if ($.isFunction(config.error)) {
+							config.error(response);
+						}
+					},
+					success: function (response) {
+						if ($.isFunction(config.success)) {
+							config.success(response);
 						}
 					}
 				});
-				xhr.always(function(a, status, c){
-					var response;
-					var a_type = 'data';
-					var c_type = 'jqXHR';
-					log("status: " + $.type(status) + " '" + status + "'");
-					if (status !== 'success') {
-						a_type = 'jqXHR';
-						c_type = 'errorThrown';
-					}
-					log("-- a: " + a_type + " --");
-					log(a);
-					log("-- c: " + c_type + " --");
-					log(c);
-					log("a: " + a_type + ": " + $.type(a) + "  isXMLDoc(a):" + $.isXMLDoc(a) + "  a.responseText:" + $.type(a.responseText) + "  isXMLDoc(a.responseText):" + $.isXMLDoc(a.responseText) + "  a.responseXML:" + $.type(a.responseXML) + "  isXMLDoc(a.responseXML):" + $.isXMLDoc(a.responseXML));
-					log("c: " + c_type + ": " + $.type(c) + "  isXMLDoc(c):" + $.isXMLDoc(c) + "  c.responseText:" + $.type(c.responseText) + "  isXMLDoc(c.responseText):" + $.isXMLDoc(c.responseText) + "  c.responseXML:" + $.type(c.responseXML) + "  isXMLDoc(c.responseXML):" + $.isXMLDoc(c.responseXML));
-					if ($.isXMLDoc(a)) {
-						response = new SOAPResponse(status, c);
-						response.content = SOAPTool.dom2string(a);
-					} else if ($.type(a)==='object') {
-						response = new SOAPResponse(status, a);
-						response.content = (a.responseXML === undefined) ? a.responseText : a.responseXML;
-					} else if ($.type(c)==='object') {
-						response = new SOAPResponse(status, c);
-						response.content = (c.responseXML === undefined) ? c.responseText : c.responseXML;
-					} else {
-						throw new Error("unexpected return types for jqXHR.always()");
-					}
-					callback(response);
-				});
 			}
-		};
+		}
 	};
-
-	//Singleton SOAP Tool
-	var SOAPTool=(function(){
-		var _self = {
-			SOAP11_TYPE: "text/xml",
-			SOAP12_TYPE: "application/soap+xml",
-			SOAP11_NAMESPACE: "http://schemas.xmlsoap.org/soap/envelope/",
-			SOAP12_NAMESPACE: "http://www.w3.org/2003/05/soap-envelope",
-			isSOAP11: function(xml) {
-				return (xml.indexOf(SOAPTool.SOAP11_NAMESPACE) !== -1);
-			},
-			isSOAP12: function(xml) {
-				return (xml.indexOf(SOAPTool.SOAP12_NAMESPACE) !== -1);
-			},
-			isWrappedWithEnvelope: function(xml) {
-				return (this.isSOAP11(xml) || this.isSOAP12(xml));
-			},
-			wrapWithEnvelope: function(xml, isSoap12) {
-				var ns = (isSoap12) ? this.SOAP12_NAMESPACE : this.SOAP11_NAMESPACE ;
-				var wrapped = "<soap:Envelope xmlns:soap=\""+ns+"\"><soap:Body>"+xml+"</soap:Body></soap:Envelope>";
-				return wrapped;
-			},
-			json2soap: function (name, params, prefix, parentNode) {
-				var soapObject;
-				var childObject;
-				if (typeof params == 'object') {
-					// added by DT - check if object is in fact an Array and treat accordingly
-					if(params.constructor.toString().indexOf("Array") != -1) {// type is array
-						for(var x in params) {
-							childObject = this.json2soap(name, params[x], prefix, parentNode);
-							parentNode.appendChild(childObject);
-						}
-					} else {
-						soapObject = new SOAPObject(prefix+name);
-						for(var y in params) {
-							childObject = this.json2soap(y, params[y], prefix, soapObject);
-							soapObject.appendChild(childObject);
-						}
-					}
-				} else {
-					soapObject = new SOAPObject(prefix+name);
-					soapObject.val(''+params); // the ''+ is added to fix issues with falsey values.
-				}
-				return soapObject;
-			},
-			Namespace: function(name, uri) {
-				return {"name":name, "uri":uri};
-			},
-			dom2string: function(dom) {
-				if (typeof XMLSerializer!=="undefined") {
-					return new window.XMLSerializer().serializeToString(dom);
-				} else {
-					return dom.xml;
-				}
-			},
-			soap2xml: function(soapObj) {
-				var out = [];
-				var isNSObj=false;
-				try {
-					if(!!soapObj&&typeof(soapObj)==="object"&&soapObj.typeOf==="SOAPObject") {
-						out.push("<"+soapObj.name);
-						//Namespaces
-						if(!!soapObj.ns) {
-							if(typeof(soapObj.ns)==="object") {
-								isNSObj=true;
-								out.push(" xmlns:"+soapObj.ns.name+"=\""+soapObj.ns.uri+"\"");
-							} else  {
-								out.push(" xmlns=\""+soapObj.ns+"\"");
-							}
-						}
-						//Node Attributes
-						if(soapObj.attributes.length > 0) {
-							var cAttr;
-							var aLen=soapObj.attributes.length-1;
-							do {
-								cAttr=soapObj.attributes[aLen];
-								if(isNSObj) {
-									out.push(" "+soapObj.ns.name+":"+cAttr.name+"=\""+cAttr.value+"\"");
-								} else {
-									out.push(" "+cAttr.name+"=\""+cAttr.value+"\"");
-								}
-							} while(aLen--);
-						}
-						out.push(">");
-						//Node children
-						if(soapObj.hasChildren()) {
-							var cPos, cObj;
-							for(cPos in soapObj.children){
-								cObj = soapObj.children[cPos];
-								if(typeof(cObj)==="object"){out.push(SOAPTool.soap2xml(cObj));}
-							}
-						}
-						//Node Value
-						if(!!soapObj.value){out.push(soapObj.value);}
-						//Close Tag
-						out.push("</"+soapObj.name+">");
-						return out.join("");
-					}
-				} catch(e){
-					alert("Unable to process SOAPObject! Object must be an instance of SOAPObject");
-				}
-			}
-		};
-		return _self;
-	})();
 
 	//Soap request - this is what being sent using SOAPClient.SendRequest
-	var SOAPRequest=function(soapObj) {
-		this.typeOf="SOAPRequest";
+	var SOAPRequest = function(soapObj) {
+		this.typeOf = "SOAPRequest";
 		this.soapNamespace = SOAPTool.SOAP11_NAMESPACE;
-		var nss=[];
-		var headers=[];
-		var bodies=(!!soapObj)?[soapObj]:[];
-		this.addNamespace=function(ns, uri){nss.push(new SOAPTool.Namespace(ns, uri));};
-		this.addHeader=function(soapObj){headers.push(soapObj);};
-		this.addBody=function(soapObj){bodies.push(soapObj);};
-		this.toString=function() {
+		var nss = [];
+		var headers = [];
+		var bodies = (!!soapObj)?[soapObj]:[];
+		this.addNamespace = function(ns, uri){nss.push(new SOAPTool.Namespace(ns, uri));};
+		this.addHeader = function(soapObj){headers.push(soapObj);};
+		this.addBody = function(soapObj){bodies.push(soapObj);};
+		this.toString = function() {
 			var soapEnv = new SOAPObject("soap:Envelope");
 			soapEnv.attr("xmlns:soap",this.soapNamespace);
 			//Add Namespace(s)
@@ -448,18 +200,44 @@ options {
 			}
 			return soapEnv.toString();
 		};
+		this.send = function(options) {
+			if(!!options.url) {
+				var content = this.toString();
+				var contentType = SOAPTool.SOAP11_TYPE;
+				if (SOAPTool.isSOAP12(content)) {
+					contentType = SOAPTool.SOAP12_TYPE;
+				}
+				return $.ajax({
+					type: "POST",
+					url: options.url,
+					dataType: "xml",
+					processData: false,
+					data: content,
+					contentType: contentType + "; charset=UTF-8",
+					beforeSend: function(req) {
+						if (contentType === SOAPTool.SOAP11_TYPE && !!options.action) {
+							req.setRequestHeader("SOAPAction", options.action);
+						}
+					}
+				}).done(function(data, textStatus, jqXHR) {
+					options.success(new SOAPResponse(textStatus, jqXHR));
+				}).fail(function(jqXHR, textStatus, errorThrown) {
+					options.error(new SOAPResponse(textStatus, jqXHR));
+				});
+			}
+		};
 	};
 
 	//Soap response - this will be passed to the callback from SOAPClient.SendRequest
-	var SOAPResponse=function(status, xhr) {
-		this.typeOf="SOAPResponse";
-		this.status=status;
-		this.headers=xhr.getAllResponseHeaders().split('\n');
-		this.httpCode=xhr.status;
-		this.httpText=xhr.statusText;
-		this.content=null;
-		this.toString=function(){
-			if (typeof this.content==='string') {
+	var SOAPResponse = function(status, xhr) {
+		this.typeOf = "SOAPResponse";
+		this.status = status;
+		this.headers = xhr.getAllResponseHeaders().split('\n');
+		this.httpCode = xhr.status;
+		this.httpText = xhr.statusText;
+		this.content = (xhr.responseXML === undefined) ? xhr.responseText : xhr.responseXML;
+		this.toString = function(){
+			if (typeof this.content === 'string') {
 				return this.content;
 			}
 			if ($.isXMLDoc(this.content)) {
@@ -467,13 +245,13 @@ options {
 			}
 			throw new Error("Unexpected Content: " + $.type(this.content));
 		};
-		this.toXML=function(){
+		this.toXML = function(){
 			if ($.isXMLDoc(this.content)) {
 				return this.content;
 			}
 			return $.parseXML(this.content);
 		};
-		this.toJSON=function(){
+		this.toJSON = function(){
 			if ($.xml2json) {
 				return $.xml2json(this.content);
 			}
@@ -481,37 +259,259 @@ options {
 		};
 	};
 
-	//Soap Object - Used to build body envelope and other structures
+	// SOAPObject - an abstraction layer to build SOAP Objects.
 	var SOAPObject = function(name) {
-		this.typeOf="SOAPObject";
-		this.ns=null;
-		this.name=name;
-		this.attributes=[];
-		this.children=[];
-		this.value=null;
-		this.attr=function(name, value){this.attributes.push({"name":name, "value":value});return this;};
-		this.appendChild=function(obj){this.children.push(obj);return obj;};
-		this.addParameter=function(name,value){var obj=new SOAPObject(name);obj.val(value);this.appendChild(obj);};
-		this.hasChildren=function(){return (this.children.length > 0)?true:false;};
-		this.val=function(v){if(!v){return this.value;}else{this.value=v;return this;}};
-		this.toString=function(){return SOAPTool.soap2xml(this);};
+		this.typeOf = 'SOAPObject';
+		this.name = name;
+		this.ns = {};
+		this.attributes = {};
+		this.parent = parent;
+		this.children = [];
+		this.value = null;
+
+		this.attr = function(name, value) {
+			if (!!name && !!value) {
+				this.attributes[name] = value;
+				return this;
+			} else if (!!name) {
+				return this.attributes[name];
+			} else {
+				return this.attributes;
+			}
+		};
+		this.val = function(value) {
+			if (!value) {
+				return this.value;
+			} else {
+				this.value = value;
+				return this;
+			}
+		};
+		this.addNamespace = function(name, url) {
+			this.ns[name] = url;
+			return this;
+		};
+		this.appendChild = function(obj) {
+			obj.parent = this;
+			this.children.push(obj);
+			return obj;
+		};
+		this.newChild = function(name) {
+			var obj = new SOAPObject(name);
+			this.appendChild(obj);
+			return obj;
+		};
+		this.addParameter = function(name, value) {
+			var obj = new SOAPObject(name);
+			obj.val(value);
+			this.appendChild(obj);
+			return this;
+		};
+		this.hasChildren = function() {
+			return (this.children.length > 0) ? true : false;
+		};
+		this.end = function() {
+			return this.parent;
+		};
+		this.parent = function() {
+			return this.parent;
+		};
+		this.toString = function() {
+			var out = [];
+			out.push('<'+this.name);
+			//Namespaces
+			for (var name in this.ns) {
+					out.push(' xmlns:' + name + '="' + this.ns[name] + '"');
+			}
+			//Node Attributes
+			for (var attr in this.attributes) {
+					out.push(' ' + attr + '="' + this.attributes[attr] + '"');
+			}
+			out.push('>');
+			//Node children
+			if(this.hasChildren()) {
+				for(var cPos in this.children) {
+					var cObj = this.children[cPos];
+					if ((typeof(cObj) === 'object') && (cObj.typeOf === 'SOAPObject')) {
+						out.push(cObj.toString());
+					}
+				}
+			}
+			//Node Value
+			if (!!this.value) {
+				out.push(this.value);
+			}
+			//Close Tag
+			out.push('</' + this.name + '>');
+			return out.join('');
+		};
 	};
 
-	function log(x) {
+	function log() {
 		if (enableLogging && typeof(console)==='object') {
 			if ($.isFunction(console.log)) {
-				console.log(x);
+				if (arguments.length == 1) {
+					console.log(arguments[0]);
+				} else {
+					console.log(arguments);
+				}
 			}
 		}
 	}
 
-	function warn(x) {
+	function warn() {
 		if (typeof(console)==='object') {
 			if ($.isFunction(console.warn)) {
-				console.warn(x);
+				if (arguments.length == 1) {
+					console.warn(arguments[0]);
+				} else {
+					console.warn(arguments);
+				}
 			}
 		}
 	}
+
+	//Singleton SOAP Tool
+	var SOAPTool = {
+		SOAP11_TYPE: "text/xml",
+		SOAP12_TYPE: "application/soap+xml",
+		SOAP11_NAMESPACE: "http://schemas.xmlsoap.org/soap/envelope/",
+		SOAP12_NAMESPACE: "http://www.w3.org/2003/05/soap-envelope",
+		isSOAP11: function(xml) {
+			return (xml.indexOf(SOAPTool.SOAP11_NAMESPACE) !== -1);
+		},
+		isSOAP12: function(xml) {
+			return (xml.indexOf(SOAPTool.SOAP12_NAMESPACE) !== -1);
+		},
+		isWrappedWithEnvelope: function(xml) {
+			return (this.isSOAP11(xml) || this.isSOAP12(xml));
+		},
+		wrapWithEnvelope: function(xml, isSoap12) {
+			var ns = (isSoap12) ? this.SOAP12_NAMESPACE : this.SOAP11_NAMESPACE ;
+			var wrapped = "<soap:Envelope xmlns:soap=\""+ns+"\"><soap:Body>"+xml+"</soap:Body></soap:Envelope>";
+			return wrapped;
+		},
+		json2soap: function (name, params, prefix, parentNode) {
+			var soapObject;
+			var childObject;
+			if (typeof params == 'object') {
+				// added by DT - check if object is in fact an Array and treat accordingly
+				if(params.constructor.toString().indexOf("Array") != -1) { // type is array
+					for(var x in params) {
+						childObject = this.json2soap(name, params[x], prefix, parentNode);
+						parentNode.appendChild(childObject);
+					}
+				} else {
+					soapObject = new SOAPObject(prefix+name);
+					for(var y in params) {
+						childObject = this.json2soap(y, params[y], prefix, soapObject);
+						soapObject.appendChild(childObject);
+					}
+				}
+			} else {
+				soapObject = new SOAPObject(prefix+name);
+				soapObject.val(''+params); // the ''+ is added to fix issues with falsey values.
+			}
+			return soapObject;
+		},
+		Namespace: function(name, uri) {
+			return {"name":name, "uri":uri};
+		},
+		dom2string: function(dom) {
+			if (typeof XMLSerializer!=="undefined") {
+				return new window.XMLSerializer().serializeToString(dom);
+			} else {
+				return dom.xml;
+			}
+		},
+		processData: function(options) {
+			var soapRequest;
+			if ($.isFunction(options.data)) {
+				options.data = options.data(SOAPObject).toString();
+			}
+			if ($.type(options.data) === "string") {
+				// ensure that string is not empty and contains more than whitespace
+				if (/\S/.test(options.data)) {
+					// it had better be a well formed XML string, but we'll trust that it is
+					var xml;
+					if (SOAPTool.isWrappedWithEnvelope(options.data)) {
+						xml = options.data;
+					} else {
+						xml = SOAPTool.wrapWithEnvelope(options.data, options.soap12);
+					}
+					soapRequest = new SOAPRequest();
+					//override the toString method of SOAPRequest
+					soapRequest.toString = function(){
+						return xml;
+					};
+				} else {
+					//soapRequest is left undefined
+				}
+			} else if ($.isXMLDoc(options.data)) {
+				soapRequest = new SOAPRequest();
+				//override the toString method of SOAPRequest
+				soapRequest.toString = function(){
+					return SOAPTool.dom2String(options.data);
+				};
+			} else if ($.isPlainObject(options.data)) {
+				//build from JSON
+				if (!!options.method || !!options.elementName) {
+					var name = !!options.elementName ? options.elementName : options.method;
+					//get prefix to show in child elements of complex objects
+					//unless the options.noPrefix is set to true
+					var prefix = (!!options.namespaceQualifier && !options.noPrefix) ? options.namespaceQualifier+':' : '';
+					var mySoapObject = SOAPTool.json2soap(name, options.data, prefix);
+					if (!!options.namespaceQualifier && !!options.namespaceURL) {
+						mySoapObject.addNamespace(options.namespaceQualifier, options.namespaceURL);
+					}
+					soapRequest = new SOAPRequest(mySoapObject);
+					if (options.soap12) {
+						soapRequest.soapNamespace = SOAPTool.SOAP12_NAMESPACE;
+					}
+				}
+			} else {
+				//no request
+			}
+			return soapRequest;
+		},
+		createWSSHeader: function(wssValues) {
+			var wssConst = {
+				security: "wsse:Security",
+				securityNS: "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd",
+				usernameToken: "wsse:UsernameToken",
+				usernameTokenNS: "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd",
+				username: "wsse:Username",
+				usernameType: "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd",
+				password: "wsse:Password",
+				passwordType: "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordText",
+				nonce: "wsse:Nonce",
+				nonceType: "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd",
+				wsuCreated: "wsu:Created",
+				wsuCreatedType: "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd"
+			};
+			return new SOAPObject(wssConst.security)
+				.addNamespace('wsse', wssConst.securityNS)
+				.addNamespace('wsu', wssConst.usernameTokenNS)
+				.newChild(wssConst.usernameToken)
+					.newChild(wssConst.username)
+						.attr('Type', wssConst.usernameType)
+						.val(wssValues.username)
+					.end()
+					.newChild(wssConst.password)
+						.attr('Type', wssConst.passwordType)
+						.val(wssValues.password)
+					.end()
+					.newChild(wssConst.nonce)
+						.attr('Type', wssConst.nonceType)
+						.val(wssValues.nonce)
+					.end()
+					.newChild(wssConst.wsuCreated)
+						.attr('Type', wssConst.wsuCreatedType)
+						.val(wssValues.created)
+					.end()
+				.end();
+		}
+	};
 
 })(jQuery);
 
