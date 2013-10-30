@@ -165,23 +165,27 @@ options {
 		this.typeOf = "SOAPRequest";
 		this.prefix = 'soap';
 		this.soapConfig = null;
+		this.attributes = [];
+		this.namespaces = [];
+		this.headers = [];
+		this.bodies = [];
 
 console.log(soapObject)
 
-		var env, header, body;
+		var i, env, header, body;
 		// let's get the soap namespace prefix
 		var parts = soapObject.name.split(':');
 		if (parts[1] === 'Envelope') {
 			this.prefix = parts[0];
-			if (soapObject.attr('xmlns:' + this.prefix) === this.SOAP11.namespaceURL) {
+			if (soapObject.attr('xmlns:' + this.prefix) === SOAPTool.SOAP11.namespaceURL) {
 				this.soapConfig = this.SOAP11;
 			}
-			if (soapObject.attr('xmlns:' + this.prefix) === this.SOAP12.namespaceURL) {
+			if (soapObject.attr('xmlns:' + this.prefix) === SOAPTool.SOAP12.namespaceURL) {
 				this.soapConfig = this.SOAP12;
 			}
 			// attributes
 			var attributes = soapObject.attr();
-			for (var i in attributes) {
+			for (i in attributes) {
 				// hmm, attributes and namespaces are not the same....
 
 console.log('attributes > ' + i + ' > ' + attributes[i])
@@ -190,21 +194,26 @@ console.log('attributes > ' + i + ' > ' + attributes[i])
 			// headers
 			header = soapObject.find(this.prefix + ':Header');
 			if (header && header.children) {
-				for (var j in header.children) {
-					this.addHeader(header.children[j]);
+				for (i in header.children) {
+					this.addHeader(header.children[i]);
 				}
 			}
 			// body
 			body = soapObject.find(this.prefix + ':Body');
 			if (body && body.children) {
-				for (var k in body.children) {
-					this.addBody(body.children[k]);
+				for (i in body.children) {
+					this.addBody(body.children[i]);
 				}
 			} else {
 				// hier zouden we de children van env nog kunnen adden als body...
+				for (i in soapObject.children) {
+					this.addBody(soapObject.children[i]);
+				}
 			}
-		} else {
-			// rootnode was not Envelope... let's presume...
+		} else if (parts[1] === 'Body') {
+			for (i in soapObject.children) {
+				this.addBody(soapObject.children[i]);
+			}
 		}
 
 		/* what is there to check anywaze...
@@ -228,17 +237,9 @@ console.log('attributes > ' + i + ' > ' + attributes[i])
 	}
 
 	SOAPRequest.prototype = {
-		SOAP11: {
-			type: 'text/xml',
-			namespaceURL: 'http://schemas.xmlsoap.org/soap/envelope/'
+		addAttribute: function(name, value) {
+			this.attributes.push({name: name, value: value});
 		},
-		SOAP12: {
-			type: 'application/soap+xml',
-			namespaceURL: 'http://www.w3.org/2003/05/soap-envelope/'
-		},
-		namespaces: [],
-		headers: [],
-		bodies: [],
 		addNamespace: function(name, uri) {
 			this.namespaces.push({name: name, uri: uri});
 		},
@@ -250,12 +251,12 @@ console.log('attributes > ' + i + ' > ' + attributes[i])
 		},
 		toString: function() {
 			var soapEnv = new SOAPObject(this.prefix + ':Envelope');
-			soapEnv.attr('xmlns:' + this.prefix, this.soapConfig.namespaceURL);
+			soapEnv.addNamespace(this.prefix, this.soapConfig.namespaceURL);
 			//Add Namespace(s)
 			if (this.namespaces.length > 0) {
 				for (var i in this.namespaces) {
 					var myNS = namespaces[i];
-					soapEnv.attr("xmlns:" + myNS.name, myNS.uri);
+					soapEnv.addNamespace(myNS.name, myNS.uri);
 				}
 			}
 			//Add Header(s)
@@ -277,7 +278,7 @@ console.log('attributes > ' + i + ' > ' + attributes[i])
 		send: function(options) {
 			var thisRequest = this;
 			if (!this.soapConfig) {
-				this.soapConfig = (options.soap12) ? this.SOAP12 : this.SOAP11;
+				this.soapConfig = (options.soap12) ? SOAPTool.SOAP12 : SOAPTool.SOAP11;
 			}
 			var contentType = this.soapConfig.type;
 			return $.ajax({
@@ -288,10 +289,10 @@ console.log('attributes > ' + i + ' > ' + attributes[i])
 				data: this.toString(),
 				contentType: contentType + "; charset=UTF-8",
 				beforeSend: function(req) {
-					if (contentType === thisRequest.SOAP11.type && !!options.action) {
+					if (contentType === SOAPTool.SOAP11.type && !!options.action) {
 						req.setRequestHeader("SOAPAction", options.action);
 					}
-					// function to preview the soapObject before it is send to the server
+					// function to preview the soapRequest before it is send to the server
 					if ($.isFunction(options.beforeSend)) {
 						options.beforeSend(thisRequest);
 					}
@@ -427,6 +428,14 @@ console.log('attributes > ' + i + ' > ' + attributes[i])
 
 	//Singleton SOAP Tool
 	var SOAPTool = {
+		SOAP11: {
+			type: 'text/xml',
+			namespaceURL: 'http://schemas.xmlsoap.org/soap/envelope/'
+		},
+		SOAP12: {
+			type: 'application/soap+xml',
+			namespaceURL: 'http://www.w3.org/2003/05/soap-envelope/'
+		},
 		processData: function(options) {
 			var soapObject;
 			if ($.type(options.data) === "string") {
