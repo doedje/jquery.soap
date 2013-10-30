@@ -154,6 +154,8 @@ options {
 			}
 			return soapRequest.send({
 				url: config.url,
+				async: config.async,
+				headers: config.headers,
 				action: (!!config.SOAPAction) ? config.SOAPAction : config.method,
 				soap12: config.soap12,
 				beforeSend: config.request
@@ -270,6 +272,8 @@ options {
 			return $.ajax({
 				type: "POST",
 				url: options.url,
+				async: options.async,
+				headers: options.headers,
 				dataType: "xml",
 				processData: false,
 				data: this.toString(),
@@ -412,7 +416,7 @@ options {
 			if ($.xml2json) {
 				return $.xml2json(this.content);
 			}
-			throw new Error("Missing JQuery Plugin 'xml2json'");
+			warn("jQuery.soap: Missing JQuery Plugin 'xml2json'");
 		};
 	};
 
