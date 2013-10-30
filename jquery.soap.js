@@ -142,8 +142,11 @@ options {
 			}
 			// WSS
 			if (!!config.wss) {
+				var wssObj = SOAPTool.createWSS(config.wss);
 				// add to WSS Security header to soapRequest
-				soapRequest.addHeader(SOAPTool.createWSSHeader(config.wss));
+				if (!!wssObj) {
+					soapRequest.addHeader(wssObj);
+				}
 			}
 			// append Method?
 			if(!!config.appendMethodToURL && !!config.method){
@@ -155,10 +158,13 @@ options {
 				soap12: config.soap12,
 				beforeSend: config.request
 			}).done(function(data, textStatus, jqXHR) {
+				var response = new SOAPResponse(textStatus, jqXHR);
+				log('jquery.soap - receive:', $.parseXML(response.toString()).firstChild);
 				if ($.isFunction(config.success)) {
-					config.success(new SOAPResponse(textStatus, jqXHR));
+					config.success(response);
 				}
 			}).fail(function(jqXHR, textStatus, errorThrown) {
+				log('jquery.soap - error:', errorThrown);
 				if ($.isFunction(config.error)) {
 					config.error(new SOAPResponse(textStatus, jqXHR));
 				}
@@ -272,6 +278,7 @@ options {
 					if (contentType === SOAPTool.SOAP11.type && !!options.action) {
 						req.setRequestHeader("SOAPAction", options.action);
 					}
+					log('jquery.soap - beforeSend:', $.parseXML(thisRequest.toString()).firstChild);
 					// function to preview the soapRequest before it is send to the server
 					if ($.isFunction(options.beforeSend)) {
 						options.beforeSend(thisRequest);
@@ -494,7 +501,7 @@ options {
 				return dom.xml;
 			}
 		},
-		createWSSHeader: function(wssValues) {
+		createWSS: function(wssValues) {
 			if  (!!wssValues.username && !!wssValues.password) {
 				var wssConst = {
 					security: "wsse:Security",
@@ -510,7 +517,7 @@ options {
 					wsuCreated: "wsu:Created",
 					wsuCreatedType: "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd"
 				};
-				var WSSNode = new SOAPObject(wssConst.security)
+				var WSSObj = new SOAPObject(wssConst.security)
 					.addNamespace('wsse', wssConst.securityNS)
 					.addNamespace('wsu', wssConst.usernameTokenNS)
 					.newChild(wssConst.usernameToken)
@@ -523,20 +530,20 @@ options {
 							.val(wssValues.password)
 						.end()
 					.end();
-				var userTokenNode = WSSNode.find(wssConst.usernameToken);
+				var userTokenObj = WSSObj.find(wssConst.usernameToken);
 				if (!!wssValues.nonce) {
-					userTokenNode
+					userTokenObj
 						.newChild(wssConst.nonce)
 							.attr('Type', wssConst.nonceType)
 							.val(wssValues.nonce);
 				}
 				if (!!wssValues.created) {
-					userTokenNode
+					userTokenObj
 						.newChild(wssConst.wsuCreated)
 							.attr('Type', wssConst.wsuCreatedType)
 							.val(wssValues.created);
 				}
-				return WSSNode;
+				return WSSObj;
 			}
 		},
 		fallbackDeprecated: function(config) {

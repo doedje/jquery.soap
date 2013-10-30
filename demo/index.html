@@ -91,7 +91,8 @@
 						enableLogging: $('#enableLogging').prop('checked'),
 
 						request: function(SOAPRequest) {
-							$('#request').text(dom2html($.parseXML(SOAPRequest.toString()).firstChild));
+							var out = dom2html($.parseXML(SOAPRequest.toString()).firstChild);
+							$('#request').text(out);
 						},
 						success: function(SOAPResponse) {
 							$('#feedbackHeader').html('Success!');
