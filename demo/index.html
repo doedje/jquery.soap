@@ -52,16 +52,16 @@
 			}
 		</style>
 		<!-- jquery from cdn at (mt) Media Temple -->
-		<script type='text/javascript' src='http://code.jquery.com/jquery-1.10.0.min.js'></script>
+		<script type='text/javascript' src='http://code.jquery.com/jquery-1.10.2.min.js'></script>
 		<script type='text/javascript' src='./../jquery.soap.js'></script>
 		<script type='text/javascript'>
 			$(document).ready(function() {
 				$('#test').click(function(e) {
 					// stop the form to be submitted...
 					e.preventDefault();
-					var params = $('#params').val();
+					var data = $('#params').val();
 					if ($('#paramsType').val() == 'json') {
-						params = eval("("+params+")");
+						data = eval("("+data+")");
 					}
 					var wss = {};
 					if ($('#enableWSS').prop('checked')) {
@@ -80,7 +80,7 @@
 						SOAPAction: $('#SOAPAction').val(),
 						soap12: $('#soap12').prop('checked'),
 
-						params: params,
+						data: data,
 						wss: wss,
 						
 						namespaceQualifier:  $('#namespaceQualifier').val(),
@@ -103,6 +103,54 @@
 						}
 					});
 				});
+
+				// just a little experiment with promises:
+				/*
+				$.soap({
+					url: 'fake-soap-response.xml',
+					method: 'fake',
+					appendMethodToURL: true,
+					data: '<test>fake</test>',
+					error: function() {
+						console.log('soap error');
+					},
+					success: function() {
+						console.log('soap success')
+					}
+				}).then(function() {
+					console.log('yep');
+				}, function() {
+					console.log('nope');
+				});
+				
+				$.soap({
+					enableLogging: true,
+					url: 'http://localhost/jquery.soap/demo/fake-soap-response.xml',
+					error: function() {
+						console.log('soap error');
+					},
+					success: function() {
+						console.log('soap success')
+					}
+				});
+
+				$.soap({
+					enableLogging: false,
+					data: function(SOAPObject) {
+						return new SOAPObject('soap:Envelope')
+							.addNamespace('ns','url')
+							.attr('test','test')
+							.newChild('child1')
+								.attr('attr','val')
+								.val('test')
+							.end()
+							.newChild('child2')
+								.addParameter('name1','value1')
+								.addParameter('name2','value2')
+							.end();
+					}
+				});
+				*/
 			});
 		</script>
 	</head>
