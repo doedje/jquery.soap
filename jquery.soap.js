@@ -134,6 +134,12 @@ options {
 		if (!!soapObject && !!config.url) { // we have a request and somewhere to send it
 			// Create a SOAPRequest with the soapObject
 			var soapRequest = new SOAPRequest(soapObject);
+			// Additional attributes and namespaces for the Envelope
+			if (config.envAttributes) {
+				for (var i in config.envAttributes) {
+					soapRequest.addAttribute(i, config.envAttributes[i]);
+				}
+			}
 			// WSS
 			if (!!config.wss) {
 				// add to WSS Security header to soapRequest
@@ -166,16 +172,12 @@ options {
 		this.prefix = 'soap';
 		this.soapConfig = null;
 		this.attributes = [];
-		this.namespaces = [];
 		this.headers = [];
 		this.bodies = [];
-
-console.log(soapObject)
-
-		var i, env, header, body;
+		
 		// let's get the soap namespace prefix
 		var parts = soapObject.name.split(':');
-		if (parts[1] === 'Envelope') {
+		if (parts[1] === 'Envelope' || parts[1] === 'Body') {
 			this.prefix = parts[0];
 			if (soapObject.attr('xmlns:' + this.prefix) === SOAPTool.SOAP11.namespaceURL) {
 				this.soapConfig = this.SOAP11;
@@ -183,54 +185,32 @@ console.log(soapObject)
 			if (soapObject.attr('xmlns:' + this.prefix) === SOAPTool.SOAP12.namespaceURL) {
 				this.soapConfig = this.SOAP12;
 			}
-			// attributes
-			var attributes = soapObject.attr();
-			for (i in attributes) {
-				// hmm, attributes and namespaces are not the same....
-
-console.log('attributes > ' + i + ' > ' + attributes[i])
-
+			// Envelope
+			var env = soapObject.find(this.prefix + ':Envelope');
+			if (env && env.attributes) {
+				for (var i in env.attributes) {
+					this.addAttribute(i, env.attributes[i]);
+				}
 			}
 			// headers
 			header = soapObject.find(this.prefix + ':Header');
 			if (header && header.children) {
-				for (i in header.children) {
-					this.addHeader(header.children[i]);
+				for (var j in header.children) {
+					this.addHeader(header.children[j]);
 				}
 			}
 			// body
 			body = soapObject.find(this.prefix + ':Body');
 			if (body && body.children) {
-				for (i in body.children) {
-					this.addBody(body.children[i]);
+				for (var k in body.children) {
+					this.addBody(body.children[k]);
 				}
 			} else {
-				// hier zouden we de children van env nog kunnen adden als body...
-				for (i in soapObject.children) {
-					this.addBody(soapObject.children[i]);
+				for (var l in soapObject.children) {
+					this.addBody(soapObject.children[l]);
 				}
 			}
-		} else if (parts[1] === 'Body') {
-			for (i in soapObject.children) {
-				this.addBody(soapObject.children[i]);
-			}
-		}
-
-		/* what is there to check anywaze...
-		[x] is there a soap envelope?
-		[x] is there a soap header?
-		[x] is there a soap body?
-		[x] is there a soap11 or soap12 namespace?
-		[ ] are there any additional namespaces for the envelope?
-		[ ] is there a soap header
-		[ ] any additional namespaces for the body?
-		*/
-
-		env = soapObject.find(this.prefix + ':Envelope');
-		header = soapObject.find(this.prefix + ':Header');
-		body = soapObject.find(this.prefix + ':Body');
-
-		if (!env && !header && !body) {
+		} else {
 			// a soapObject with nothing, mere data
 			this.addBody(soapObject);
 		}
@@ -238,10 +218,10 @@ console.log('attributes > ' + i + ' > ' + attributes[i])
 
 	SOAPRequest.prototype = {
 		addAttribute: function(name, value) {
-			this.attributes.push({name: name, value: value});
+			this.attributes[name] = value;
 		},
 		addNamespace: function(name, uri) {
-			this.namespaces.push({name: name, uri: uri});
+			this.addAttribute('xmlns:' + name, uri);
 		},
 		addHeader: function(soapObject) {
 			this.headers.push(soapObject);
@@ -251,27 +231,27 @@ console.log('attributes > ' + i + ' > ' + attributes[i])
 		},
 		toString: function() {
 			var soapEnv = new SOAPObject(this.prefix + ':Envelope');
-			soapEnv.addNamespace(this.prefix, this.soapConfig.namespaceURL);
-			//Add Namespace(s)
-			if (this.namespaces.length > 0) {
-				for (var i in this.namespaces) {
-					var myNS = namespaces[i];
-					soapEnv.addNamespace(myNS.name, myNS.uri);
-				}
+			//Add attributes
+			for (var name in this.attributes) {
+				soapEnv.attr(name, this.attributes[name]);
 			}
-			//Add Header(s)
+			//Add Headers
 			if (this.headers.length > 0) {
 				var soapHeader = soapEnv.newChild(this.prefix + ':Header');
-				for (var j in this.headers) {
-					soapHeader.appendChild(this.headers[j]);
+				for (var i in this.headers) {
+					soapHeader.appendChild(this.headers[i]);
 				}
 			}
-			//Add Body(s)
+			//Add Bodies
 			if (this.bodies.length > 0) {
 				var soapBody = soapEnv.newChild(this.prefix + ':Body');
-				for (var k in this.bodies) {
-					soapBody.appendChild(this.bodies[k]);
+				for (var j in this.bodies) {
+					soapBody.appendChild(this.bodies[j]);
 				}
+			}
+			// Check for main NS over here...
+			if (!soapEnv.attr('xmlns:' + this.prefix)) {
+				soapEnv.addNamespace(this.prefix, this.soapConfig.namespaceURL);
 			}
 			return soapEnv.toString();
 		},
@@ -356,8 +336,11 @@ console.log('attributes > ' + i + ' > ' + attributes[i])
 			if (this.name === name) {
 				return this;
 			} else {
-				for(var i in this.children) {
-					return this.children[i].find(name);
+				for (var i in this.children) {
+					var result = this.children[i].find(name);
+					if (result) {
+						return result;
+					}
 				}
 			}
 		};

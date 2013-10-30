@@ -63,7 +63,7 @@
 					if ($('#paramsType').val() == 'json') {
 						data = eval("("+data+")");
 					}
-					var wss = {};
+					var wss;
 					if ($('#enableWSS').prop('checked')) {
 						wss = {
 							username: $('#wssUsername').val(),
@@ -91,7 +91,7 @@
 						enableLogging: $('#enableLogging').prop('checked'),
 
 						request: function(SOAPRequest) {
-							$('#request').text(SOAPRequest);
+							$('#request').text(dom2html($.parseXML(SOAPRequest.toString()).firstChild));
 						},
 						success: function(SOAPResponse) {
 							$('#feedbackHeader').html('Success!');
@@ -152,6 +152,44 @@
 				});
 				*/
 			});
+
+			function dom2html(xmldom, tabcount) {
+				var whitespace = /^\s+$/;
+				var tabs = '  ';
+				var xmlout = [];
+				tabcount = (tabcount) ? tabcount : 0;
+
+				xmlout.push('<', xmldom.nodeName);
+				for (var i in xmldom.attributes) {
+					var attribute = xmldom.attributes[i];
+					if (attribute.nodeType === 2) {
+						xmlout.push(' ', attribute.name, '="', attribute.value, '"');
+					}
+				}
+				xmlout.push('>\n');
+				++tabcount;
+				for (var j in xmldom.childNodes) {
+					var child = xmldom.childNodes[j];
+					if (child.nodeType === 1) {
+						xmlout.push(repeat(tabs, tabcount), dom2html(child, tabcount));
+					}
+					if (child.nodeType === 3 && !whitespace.test(child.nodeValue)) {
+						xmlout.push(repeat(tabs, tabcount), child.nodeValue, '\n');
+					}
+				}
+				xmlout.push(repeat(tabs, --tabcount), '</', xmldom.nodeName, '>\n');
+				return xmlout.join('');
+			}
+			function repeat(x, n) {
+				var s = '';
+				for (;;) {
+					if (n & 1) s += x;
+					n >>= 1;
+					if (n) x += x;
+					else break;
+				}
+				return s;
+			}
 		</script>
 	</head>
 	<body>
