@@ -35,7 +35,7 @@ $(document).ready(function() {
 			data: data,
 			wss: wss,
 
-			httpheaders: {
+			HTTPHeaders: {
 				Authorization: 'Basic ' + btoa('test:test')
 			},
 

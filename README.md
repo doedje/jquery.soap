@@ -54,8 +54,11 @@ This will create the following XML:
 And this will be send to: url + method
 http://my.server.com/soapservices/helloWorld
 
-Options
--------
+Options overview
+----------------
+
+[More detailed list of the available options for jQuery.soap](options.md)
+
 ```Javascript
 options = {
 	url: 'http://my.server.com/soapservices/',		//endpoint address for the service
@@ -71,7 +74,7 @@ options = {
 	envAttributes: {								// additional attributes (like namespaces) for the Envelope:
 		'xmlns:another': 'http://anotherNamespace.com/'
 	}
-	httpheaders: {									// additional http headers send with the $.ajax call, will be given to $.ajax({ headers: })
+	HTTPHeaders: {									// additional http headers send with the $.ajax call, will be given to $.ajax({ headers: })
 		'Authorization': 'Basic ' + btoa('user:pass')
 	}
 
@@ -198,6 +201,22 @@ $.soap({
 		password: 'pass',
 		nonce: 'w08370jf7340qephufqp3r4',
 		created: new Date().getTime()
+	}
+});
+```
+
+HTTP Basic Authorization
+------------------------
+Using the httpheader option it is relatively simple to implement HTTP Basic Authorization as follows:
+```Javascript
+var username = 'foo';
+var password = 'bar';
+
+$.soap({
+	// other parameters...
+
+	HTTPHeaders: {
+		Authorization: 'Basic ' + btoa(username + ':' + password)
 	}
 });
 ```

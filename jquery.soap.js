@@ -70,7 +70,7 @@ options = {
 	envAttributes: {						// additional attributes (like namespaces) for the Envelope:
 		'xmlns:another': 'http://anotherNamespace.com/'
 	}
-	httpheaders: {							// additional http headers send with the $.ajax call, will be given to $.ajax({ headers: })
+	HTTPHeaders: {							// additional http headers send with the $.ajax call, will be given to $.ajax({ headers: })
 		'Authorization': 'Basic ' + btoa('user:pass')
 	}
 
@@ -172,7 +172,7 @@ options = {
 			return soapRequest.send({
 				url: config.url,
 				async: config.async,
-				headers: (config.httpheaders) ? config.httpheaders : {},
+				headers: (config.HTTPHeaders) ? config.HTTPHeaders : {},
 				action: (!!config.SOAPAction) ? config.SOAPAction : config.method,
 				soap12: config.soap12,
 				beforeSend: config.request
