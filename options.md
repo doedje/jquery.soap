@@ -136,7 +136,7 @@ enableLogging
 type: **boolean**  
 default: _false_
 
-Set to true if you want some debug information in the console about the information send and received, errors and globalConfig updates.
+Set to true if you want some debug information in the console about the information send and received, errors and [globalConfig](#globalConfig) updates.
 ```
 $.soap({
 	enableLoggin: true
@@ -181,7 +181,6 @@ The service operation name.
 - Will be appended to the [url](#url) by default unless [appendMethodToURL](#appendMethodToURL) is set to _false_.
 - Will be used to set SOAPAction request header unless a [SOAPAction](#SOAPAction) is specified
 - When [data](#data) is specified as JSON `method` will be used for the request element name unless a [elementName](#elementName) is provided.
-
 ```
 $.soap({
 	url: 'http://server.com/webServices/',

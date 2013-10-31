@@ -137,10 +137,9 @@ $.soap({
 ```
 The advantage is that these promise callbacks give you direct access to the original parameters provided by $.ajax instead of $.soap's SOAPResponse objects.
 
-Config call
------------
-Since version 0.9.3 it is possible to make a call to **$.soap** just to set extra config values. When you have a lot of calls to $.soap and are tired of repeating the same values for url, returnJson, namespace and error for instance, this new approach can come in handy:
-
+globalConfig
+------------
+Since version 0.9.3 it is possible to make a call to **$.soap** just to set extra config values. When you have a lot of calls to $.soap and are tired of repeating the same values for url, namespace and error for instance, this new approach can come in handy:
 ```Javascript
 $.soap({
 	url: 'http://my.server.com/soapservices/',
@@ -162,9 +161,7 @@ $.soap({
 	}
 });
 ```
-
 The code above will do exactly the same as the first example, but when you want to do another call to the same soapserver you only have to specify the changed values:
-
 ```Javascript
 $.soap({
 	method: 'doSomethingElse',
@@ -174,9 +171,7 @@ $.soap({
 	}
 });
 ```
-
 But it won't stop you from doing a call to a completely different soapserver with a different error handler for instance, like so:
-
 ```Javascript
 $.soap({
 	url: 'http://another.server.com/anotherService'
@@ -193,7 +188,6 @@ $.soap({
 	}
 });
 ```
-
 _**NOTE**: the **data** parameter is used as a key. If no data is specified in the options passed to **$.soap** all options are stored in the globalConfig, there won't be a soapRequest. When a method is specified the globalConfig will be used and all options passed to **$.soap** will overrule those in globalConfig, but keep in mind, they won't be overwritten!_
 
 WS-Security
@@ -244,7 +238,7 @@ I included a simple demo page that you can use for testing. It allows you to pla
 
 Dependencies
 ------------
-jQuery -- built and tested with v1.10.1, MAY work back to v1.6  
+jQuery -- built and tested with v1.10.2, MAY work back to v1.6  
 SOAPResponse.toJSON() depends on **jQuery.xml2json.js**
 
 Contacting me
@@ -265,8 +259,8 @@ _I also have a dayjob with deadlines and I'm a dad of two lovely little girls, s
 
 **Thanx for understanding!! =]**
 
-License
--------
+License GNU/GPLv3
+-----------------
 jquery.soap is based on jqSOAPClient.beta.js which was licensed under GNU/GPLv3
 
 This program is free software: you can redistribute it and/or modify
@@ -286,11 +280,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 Authors / History
 -----------------
-2013-10 >> total rewrite, triggered by pull request #21 by anthony-redFox
+2013-10 >> total rewrite, triggered by pull request #21 by anthony-redFox  
+Remy Blom == https://github.com/doedje/jquery.soap
 
 2013-06 >> fix for SOAPServer and SOAPAction headers, better params object to SOAPObject function  
-Remy Blom == www.hku.nl == remy.blom@kmt.hku.nl  
-Utrecht School of Arts,The Netherlands
+Remy Blom == https://github.com/doedje/jquery.soap
 
 2013-03 >> update internal OO structure, enable XML & object input as well as JSON  
 Zach Shelton == zachofalltrades.net  
@@ -303,8 +297,7 @@ Remy Blom == https://github.com/doedje/jquery.soap
 Diccon Towns == dtowns@reapit.com
 
 2009-12-03 >> wrap jqSOAPClient as plugin  
-Remy Blom == www.hku.nl == remy.blom@kmt.hku.nl  
-Utrecht School of Arts,The Netherlands
+Remy Blom == https://github.com/doedje/jquery.soap
 
 2007-12-20 >> jqSOAPClient.beta.js by proton17  
 http://archive.plugins.jquery.com/project/jqSOAPClient
