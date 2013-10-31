@@ -4,6 +4,7 @@ jQuery.soap Detailed Options List
 
 appendMethodToUrl
 -----------------
+    |
 --- | ---
 type | boolean
 default | _true_
