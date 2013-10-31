@@ -335,7 +335,11 @@ options {
 			json2soap: function (name, params, prefix, parentNode) {
 				var soapObject;
 				var childObject;
-				if (typeof params == 'object') {
+				if (params === null) {
+					soapObject = new SOAPObject(prefix+name);
+					soapObject.attr('nil', true);
+				}
+				else if (typeof params == 'object') {
 					// added by DT - check if object is in fact an Array and treat accordingly
 					if(params.constructor.toString().indexOf("Array") != -1) {// type is array
 						for(var x in params) {
