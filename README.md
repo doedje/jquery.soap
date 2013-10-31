@@ -1,7 +1,7 @@
 jQuery Soap
 ===========
 **file:** jquery.soap.js  
-**version:** 1.2.2
+**version:** 1.3.0
 
 jQuery plugin for communicating with a web service using SOAP.
 --------------------------------------------------------------
@@ -20,7 +20,7 @@ $.soap({
 	url: 'http://my.server.com/soapservices/',
 	method: 'helloWorld',
 
-	params: {
+	data: {
 		name: 'Remy Blom',
 		msg: 'Hi!'
 	},
@@ -54,24 +54,43 @@ This will create the following XML:
 And this will be send to: url + method
 http://my.server.com/soapservices/helloWorld
 
-Options
--------
+Options overview
+----------------
+
+[More detailed list of the available options for jQuery.soap](options.md)
+
 ```Javascript
-{
+options = {
 	url: 'http://my.server.com/soapservices/',		//endpoint address for the service
 	method: 'helloWorld',							// service operation name
 													// 1) will be appended to url if appendMethodToURL=true
 													// 2) will be used for request element name when building xml from JSON 'params' (unless 'elementName' is provided)
+													// 3) will be used to set SOAPAction request header if no SOAPAction is specified
 	appendMethodToURL: true,						// method name will be appended to URL defaults to true
 	SOAPAction: 'action',							// manually set the Request Header 'SOAPAction', defaults to the method specified above (optional)
 	soap12: false,									// use SOAP 1.2 namespace and HTTP headers - default to false
 
-	//params can be XML DOM, XML String, or JSON
-	params: domXmlObject,							// XML DOM object
-	params: xmlString,								// XML String for request (alternative to internal build of XML from JSON 'params')
-	params: {										// JSON structure used to build request XML - SHOULD be coupled with ('namespaceQualifier' AND 'namespaceURL') AND ('method' OR 'elementName')
+	// addional headers and namespaces
+	envAttributes: {								// additional attributes (like namespaces) for the Envelope:
+		'xmlns:another': 'http://anotherNamespace.com/'
+	}
+	HTTPHeaders: {									// additional http headers send with the $.ajax call, will be given to $.ajax({ headers: })
+		'Authorization': 'Basic ' + btoa('user:pass')
+	}
+
+	//data can be XML DOM, XML String, JSON or a function
+	data: domXmlObject,								// XML DOM object
+	data: xmlString,								// XML String for request (alternative to internal build of XML from JSON 'params')
+	data: {											// JSON structure used to build request XML - SHOULD be coupled with ('namespaceQualifier' AND 'namespaceURL') AND ('method' OR 'elementName')
 		name: 'Remy Blom',
 		msg: 'Hi!'
+	},
+	data: function(SOAPObject) {					// function returning an instance of the SOAPObject class 
+		return new SOAPObject('soap:Envelope')
+			.addNamespace('soap', 'http://schemas.xmlsoap.org/soap/envelope/')
+			.newChild('soap:Body')
+				... etc, etc
+			.end()
 	},
 
 	//these options ONLY apply when the request XML is going to be built from JSON 'params'
@@ -90,13 +109,25 @@ Options
 
 	//callback functions
 	request: function (SOAPRequest)  {},			// callback function - request object is passed back prior to ajax call (optional)
-	success: function (SOAPResponse) {},			// callback function to handle successful return (required)
-	error:   function (SOAPResponse) {},			// callback function to handle fault return (required)
+	success: function (SOAPResponse) {},			// callback function to handle successful return (optional)
+	error:   function (SOAPResponse) {},			// callback function to handle fault return (optional)
 
 	// debugging
-	enableLogging: true								// to enable the local log function set to true, defaults to false (optional)
+	enableLogging: false							// to enable the local log function set to true, defaults to false (optional)
 }
 ```
+
+Deprecated options
+------------------
+To keep the names of the options a bit more consistent with common naming conventions I renamed a few options:
+
+old | new | reason
+--- | --- | ---
+napespaceUrl | namespaceURL | to capitalize **URL** is quite common
+params | data | $.ajax uses data too, more consistent
+
+The old names are mapped to the new names and will be deprecated at version 2.0.0 (that might take years, or decades). A warning is printed to the console when you use the old name.
+
 
 Config call
 -----------
@@ -114,7 +145,7 @@ $.soap({
 
 $.soap({
 	method: 'helloWorld',
-	params: {
+	data: {
 		name: 'Remy Blom',
 		msg: 'Hi!'
 	},
@@ -129,7 +160,7 @@ The code above will do exactly the same as the first example, but when you want 
 ```Javascript
 $.soap({
 	method: 'doSomethingElse',
-	params: {...},
+	data: {...},
 	success: function (soapResponse) {
 		// do stuff with soapResponse
 	}
@@ -142,7 +173,7 @@ But it won't stop you from doing a call to a completely different soapserver wit
 $.soap({
 	url: 'http://another.server.com/anotherService'
 	method: 'helloWorld',
-	params: {
+	data: {
 		name: 'Remy Blom',
 		msg: 'Hi!'
 	},
@@ -155,7 +186,7 @@ $.soap({
 });
 ```
 
-_**NOTE**: the **param** is used as a key. If no param is specified in the options passed to **$.soap** all options are stored in the globalConfig, there won't be a soapRequest. When a method is specified the globalConfig will be used and all options passed to **$.soap** will overrule those in globalConfig, but keep in mind, they won't be overwritten!_
+_**NOTE**: the **data** parameter is used as a key. If no data is specified in the options passed to **$.soap** all options are stored in the globalConfig, there won't be a soapRequest. When a method is specified the globalConfig will be used and all options passed to **$.soap** will overrule those in globalConfig, but keep in mind, they won't be overwritten!_
 
 WS-Security
 -----------
@@ -170,6 +201,22 @@ $.soap({
 		password: 'pass',
 		nonce: 'w08370jf7340qephufqp3r4',
 		created: new Date().getTime()
+	}
+});
+```
+
+HTTP Basic Authorization
+------------------------
+Using the httpheader option it is relatively simple to implement HTTP Basic Authorization as follows:
+```Javascript
+var username = 'foo';
+var password = 'bar';
+
+$.soap({
+	// other parameters...
+
+	HTTPHeaders: {
+		Authorization: 'Basic ' + btoa(username + ':' + password)
 	}
 });
 ```
@@ -233,6 +280,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 Authors / History
 -----------------
 
+2013-10 >> total rewrite, triggered by pull request #21 by anthony-redFox
+
 2013-06 >> fix for SOAPServer and SOAPAction headers, better params object to SOAPObject function  
 Remy Blom == www.hku.nl == remy.blom@kmt.hku.nl  
 Utrecht School of Arts,The Netherlands
@@ -260,6 +309,7 @@ Version numbers are [semver](http://semver.org/) compatible from version 1.0.0 a
 
 Version | Date | Changes
 --- | --- | ---
+1.3.0 | 2013-10-31 | massive rewrite (fixes #14, #19, #20, #23)
 1.2.2 | 2013-10-31 | fix for #24: a parameter set to NULL should be translated as &lt;language nil="true" /&gt;
 1.2.1 | 2013-09-09 | fixed WSS namespace: from Soap:Security to wsse:Security (pull request #17)
 1.2.0 | 2013-08-26 | added noPrefix option and fixed bug of double namespace prefixes for nested objects (#13, #15)
