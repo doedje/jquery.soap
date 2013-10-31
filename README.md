@@ -130,7 +130,7 @@ $.soap({
 
 $.soap({
 	method: 'helloWorld',
-	params: {
+	data: {
 		name: 'Remy Blom',
 		msg: 'Hi!'
 	},
@@ -145,7 +145,7 @@ The code above will do exactly the same as the first example, but when you want 
 ```Javascript
 $.soap({
 	method: 'doSomethingElse',
-	params: {...},
+	data: {...},
 	success: function (soapResponse) {
 		// do stuff with soapResponse
 	}
@@ -158,7 +158,7 @@ But it won't stop you from doing a call to a completely different soapserver wit
 $.soap({
 	url: 'http://another.server.com/anotherService'
 	method: 'helloWorld',
-	params: {
+	data: {
 		name: 'Remy Blom',
 		msg: 'Hi!'
 	},
@@ -171,7 +171,7 @@ $.soap({
 });
 ```
 
-_**NOTE**: the **param** is used as a key. If no param is specified in the options passed to **$.soap** all options are stored in the globalConfig, there won't be a soapRequest. When a method is specified the globalConfig will be used and all options passed to **$.soap** will overrule those in globalConfig, but keep in mind, they won't be overwritten!_
+_**NOTE**: the **data** parameter is used as a key. If no data is specified in the options passed to **$.soap** all options are stored in the globalConfig, there won't be a soapRequest. When a method is specified the globalConfig will be used and all options passed to **$.soap** will overrule those in globalConfig, but keep in mind, they won't be overwritten!_
 
 WS-Security
 -----------
