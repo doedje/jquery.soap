@@ -4,13 +4,38 @@ jQuery.soap Detailed Options List
 
 appendMethodToUrl
 -----------------
-    |
---- | ---
-type | boolean
-default | _true_
-datatypes | available for **all** datatypes
-function | the specified [method](#method) is added to the [url](#url)
+type: **boolean**  
+default: _true_  
+datatypes: available for **all** datatypes  
 
+Indicates whether the specified [method](#method) should added to the [url](#url)
+
+```
+$.soap({
+	url: 'http://server.com/webServices/',
+	method: 'getItem',
+	appendMethodToURL: false
+})
+```
+
+url
+---
+type: **boolean**  
+default: _true_  
+datatypes: available for **all** datatypes  
+
+Specifies the endpoint of the webService. By default the [method](#method) is added to the url. Setting [appendMethodToURL](#appendMethodToURL) to _false_ will not add the [method](#method).
+
+```
+$.soap({
+	url: 'http://server.com/webServices/',
+	method: 'getItem',
+	appendMethodToURL: false
+})
+```
+
+Helper
+------
 
 ```
 options = {
