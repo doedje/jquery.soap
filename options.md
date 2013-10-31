@@ -5,8 +5,7 @@ jQuery.soap Detailed Options List
 appendMethodToUrl
 -----------------
 type: **boolean**  
-default: _true_  
-datatypes: available for **all** datatypes  
+optional, default: _true_  
 
 Indicates whether the specified [method](#method) should added to the [url](#url)
 
@@ -18,19 +17,33 @@ $.soap({
 })
 ```
 
+method
+------
+type: **string**  
+required 
+
+The service operation name. Will be appended to the [url](#url) by default unless [appendMethodToURL](#appendMethodToURL) is set to _false_. 
+
+
+
+```
+$.soap({
+	url: 'http://server.com/webServices/',
+	method: 'getItem'
+})
+```
+
 url
 ---
-type: **boolean**  
-default: _true_  
-datatypes: available for **all** datatypes  
+type: **string**  
+required 
 
 Specifies the endpoint of the webService. By default the [method](#method) is added to the url. Setting [appendMethodToURL](#appendMethodToURL) to _false_ will not add the [method](#method).
 
 ```
 $.soap({
 	url: 'http://server.com/webServices/',
-	method: 'getItem',
-	appendMethodToURL: false
+	method: 'getItem'
 })
 ```
 
@@ -39,7 +52,6 @@ Helper
 
 ```
 options = {
-	url: 'http://my.server.com/soapservices/',		//endpoint address for the service
 	method: 'helloWorld',							// service operation name
 													// 1) will be appended to url if appendMethodToURL=true
 													// 2) will be used for request element name when building xml from JSON 'params' (unless 'elementName' is provided)
