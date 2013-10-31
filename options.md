@@ -27,7 +27,7 @@ default: _null_
 
 The data to be sent to the WebService, mainly the contents of the soap:Body, although it may also contain the complete soap:Envelope (with optional soap:Header).
 
-In the first example `var xml` is an array of strings which are joined together to form one XML string which is used as the `data`.
+In the first example `var xml` is an array of strings which is joined together to form one XML string which is used as the `data`.
 ```
 var xml = 
 	['<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope/">',
@@ -43,7 +43,7 @@ $.soap({
 });
 ```
 
-In the following example we use JSON to describe the request element
+In the following example we use JSON to describe the request element.
 ```
 $.soap({
 	method: 'requestNode',
@@ -111,7 +111,7 @@ elementName
 type: **string**  
 default: [method](#method)
 
-Override 'method' as outer element.
+Overrides [method](#method) as the name for the request element.
 
 _This option ONLY applies when the request XML is going to be built from JSON [data](#data)._
 ```
@@ -149,7 +149,7 @@ type: **function(SOAPResponse)**
 
 Allows to set a callback function for when the underlying $.ajax call goes wrong. 
 
-_Note that $.soap() also returns a jqXHR object that implements the [Promise interface](README.md#promise), so instead of the success option you can also use `jqXHR.fail()`._
+_Note that $.soap() also returns a jqXHR object that implements the [Promise interface](README.md#promise), so instead of the error option you can also use `jqXHR.fail()`._
 ```
 $.soap({
 	error: function(SOAPResponse) {
@@ -163,7 +163,7 @@ HTTPHeaders
 type: **object**  
 default: _null_
 
-Set additional http headers send with the $.ajax call, will be given to $.ajax({ headers: })
+Set additional http request headers, will be passed to $.ajax({ headers: }). A possible use is setting the `Authorization` header to do HTTP Basic Authorization as in the following example:
 ```
 $.soap({
 	HTTPHeaders: {
@@ -179,7 +179,7 @@ type: **string**
 The service operation name. 
 
 - Will be appended to the [url](#url) by default unless [appendMethodToURL](#appendMethodToURL) is set to _false_.
-- Will be used to set SOAPAction request header if no [SOAPAction](#SOAPAction) is specified
+- Will be used to set SOAPAction request header unless a [SOAPAction](#SOAPAction) is specified
 - When [data](#data) is specified as JSON `method` will be used for the request element name unless a [elementName](#elementName) is provided.
 
 ```
@@ -192,9 +192,9 @@ will result in:
 ```
 <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope/">
 	<soap:Body>
-		<helloWorld>
+		<getItem>
 			...
-		</helloWorld>
+		</getItem>
 	</soap:Body>
 </soap:Envelope>
 ```
@@ -205,7 +205,7 @@ namespaceQualifier
 type: **string**  
 default: _null_
 
-Used as namespace prefix for all elements in request in combination with [namespaceURL](#namespaceURL)
+Used as namespace prefix for all elements in the request element, in combination with [namespaceURL](#namespaceURL)
 
 _This option ONLY applies when the request XML is going to be built from JSON [data](#data)._
 ```
@@ -257,7 +257,7 @@ noPrefix
 type: **boolean**  
 default: _false_
 
-Set to true if you don't want the [namespaceQualifier](#namespaceQualifier) to be the prefix for the nodes in params.
+Set to true if you don't want the [namespaceQualifier](#namespaceQualifier) to be the prefix for the nodes in the request element.
 
 _This option ONLY applies when the request XML is going to be built from JSON [data](#data)._
 ```
@@ -283,7 +283,7 @@ request
 -------
 type: **function(SOAPRequest)**  
 
-Callback function which passes back the request object prior to ajax call
+Callback function which passes back the SOAPRequest object prior to the  $.ajax call
 ```
 $.soap({
 	request: function(SOAPRequest) {
@@ -315,7 +315,7 @@ SOAPAction
 type: **string**  
 default: [method](#method)
 
-Allows to manually set the Request Header 'SOAPAction'.
+Allows to manually set the HTTP Request Header 'SOAPAction'.
 ```
 $.soap({
 	url: 'http://server.com/webServices/',
@@ -326,7 +326,7 @@ $.soap({
 
 success
 -------
-type: **function(SOAPResponse)  
+type: **function(SOAPResponse)**  
 
 Callback function to handle successful return.
 
@@ -365,4 +365,19 @@ $.soap({
 		created: new Date().getTime()
 	}
 });
+```
+will result in:
+```
+<soap:Envelope>
+	<soap:Header>
+		<wsse:Security xmlns:wsse="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd">
+			<wsse:UsernameToken>
+				<wsse:Username Type="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd">user</wsse:Username>
+				<wsse:Password Type="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordText">pass</wsse:Password>
+				<wsse:Nonce Type="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd">aepfhvaepifha3p4iruaq349fu34r9q</wsse:Nonce>
+				<wsu:Created Type="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd">1383257509878</wsu:Created>
+			</wsse:UsernameToken>
+		</wsse:Security>
+	</soap:Header>
+</soap:Envelope>
 ```
