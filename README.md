@@ -36,9 +36,7 @@ $.soap({
 	}
 });
 ```
-
-This will create the following XML:
-
+will result in
 ```XML
 <soap:Envelope
 	xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
@@ -50,15 +48,12 @@ This will create the following XML:
 	</soap:Body>
 </soap:Envelope>
 ```
-
-And this will be send to: url + method
+And this will be send to: url + method  
 http://my.server.com/soapservices/helloWorld
 
 Options overview
 ----------------
-
 [More detailed list of the available options for jQuery.soap](options.md)
-
 ```Javascript
 options = {
 	url: 'http://my.server.com/soapservices/',		//endpoint address for the service
@@ -123,11 +118,24 @@ To keep the names of the options a bit more consistent with common naming conven
 
 old | new | reason
 --- | --- | ---
-napespaceUrl | namespaceURL | to capitalize **URL** is quite common
+napespaceUrl | namespaceURL | to capitalize URL is quite common
 params | data | $.ajax uses data too, more consistent
 
 The old names are mapped to the new names and will be deprecated at version 2.0.0 (that might take years, or decades). A warning is printed to the console when you use the old name.
 
+Promise
+-------
+Since version 1.3.0 $.soap() returns the jqXHR object which implements the Promise interface. This allows you to use `.done()`, `.fail()`, `.always()`, etc. So instead of using the `success` and `error` option, you can also do:
+```
+$.soap({
+	...
+}).done(function(data, textStatus, jqXHR) {
+	// do stuff on success here...
+}).fail(function(jqXHR, textStatus, errorThrown) {
+	// do stuff on error here...
+})
+```
+The advantage is that these promise callbacks give you direct access to the original parameters provided by $.ajax instead of $.soap's SOAPResponse objects.
 
 Config call
 -----------
@@ -207,7 +215,7 @@ $.soap({
 
 HTTP Basic Authorization
 ------------------------
-Using the httpheader option it is relatively simple to implement HTTP Basic Authorization as follows:
+Using the HTTPHeaders option it is relatively simple to implement HTTP Basic Authorization as follows:
 ```Javascript
 var username = 'foo';
 var password = 'bar';
@@ -259,7 +267,6 @@ _I also have a dayjob with deadlines and I'm a dad of two lovely little girls, s
 
 License
 -------
-
 jquery.soap is based on jqSOAPClient.beta.js which was licensed under GNU/GPLv3
 
 This program is free software: you can redistribute it and/or modify
@@ -279,7 +286,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 Authors / History
 -----------------
-
 2013-10 >> total rewrite, triggered by pull request #21 by anthony-redFox
 
 2013-06 >> fix for SOAPServer and SOAPAction headers, better params object to SOAPObject function  

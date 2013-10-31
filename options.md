@@ -379,5 +379,8 @@ will result in:
 			</wsse:UsernameToken>
 		</wsse:Security>
 	</soap:Header>
+	<soap:Body>
+		...
+	</soap:Body>
 </soap:Envelope>
 ```
