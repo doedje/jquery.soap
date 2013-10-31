@@ -114,6 +114,18 @@ options = {
 }
 ```
 
+Deprecated options
+------------------
+To keep the names of the options a bit more consistent with common naming conventions I renamed a few options:
+
+old | new | reason
+--- | --- | ---
+napespaceUrl | namespaceU**RL** | to capitalize **URL** is quite common
+params | data | $.ajax uses data too, more consistent
+
+The old names are mapped to the new names and will be deprecated at version 2.0.0 (that might take years, or decades). A warning is printed to the console when you use the old name.
+
+
 Config call
 -----------
 Since version 0.9.3 it is possible to make a call to **$.soap** just to set extra config values. When you have a lot of calls to $.soap and are tired of repeating the same values for url, returnJson, namespace and error for instance, this new approach can come in handy:
