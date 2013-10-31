@@ -1,15 +1,16 @@
 jQuery.soap Detailed Options List
 =================================
+**file:** jquery.soap.js  
 **version:** 1.3.0
 
-Note that all options are optional. To actually send a request [url](#url) en [data](#data) are the minimal requirements. More general information about the usage
+Note that all options are optional. To actually send a request [url](#url) en [data](#data) are the minimal requirements. More [general information about the usage of jQuery.soap](README.md)
 
 appendMethodToUrl
 -----------------
 type: **boolean**  
 default: _true_
 
-Indicates whether the specified [method](#method) should added to the [url](#url)
+Indicates whether the specified [method](#method) should be added to the [url](#url)
 ```
 $.soap({
 	url: 'http://server.com/webServices/',
@@ -17,27 +18,72 @@ $.soap({
 	appendMethodToURL: false
 })
 ```
+will send a request to `http://server.com/webServices/`
 
 data
 ----
 type: **string** or **XMLDOM** or **JSON** or **function(SOAPObject)**  
 default: _null_
 
-The data to be send to the WebService, mainly the contents of the soap:Body
+The data to be sent to the WebService, mainly the contents of the soap:Body, although it may also contain the complete soap:Envelope (with optional soap:Header).
+
+In the first example `var xml` is an array of strings which are joined together to form one XML string which is used as the `data`.
 ```
-	data: domXmlObject,								// XML DOM object
-	data: xmlString,								// XML String for request (alternative to internal build of XML from JSON 'params')
-	data: {											// JSON structure used to build request XML - SHOULD be coupled with ('namespaceQualifier' AND 'namespaceURL') AND ('method' OR 'elementName')
+var xml = 
+	['<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope/">',
+		'<soap:Body>',
+			'<requestNode>',
+				...
+			'</requestNode>',
+		'</soap:Body>',
+	'</soap:Envelope>'];
+
+$.soap({
+	data: xml.join('')
+});
+```
+
+In the following example we use JSON to describe the request element
+```
+$.soap({
+	method: 'requestNode',
+	data: {
 		name: 'Remy Blom',
 		msg: 'Hi!'
-	},
-	data: function(SOAPObject) {					// function returning an instance of the SOAPObject class 
+	}
+});
+```
+will result in:
+```
+<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope/">
+	<soap:Body>
+		<requestNode>
+			<name>Remy Blom</name>
+			<msg>Hi!</msg>
+		</requestNode>
+	</soap:Body>
+</soap:Envelope>
+```
+
+function passing back $.soap's SOAPObject that can be used to create and return an instance of the SOAPObject class.
+```
+$.soap({
+	data: function(SOAPObject) {
 		return new SOAPObject('soap:Envelope')
 			.addNamespace('soap', 'http://schemas.xmlsoap.org/soap/envelope/')
 			.newChild('soap:Body')
 				... etc, etc
 			.end()
-	},
+	}
+});
+```
+will result in:
+```
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+	<soap:Body>
+		...
+	</soap:Body>
+</soap:Envelope>
 ```
 
 envAttributes
