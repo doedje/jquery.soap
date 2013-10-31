@@ -260,7 +260,7 @@ Version numbers are [semver](http://semver.org/) compatible from version 1.0.0 a
 
 Version | Date | Changes
 --- | --- | ---
-1.2.2 | 2013-10-31 | fix for #24: a parameter set to NULL should be translated as &lt;language nil="true" /&gt;  
+1.2.2 | 2013-10-31 | fix for #24: a parameter set to NULL should be translated as &lt;language nil="true" /&gt;
 1.2.1 | 2013-09-09 | fixed WSS namespace: from Soap:Security to wsse:Security (pull request #17)
 1.2.0 | 2013-08-26 | added noPrefix option and fixed bug of double namespace prefixes for nested objects (#13, #15)
 1.1.0 | 2013-07-11 | Added WSS functionality (issue #9)
