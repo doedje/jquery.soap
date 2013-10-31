@@ -1,6 +1,6 @@
 /*==========================
 jquery.soap.js  http://plugins.jquery.com/soap/ or https://github.com/doedje/jquery.soap
-version: 1.2.1
+version: 1.3.0
 
 jQuery plugin for communicating with a web service using SOAP.
 
@@ -8,7 +8,7 @@ One function to send the soapRequest that takes a complex object as a parameter
 
 Dependencies
 ------------
-jQuery -- built and tested with v1.9.1 and v1.10.1, MAY work back to v1.6
+jQuery -- built and tested with v1.9.1 to v1.10.2, MAY work back to v1.6
 SOAPResponse.toJSON() depends on jQuery.xml2json.js
 
 Authors / History
@@ -66,12 +66,27 @@ options {
 	SOAPAction: 'action',							// manually set the Request Header 'SOAPAction', defaults to the method specified above (optional)
 	soap12: false,									// use SOAP 1.2 namespace and HTTP headers - default to false
 
-	//params can be XML DOM, XML String, or JSON
-	params: domXmlObject,							// XML DOM object
-	params: xmlString,								// XML String for request (alternative to internal build of XML from JSON 'params')
-	params: {										// JSON structure used to build request XML - SHOULD be coupled with ('namespaceQualifier' AND 'namespaceURL') AND ('method' OR 'elementName')
+	// addional headers and namespaces
+	envAttributes: {						// additional attributes (like namespaces) for the Envelope:
+		'xmlns:another': 'http://anotherNamespace.com/'
+	}
+	httpheaders: {							// additional http headers send with the $.ajax call, will be given to $.ajax({ headers: })
+		'Authorization': 'Basic ' + btoa('user:pass')
+	}
+
+	//data can be XML DOM, XML String, or JSON
+	data: domXmlObject,							// XML DOM object
+	data: xmlString,								// XML String for request (alternative to internal build of XML from JSON 'params')
+	data: {										// JSON structure used to build request XML - SHOULD be coupled with ('namespaceQualifier' AND 'namespaceURL') AND ('method' OR 'elementName')
 		name: 'Remy Blom',
 		msg: 'Hi!'
+	},
+	data: function(SOAPObject) {
+		return new SOAPObject('soap:Envelope')
+			.addNamespace('soap', 'http://schemas.xmlsoap.org/soap/envelope/')
+			.newChild('soap:Body')
+				... etc, etc
+			.end()
 	},
 
 	//these options ONLY apply when the request XML is going to be built from JSON 'params'
@@ -114,6 +129,8 @@ options {
 		// a configuration call will not have 'data' specified ('params' is used for backwards compatibility)
 		if (options && !options.params && !options.data) {
 			$.extend(globalConfig, options); // update global config
+			enableLogging = true;
+			log('jQuery.soap: globalConfig updated:', globalConfig);
 			return;
 		}
 		$.extend(config, globalConfig, options);
@@ -155,7 +172,7 @@ options {
 			return soapRequest.send({
 				url: config.url,
 				async: config.async,
-				headers: config.headers,
+				headers: (config.httpheaders) ? config.httpheaders : {},
 				action: (!!config.SOAPAction) ? config.SOAPAction : config.method,
 				soap12: config.soap12,
 				beforeSend: config.request
@@ -264,11 +281,18 @@ options {
 			return soapEnv.toString();
 		},
 		send: function(options) {
-			var thisRequest = this;
 			if (!this.soapConfig) {
 				this.soapConfig = (options.soap12) ? SOAPTool.SOAP12 : SOAPTool.SOAP11;
 			}
 			var contentType = this.soapConfig.type;
+			if (contentType === SOAPTool.SOAP11.type && !!options.action) {
+				options.headers.SOAPAction = options.action;
+			}
+			log('jquery.soap - beforeSend:', $.parseXML(this.toString()).firstChild);
+			// function to preview the soapRequest before it is send to the server
+			if ($.isFunction(options.beforeSend)) {
+				options.beforeSend(this);
+			}
 			return $.ajax({
 				type: "POST",
 				url: options.url,
@@ -277,17 +301,7 @@ options {
 				dataType: "xml",
 				processData: false,
 				data: this.toString(),
-				contentType: contentType + "; charset=UTF-8",
-				beforeSend: function(req) {
-					if (contentType === SOAPTool.SOAP11.type && !!options.action) {
-						req.setRequestHeader("SOAPAction", options.action);
-					}
-					log('jquery.soap - beforeSend:', $.parseXML(thisRequest.toString()).firstChild);
-					// function to preview the soapRequest before it is send to the server
-					if ($.isFunction(options.beforeSend)) {
-						options.beforeSend(thisRequest);
-					}
-				}
+				contentType: contentType + "; charset=UTF-8"
 			});
 		}
 	};

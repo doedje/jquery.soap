@@ -1,7 +1,7 @@
 jQuery Soap
 ===========
 **file:** jquery.soap.js  
-**version:** 1.2.1
+**version:** 1.3.0
 
 jQuery plugin for communicating with a web service using SOAP.
 --------------------------------------------------------------
@@ -233,6 +233,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 Authors / History
 -----------------
 
+2013-10 >> total rewrite, triggered by pull request #21 by anthony-redFox
+
 2013-06 >> fix for SOAPServer and SOAPAction headers, better params object to SOAPObject function  
 Remy Blom == www.hku.nl == remy.blom@kmt.hku.nl  
 Utrecht School of Arts,The Netherlands
@@ -260,6 +262,7 @@ Version numbers are [semver](http://semver.org/) compatible from version 1.0.0 a
 
 Version | Date | Changes
 --- | --- | ---
+1.3.0 | 2013-10-31 | massive rewrite (fixes #14, #19, #20, #23)
 1.2.1 | 2013-09-09 | fixed WSS namespace: from Soap:Security to wsse:Security (pull request #17)
 1.2.0 | 2013-08-26 | added noPrefix option and fixed bug of double namespace prefixes for nested objects (#13, #15)
 1.1.0 | 2013-07-11 | Added WSS functionality (issue #9)
