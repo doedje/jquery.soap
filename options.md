@@ -2,13 +2,14 @@ jQuery.soap Detailed Options List
 =================================
 **version:** 1.3.0
 
+Note that all options are optional. To actually send a request [url](#url) en [data](#data) are the minimal requirements. More general information about the usage
+
 appendMethodToUrl
 -----------------
 type: **boolean**  
-optional, default: _true_  
+default: _true_
 
 Indicates whether the specified [method](#method) should added to the [url](#url)
-
 ```
 $.soap({
 	url: 'http://server.com/webServices/',
@@ -17,34 +18,12 @@ $.soap({
 })
 ```
 
-envAttributes
--------------
-type: **object**
-optional: default: _null_
-
-Set additional attributes (like namespaces) on the soap:Envelope node
-
-```
-$.soap({
-	envAttributes: {		
-		'xmlns:another': 'http://anotherNamespace.com/'
-	}
-})
-```
-will result in:
-```
-<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:another="http://anotherNamespace.com/">
-  ...
-</soap:Envelope>
-```
-
 data
 ----
-type: **string** or **XMLDOM** or **JSON** or **function(SOAPObject)**
-optional: default: _null_
+type: **string** or **XMLDOM** or **JSON** or **function(SOAPObject)**  
+default: _null_
 
 The data to be send to the WebService, mainly the contents of the soap:Body
-
 ```
 	data: domXmlObject,								// XML DOM object
 	data: xmlString,								// XML String for request (alternative to internal build of XML from JSON 'params')
@@ -61,13 +40,34 @@ The data to be send to the WebService, mainly the contents of the soap:Body
 	},
 ```
 
+envAttributes
+-------------
+type: **object**  
+default: _null_
+
+Set additional attributes (like namespaces) on the soap:Envelope node
+```
+$.soap({
+	envAttributes: {		
+		'xmlns:another': 'http://anotherNamespace.com/'
+	}
+})
+```
+will result in:
+```
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:another="http://anotherNamespace.com/">
+  ...
+</soap:Envelope>
+```
+
 elementName
 -----------
-type: **string**
-optional: default: [method](#method)
+type: **string**  
+default: [method](#method)
 
-Override 'method' as outer element
+Override 'method' as outer element.
 
+_This option ONLY applies when the request XML is going to be built from JSON [data](#data)._
 ```
 $.soap({
 	method: 'helloWorld',
@@ -87,21 +87,34 @@ will result in:
 
 enableLogging
 -------------
-type: **boolean**
-optional: default: _false_
+type: **boolean**  
+default: _false_
 
 Set to true if you want some debug information in the console about the information send and received, errors and globalConfig updates.
-
 ```
 $.soap({
 	enableLoggin: true
 })
 ```
 
+error
+-----
+type: **function(SOAPResponse)**  
+
+Allows to set a callback function for when the underlying $.ajax call goes wrong. 
+
+_Note that $.soap() also returns a jqXHR object that implements the [Promise interface](README.md#promise), so instead of the success option you can also use `jqXHR.fail()`._
+```
+$.soap({
+	error: function(SOAPResponse) {
+		console.log(SOAPResponse.toString());
+	}
+});
+
 HTTPHeaders
 -----------
-type: **object**
-optional: default: _null_
+type: **object**  
+default: _null_
 
 Set additional http headers send with the $.ajax call, will be given to $.ajax({ headers: })
 ```
@@ -114,8 +127,7 @@ $.soap({
 
 method
 ------
-type: **string**  
-required 
+type: **string**
 
 The service operation name. 
 
@@ -139,13 +151,16 @@ will result in:
 	</soap:Body>
 </soap:Envelope>
 ```
+send to `http://server.com/webServices/getItem`.
 
 namespaceQualifier
 ------------------
-type: **string**
-optional: default: _null_
+type: **string**  
+default: _null_
 
 Used as namespace prefix for all elements in request in combination with [namespaceURL](#namespaceURL)
+
+_This option ONLY applies when the request XML is going to be built from JSON [data](#data)._
 ```
 $.soap({
 	method: 'helloWorld',
@@ -166,10 +181,12 @@ will result in:
 
 namespaceURL
 ------------
-type: **string**
-optional: default: _null_
+type: **string**  
+default: _null_
 
 Used as the namespace url added to the request element in combination with [namespaceQualifier](#namespaceQualifier)
+
+_This option ONLY applies when the request XML is going to be built from JSON [data](#data)._
 ```
 $.soap({
 	method: 'helloWorld',
@@ -190,10 +207,12 @@ will result in:
 
 noPrefix
 --------
-type: **boolean**
-optional: default: _false_
+type: **boolean**  
+default: _false_
 
-Set to true if you don't want the namespaceQualifier to be the prefix for the nodes in params.
+Set to true if you don't want the [namespaceQualifier](#namespaceQualifier) to be the prefix for the nodes in params.
+
+_This option ONLY applies when the request XML is going to be built from JSON [data](#data)._
 ```
 $.soap({
 	method: 'helloWorld',
@@ -213,13 +232,25 @@ will result in:
 </soap:Envelope>
 ```
 
+request
+-------
+type: **function(SOAPRequest)**  
+
+Callback function which passes back the request object prior to ajax call
+```
+$.soap({
+	request: function(SOAPRequest) {
+		console.log(SOAPRequest.toString());
+	}
+});
+```
+
 soap12
 ------
-type: **boolean**
-optional: default: _false_
+type: **boolean**  
+default: _false_
 
 Set to true if you want to sent a SOAP1.2 compatible soap:Envelope with SOAP1.2 namespace
-
 ```
 $.soap({
 	soap12: true
@@ -234,11 +265,10 @@ will result in:
 
 SOAPAction
 ----------
-type: **string**
-optional, defaults to [method](#method)
+type: **string**  
+default: [method](#method)
 
 Allows to manually set the Request Header 'SOAPAction'.
-
 ```
 $.soap({
 	url: 'http://server.com/webServices/',
@@ -247,13 +277,26 @@ $.soap({
 })
 ```
 
+success
+-------
+type: **function(SOAPResponse)  
+
+Callback function to handle successful return.
+
+_Note that $.soap() also returns a jqXHR object that implements the [Promise interface](README.md#promise), so instead of the success option you can also use `jqXHR.done()`._
+```
+$.soap({
+	success: function(SOAPResponse) {
+		console.log(SOAPResponse.toString());
+	}
+});
+```
+
 url
 ---
 type: **string**  
-required 
 
 Specifies the endpoint of the webService. By default the [method](#method) is added to the url. Setting [appendMethodToURL](#appendMethodToURL) to _false_ will not add the [method](#method).
-
 ```
 $.soap({
 	url: 'http://server.com/webServices/',
@@ -261,26 +304,18 @@ $.soap({
 })
 ```
 
-Helper
-------
+wss
+---
+type: **object**
 
+To create a soap:Header with credentials for WS-Security
 ```
-options = {
-
-	//these options ONLY apply when the request XML is going to be built from JSON 'params'
-
-	// WS-Security
+$.soap({
 	wss: {
 		username: 'user',
 		password: 'pass',
 		nonce: 'w08370jf7340qephufqp3r4',
 		created: new Date().getTime()
-	},
-
-	//callback functions
-	request: function (SOAPRequest)  {},			// callback function - request object is passed back prior to ajax call (optional)
-	success: function (SOAPResponse) {},			// callback function to handle successful return (optional)
-	error:   function (SOAPResponse) {},			// callback function to handle fault return (optional)
-
-}
+	}
+});
 ```
