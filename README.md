@@ -57,7 +57,7 @@ http://my.server.com/soapservices/helloWorld
 Options
 -------
 ```Javascript
-options {
+options = {
 	url: 'http://my.server.com/soapservices/',		//endpoint address for the service
 	method: 'helloWorld',							// service operation name
 													// 1) will be appended to url if appendMethodToURL=true
@@ -68,21 +68,21 @@ options {
 	soap12: false,									// use SOAP 1.2 namespace and HTTP headers - default to false
 
 	// addional headers and namespaces
-	envAttributes: {						// additional attributes (like namespaces) for the Envelope:
+	envAttributes: {								// additional attributes (like namespaces) for the Envelope:
 		'xmlns:another': 'http://anotherNamespace.com/'
 	}
-	httpheaders: {							// additional http headers send with the $.ajax call, will be given to $.ajax({ headers: })
+	httpheaders: {									// additional http headers send with the $.ajax call, will be given to $.ajax({ headers: })
 		'Authorization': 'Basic ' + btoa('user:pass')
 	}
 
-	//data can be XML DOM, XML String, or JSON
-	data: domXmlObject,							// XML DOM object
+	//data can be XML DOM, XML String, JSON or a function
+	data: domXmlObject,								// XML DOM object
 	data: xmlString,								// XML String for request (alternative to internal build of XML from JSON 'params')
-	data: {										// JSON structure used to build request XML - SHOULD be coupled with ('namespaceQualifier' AND 'namespaceURL') AND ('method' OR 'elementName')
+	data: {											// JSON structure used to build request XML - SHOULD be coupled with ('namespaceQualifier' AND 'namespaceURL') AND ('method' OR 'elementName')
 		name: 'Remy Blom',
 		msg: 'Hi!'
 	},
-	data: function(SOAPObject) {
+	data: function(SOAPObject) {					// function returning an instance of the SOAPObject class 
 		return new SOAPObject('soap:Envelope')
 			.addNamespace('soap', 'http://schemas.xmlsoap.org/soap/envelope/')
 			.newChild('soap:Body')
@@ -107,10 +107,10 @@ options {
 	//callback functions
 	request: function (SOAPRequest)  {},			// callback function - request object is passed back prior to ajax call (optional)
 	success: function (SOAPResponse) {},			// callback function to handle successful return (optional)
-	error:   function (SOAPResponse) {},				// callback function to handle fault return (optional)
+	error:   function (SOAPResponse) {},			// callback function to handle fault return (optional)
 
 	// debugging
-	enableLogging: false						// to enable the local log function set to true, defaults to false (optional)
+	enableLogging: false							// to enable the local log function set to true, defaults to false (optional)
 }
 ```
 

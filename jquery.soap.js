@@ -56,7 +56,7 @@ I may consider permitting uses outside of the license terms on a by-case basis.
 USAGE
 -----
 
-options {
+options = {
 	url: 'http://my.server.com/soapservices/',		//endpoint address for the service
 	method: 'helloWorld',							// service operation name
 													// 1) will be appended to url if appendMethodToURL=true
