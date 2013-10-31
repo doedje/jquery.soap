@@ -298,6 +298,7 @@ options = {
 				url: options.url,
 				async: options.async,
 				headers: options.headers,
+			//	crossDomain: true,
 				dataType: "xml",
 				processData: false,
 				data: this.toString(),
@@ -476,8 +477,7 @@ options = {
 			if (params === null) {
 				soapObject = new SOAPObject(prefix+name);
 				soapObject.attr('nil', true);
-			}
-			if (typeof params == 'object') {
+			} else if (typeof params == 'object') {
 				// added by DT - check if object is in fact an Array and treat accordingly
 				if(params.constructor.toString().indexOf("Array") != -1) { // type is array
 					for(var x in params) {
