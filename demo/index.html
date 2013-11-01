@@ -82,6 +82,7 @@
 
 						params: params,
 						wss: wss,
+						async: true,
 						
 						namespaceQualifier:  $('#namespaceQualifier').val(),
 						namespaceURL: $('#namespaceURL').val(),
@@ -101,6 +102,10 @@
 							$('#feedbackHeader').html('Error!');
 							$('#feedback').text(SOAPResponse.toString());
 						}
+					}).done(function(a,b,c) {
+						console.log(a,b,c);
+					}).fail(function(a,b,c) {
+						console.log(a,b,c);
 					});
 				});
 			});

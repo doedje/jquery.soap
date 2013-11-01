@@ -163,11 +163,11 @@ options {
 		securityNS: "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd",
 		usernameToken: "wsse:UsernameToken",
 		usernameTokenNS: "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd",
-		username: "wsse:Username",
+		usernameNode: "wsse:Username",
 		usernameType: "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd",
-		password: "wsse:Password",
+		passwordNode: "wsse:Password",
 		passwordType: "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordText",
-		nonce: "wsse:Nonce",
+		nonceNode: "wsse:Nonce",
 		nonceType: "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd",
 		wsuCreated: "wsu:Created",
 		wsuCreatedType: "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd"
@@ -183,7 +183,7 @@ options {
 					namespace = this.settings.namespace,
 					customNS = this.settings.customNS;
 				this.xml = ["<", prefix, ":Envelope xmlns:", prefix, "=\"", namespace, "\" "];
-				for (ns in customNS) {
+				for (var ns in customNS) {
 					if (customNS.hasOwnProperty(ns)) {
 						this.xml.push(ns, "=\"", customNS[ns], "\" ");
 					}
@@ -197,17 +197,18 @@ options {
 			pushHeaders: function (wss) {
 				var boolWSS = (!!wss && !!wss.username && !!wss.password),
 					prefix = this.settings.prefix;
-				if (boolWSS || this.settings.headrs) {
+				if (boolWSS || this.settings.headers) {
 					this.xml.push("<", prefix, ":Header>", (this.settings.headers || ""));
 					if (boolWSS) {
-						var wss = WSSconst;
+						// var wss = WSSconst; // wss already defined (parameter)
+						$.extend(wss, WSSconst);
 
 						this.xml.push("<", wss.security, " ", "xmlns:wsse", "=\"", wss.securityNS, "\">");
 						this.xml.push("<", wss.usernameToken, " ", "xmlns:wsu", "=\"", wss.usernameTokenNS, "\">");
-						this.xml.push("<", wss.username, " ", "Type", "=\"", wss.usernameType, "\">", wss.username, "</", wss.username, ">");
-						this.xml.push("<", wss.password, " ", "Type", "=\"", wss.passwordType, "\">", wss.password, "</", wss.password, ">");
+						this.xml.push("<", wss.usernameNode, " ", "Type", "=\"", wss.usernameType, "\">", wss.username, "</", wss.usernameNode, ">");
+						this.xml.push("<", wss.passwordNode, " ", "Type", "=\"", wss.passwordType, "\">", wss.password, "</", wss.passwordNode, ">");
 						if (wss.nonce) {
-							this.xml.push("<", wss.nonce, " ", "Type", "=\"", wss.nonceType, "\">", wss.nonce, "</", wss.nonce, ">");
+							this.xml.push("<", wss.nonceNode, " ", "Type", "=\"", wss.nonceType, "\">", wss.nonce, "</", wss.nonceNode, ">");
 						}
 						if (wss.created) {
 							this.xml.push("<", wss.wsuCreated, " ", "Type", "=\"", wss.wsuCreatedType, "\">", wss.created, "</", wss.wsuCreated, ">");
