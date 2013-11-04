@@ -5,7 +5,7 @@ jQuery Soap
 
 jQuery plugin for communicating with a web service using SOAP.
 --------------------------------------------------------------
-This script uses $.ajax to do a soapRequest. It can take XML DOM, XML string or JSON as input and the response can be returned as either XML DOM, XML string or JSON too.
+This script uses $.ajax to send a SOAPEnvelope. It can take XML DOM, XML string or JSON as input and the response can be returned as either XML DOM, XML string or JSON too.
 
 Thanx to proton17, Diccon Towns and Zach Shelton!
 
@@ -103,7 +103,7 @@ options = {
 	},
 
 	//callback functions
-	request: function (SOAPRequest)  {},			// callback function - request object is passed back prior to ajax call (optional)
+	beforeSend: function (SOAPEnvelope)  {},			// callback function - SOAPEnvelope object is passed back prior to ajax call (optional)
 	success: function (SOAPResponse) {},			// callback function to handle successful return (optional)
 	error:   function (SOAPResponse) {},			// callback function to handle fault return (optional)
 
@@ -120,8 +120,9 @@ old | new | reason
 --- | --- | ---
 napespaceUrl | namespaceURL | to capitalize URL is quite common
 params | data | $.ajax uses data too, more consistent
+request | beforeSend | $.ajax uses data too, more consistent
 
-The old names are mapped to the new names and will be deprecated at version 2.0.0 (that might take years, or decades). A warning is printed to the console when you use the old name.
+The old names are mapped to the new names and will be deprecated at version 2.0.0 (that might take years, or decades). A warning is printed to the console when you use an old name.
 
 Promise
 -------
@@ -188,7 +189,7 @@ $.soap({
 	}
 });
 ```
-_**NOTE**: the **data** parameter is used as a key. If no data is specified in the options passed to **$.soap** all options are stored in the globalConfig, there won't be a soapRequest. When a method is specified the globalConfig will be used and all options passed to **$.soap** will overrule those in globalConfig, but keep in mind, they won't be overwritten!_
+_**NOTE**: the **data** parameter is used as a key. If no data is specified in the options passed to **$.soap** all options are stored in the globalConfig, a SOAPEnvelope won't be created, there will be nothing to send. When a method is specified the globalConfig will be used and all options passed to **$.soap** will overrule those in globalConfig, but keep in mind, they won't be overwritten!_
 
 WS-Security
 -----------
@@ -322,7 +323,7 @@ Version | Date | Changes
 1.0.1 | 2013-04-02 | Fix to the manifest file, new version# needed to publish to plugins.jquery.com
 1.0.0 | 2013-04-02 | Minor fix (return for dom2string in reponse)
 0.10.0 | 2013-03-29 | The **First Zach Shelton version**, better code, XML DOM, XML string and JSON in and out
-0.9.4 | 2013-02-26 | changed the charset of soapRequest to UTF-8 and removed the " quotes
+0.9.4 | 2013-02-26 | changed the charset of the $.ajax call to UTF-8 and removed the " quotes
 0.9.3 | 2013-02-26 | Added the possibility to call **$.soap** just to set extra config values.
 0.9.2 | 2013-02-21 | some extra cleaning of stupid code in my part of the script. Now it uses the addNamespace function to properly set namespaces.
 0.9.1 | 2013-02-20 | minor changes to keep LINT happy.

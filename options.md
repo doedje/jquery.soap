@@ -20,6 +20,28 @@ $.soap({
 ```
 will send a request to `http://server.com/webServices/`
 
+async
+-----
+type: **boolean**
+default: _false_
+
+Set to true when you want the $.ajax call to be async.
+
+beforeSend
+----------
+type: **function(SOAPEnvelope)**  
+
+_This function is deprecated from 1.3.0, use [beforeSend](#beforeSend) instead._
+
+Callback function which passes back the SOAPEnvelope object prior to the $.ajax call
+```
+$.soap({
+	beforeSend: function(SOAPEnvelope) {
+		console.log(SOAPEnvelope.toString());
+	}
+});
+```
+
 data
 ----
 type: **string** or **XMLDOM** or **JSON** or **function(SOAPObject)**  
@@ -64,7 +86,6 @@ will result in:
 	</soap:Body>
 </soap:Envelope>
 ```
-
 function passing back $.soap's SOAPObject that can be used to create and return an instance of the SOAPObject class.
 ```
 $.soap({
@@ -280,13 +301,15 @@ will result in:
 
 request
 -------
-type: **function(SOAPRequest)**  
+type: **function(SOAPEnvelope)**  
 
-Callback function which passes back the SOAPRequest object prior to the  $.ajax call
+_This function is deprecated from 1.3.0, use [beforeSend](#beforeSend) instead_
+
+Callback function which passes back the SOAPEnvelope object prior to the $.ajax call
 ```
 $.soap({
-	request: function(SOAPRequest) {
-		console.log(SOAPRequest.toString());
+	request: function(SOAPEnvelope) {
+		console.log(SOAPEnvelope.toString());
 	}
 });
 ```

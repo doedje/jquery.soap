@@ -46,8 +46,8 @@ $(document).ready(function() {
 
 			enableLogging: $('#enableLogging').prop('checked'),
 
-			request: function(SOAPRequest) {
-				var out = dom2html($.parseXML(SOAPRequest.toString()).firstChild);
+			request: function(SOAPEnvelope) {
+				var out = dom2html($.parseXML(SOAPEnvelope.toString()).firstChild);
 				$('#request').text(out);
 			},
 			success: function(SOAPResponse) {

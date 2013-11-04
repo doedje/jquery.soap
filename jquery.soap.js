@@ -4,7 +4,7 @@ version: 1.3.0
 
 jQuery plugin for communicating with a web service using SOAP.
 
-One function to send the soapRequest that takes a complex object as a parameter
+One function to send a SOAPEnvelope that takes a complex object as a data
 
 License GNU/GPLv3
 -----------------
@@ -71,33 +71,33 @@ https://github.com/doedje/jquery.soap/blob/1.3.0/README.md
 		});
 
 		if (!!soapObject && !!config.url) { // we have a request and somewhere to send it
-			// Create a SOAPRequest with the soapObject
-			var soapRequest = new SOAPRequest(soapObject);
+			// Create a SOAPEnvelope with the soapObject
+			var soapEnvelope = new SOAPEnvelope(soapObject);
 			// Additional attributes and namespaces for the Envelope
 			if (config.envAttributes) {
 				for (var i in config.envAttributes) {
-					soapRequest.addAttribute(i, config.envAttributes[i]);
+					soapEnvelope.addAttribute(i, config.envAttributes[i]);
 				}
 			}
 			// WSS
 			if (!!config.wss) {
 				var wssObj = SOAPTool.createWSS(config.wss);
-				// add to WSS Security header to soapRequest
+				// add to WSS Security header to soapEnvelope
 				if (!!wssObj) {
-					soapRequest.addHeader(wssObj);
+					soapEnvelope.addHeader(wssObj);
 				}
 			}
 			// append Method?
 			if(!!config.appendMethodToURL && !!config.method){
 				config.url += config.method;
 			}
-			return soapRequest.send({
+			return soapEnvelope.send({
 				url: config.url,
 				async: config.async,
 				headers: (config.HTTPHeaders) ? config.HTTPHeaders : {},
 				action: (!!config.SOAPAction) ? config.SOAPAction : config.method,
 				soap12: config.soap12,
-				beforeSend: config.request
+				beforeSend: config.beforeSend
 			}).done(function(data, textStatus, jqXHR) {
 				var response = new SOAPResponse(textStatus, jqXHR);
 				log('jquery.soap - receive:', $.parseXML(response.toString()).firstChild);
@@ -114,8 +114,8 @@ https://github.com/doedje/jquery.soap/blob/1.3.0/README.md
 	};
 
 	//Soap request - this is what being sent
-	function SOAPRequest (soapObject) {
-		this.typeOf = "SOAPRequest";
+	function SOAPEnvelope (soapObject) {
+		this.typeOf = "SOAPEnvelope";
 		this.prefix = 'soap';
 		this.soapConfig = null;
 		this.attributes = [];
@@ -163,7 +163,7 @@ https://github.com/doedje/jquery.soap/blob/1.3.0/README.md
 		}
 	}
 
-	SOAPRequest.prototype = {
+	SOAPEnvelope.prototype = {
 		addAttribute: function(name, value) {
 			this.attributes[name] = value;
 		},
@@ -211,7 +211,7 @@ https://github.com/doedje/jquery.soap/blob/1.3.0/README.md
 				options.headers.SOAPAction = options.action;
 			}
 			log('jquery.soap - beforeSend:', $.parseXML(this.toString()).firstChild);
-			// function to preview the soapRequest before it is send to the server
+			// function to preview the SOAPEnvelope before it is send to the server
 			if ($.isFunction(options.beforeSend)) {
 				options.beforeSend(this);
 			}
@@ -495,6 +495,7 @@ https://github.com/doedje/jquery.soap/blob/1.3.0/README.md
 			var deprecated = {
 				// usage -> oldParam: 'newParam'
 				namespaceUrl: 'namespaceURL',
+				request: 'beforeSend',
 				params: 'data'
 			};
 			for (var oldParam in deprecated) {
