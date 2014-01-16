@@ -1,6 +1,6 @@
 /*==========================
 jquery.soap.js  http://plugins.jquery.com/soap/ or https://github.com/doedje/jquery.soap
-version: 1.3.1
+version: 1.3.2
 
 jQuery plugin for communicating with a web service using SOAP.
 
@@ -31,7 +31,7 @@ For information about how to use jQuery.soap, authors, changelog, the latest ver
 Visit: https://github.com/doedje/jquery.soap
 
 Documentation about THIS version is found here:
-https://github.com/doedje/jquery.soap/blob/1.3.1/README.md
+https://github.com/doedje/jquery.soap/blob/1.3.2/README.md
 
 ======================*/
 
@@ -39,7 +39,7 @@ https://github.com/doedje/jquery.soap/blob/1.3.1/README.md
 	var enableLogging;
 	var globalConfig = { // this setup once, defaults go here
 		appendMethodToURL: true,
-		async: false,
+		async: true,
 		enableLogging: false,
 		noPrefix: false,
 		soap12: false
@@ -58,6 +58,8 @@ https://github.com/doedje/jquery.soap/blob/1.3.1/README.md
 		$.extend(config, globalConfig, options);
 		// function log will only work below this line!
 		enableLogging = config.enableLogging;
+
+		log('jquery.soap - config:', config);
 
 		// fallbacks for changed properties
 		SOAPTool.fallbackDeprecated(config);

@@ -1,6 +1,6 @@
 /*==========================
 demo.js  http://plugins.jquery.com/soap/ or https://github.com/doedje/jquery.soap
-part of the jQuery.soap distribution version: 1.3.1
+part of the jQuery.soap distribution version: 1.3.2
 
 this file contains the javascript for the jQuery.soap demo
 ===========================*/
@@ -31,6 +31,7 @@ $(document).ready(function() {
 			appendMethodToURL: $('#appendMethodToURL').prop('checked'),
 			SOAPAction: $('#SOAPAction').val(),
 			soap12: $('#soap12').prop('checked'),
+			async: $('#async').prop('checked'),
 
 			data: data,
 			wss: wss,
@@ -59,6 +60,13 @@ $(document).ready(function() {
 				$('#feedback').text(SOAPResponse.toString());
 			}
 		});
+	});
+
+	$(document).ajaxStart(function() {
+		console.log('ajaxStart!');
+	});
+	$(document).ajaxStop(function() {
+		console.log('ajaxStop!');
 	});
 
 	// just a little experiment with promises:
@@ -107,19 +115,6 @@ $(document).ready(function() {
 				.end();
 		}
 	});
-	*/
-
-	$(document).bind('ajaxStart', function() {
-		console.log('ajaxStart')
-	})
-
-	/*
-	$(document).ajaxStart(function() {
-		console.log('ajaxStart')
-	})
-	$(document).ajaxStop(function() {
-		console.log('ajaxStop')
-	})
 	*/
 
 });
