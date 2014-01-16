@@ -108,6 +108,20 @@ $(document).ready(function() {
 		}
 	});
 	*/
+
+	$(document).bind('ajaxStart', function() {
+		console.log('ajaxStart')
+	})
+
+	/*
+	$(document).ajaxStart(function() {
+		console.log('ajaxStart')
+	})
+	$(document).ajaxStop(function() {
+		console.log('ajaxStop')
+	})
+	*/
+
 });
 
 function dom2html(xmldom, tabcount) {
