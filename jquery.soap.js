@@ -1,6 +1,6 @@
 /*==========================
 jquery.soap.js  http://plugins.jquery.com/soap/ or https://github.com/doedje/jquery.soap
-version: 1.3.2
+version: 1.3.4
 
 jQuery plugin for communicating with a web service using SOAP.
 
@@ -31,7 +31,7 @@ For information about how to use jQuery.soap, authors, changelog, the latest ver
 Visit: https://github.com/doedje/jquery.soap
 
 Documentation about THIS version is found here:
-https://github.com/doedje/jquery.soap/blob/1.3.2/README.md
+https://github.com/doedje/jquery.soap/blob/1.3.4/README.md
 
 ======================*/
 
@@ -423,10 +423,6 @@ https://github.com/doedje/jquery.soap/blob/1.3.2/README.md
 				soapObject = new SOAPObject(prefix+name);
 				soapObject.val(''+params); // the ''+ is added to fix issues with falsey values.
 			}
-
-console.log(name, params, prefix, parentNode)
-console.log(soapObject)
-
 			return soapObject;
 		},
 		dom2soap: function (xmldom) {
