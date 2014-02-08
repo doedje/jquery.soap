@@ -281,7 +281,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 Authors / History
 -----------------
-2013-10 >> total rewrite, triggered by pull request #21 by anthony-redFox  
+2013-10 >> total rewrite, triggered by pull request #21 by anthony-redFox == https://github.com/anthony-redFox/jquery.soap/
 Remy Blom == https://github.com/doedje/jquery.soap
 
 2013-06 >> fix for SOAPServer and SOAPAction headers, better params object to SOAPObject function  
