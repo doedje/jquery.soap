@@ -7,7 +7,9 @@ jQuery plugin for communicating with a web service using SOAP.
 --------------------------------------------------------------
 This script uses $.ajax to send a SOAPEnvelope. It can take XML DOM, XML string or JSON as input and the response can be returned as either XML DOM, XML string or JSON too.
 
-Thanx to proton17, Diccon Towns and Zach Shelton!
+Thanx to proton17, Diccon Towns, 
+[Zach Shelton](https://github.com/zachofalltrades/jquery.soap) and 
+[anthony-redFox](https://github.com/anthony-redFox/jquery.soap)!
 
 **Let's $.soap()!**
 
