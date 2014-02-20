@@ -1,7 +1,7 @@
 jQuery Soap
 ===========
 **file:** jquery.soap.js  
-**version:** 1.3.4
+**version:** 1.3.5
 
 jQuery plugin for communicating with a web service using SOAP.
 --------------------------------------------------------------
@@ -311,6 +311,7 @@ Version numbers are [semver](http://semver.org/) compatible from version 1.0.0 a
 
 Version | Date | Changes
 --- | --- | ---
+1.3.5 | 2014-02-20 | bugfix for #36: correct handling of setting null values using SOAPObject
 1.3.4 | 2014-02-08 | Fix to the manifest file, new version# needed to publish to plugins.jquery.com
 1.3.3 | 2014-02-08 | bugfix: fixed json2soap for arrays
 1.3.2 | 2014-01-16 | bugfix: _async_ defaulted to **false**? should have been **true**
