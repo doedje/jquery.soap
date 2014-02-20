@@ -239,7 +239,7 @@ https://github.com/doedje/jquery.soap/blob/1.3.4/README.md
 		this.attributes = {};
 		this._parent = null;
 		this.children = [];
-		this.value = null;
+		this.value = undefined;
 
 		this.attr = function(name, value) {
 			if (!!name && !!value) {
@@ -252,10 +252,17 @@ https://github.com/doedje/jquery.soap/blob/1.3.4/README.md
 			}
 		};
 		this.val = function(value) {
-			if (!value) {
-				return this.value;
-			} else {
+			if (value === undefined) {
+				if (this.attr('xsi:nil') === 'true') {
+					return null;
+				} else {
+					return this.value;
+				}
+			} else if (value !== null) {
 				this.value = value;
+				return this;
+			} else {
+				this.attr("xsi:nil","true");
 				return this;
 			}
 		};
