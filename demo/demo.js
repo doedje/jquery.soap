@@ -1,6 +1,6 @@
 /*==========================
 demo.js  http://plugins.jquery.com/soap/ or https://github.com/doedje/jquery.soap
-part of the jQuery.soap distribution version: 1.3.5
+part of the jQuery.soap distribution version: 1.3.6
 
 this file contains the javascript for the jQuery.soap demo
 ===========================*/
@@ -61,62 +61,6 @@ $(document).ready(function() {
 			}
 		});
 	});
-
-	$(document).ajaxStart(function() {
-		console.log('ajaxStart!');
-	});
-	$(document).ajaxStop(function() {
-		console.log('ajaxStop!');
-	});
-
-	// just a little experiment with promises:
-	/*
-	$.soap({
-		url: 'fake-soap-response.xml',
-		method: 'fake',
-		appendMethodToURL: true,
-		data: '<test>fake</test>',
-		error: function() {
-			console.log('soap error');
-		},
-		success: function() {
-			console.log('soap success')
-		}
-	}).then(function() {
-		console.log('yep');
-	}, function() {
-		console.log('nope');
-	});
-	
-	$.soap({
-		enableLogging: true,
-		url: 'http://localhost/jquery.soap/demo/fake-soap-response.xml',
-		error: function() {
-			console.log('soap error');
-		},
-		success: function() {
-			console.log('soap success')
-		}
-	});
-
-	$.soap({
-		enableLogging: false,
-		data: function(SOAPObject) {
-			return new SOAPObject('soap:Envelope')
-				.addNamespace('ns','url')
-				.attr('test','test')
-				.newChild('child1')
-					.attr('attr','val')
-					.val('test')
-				.end()
-				.newChild('child2')
-					.addParameter('name1','value1')
-					.addParameter('name2','value2')
-				.end();
-		}
-	});
-	*/
-
 });
 
 function dom2html(xmldom, tabcount) {

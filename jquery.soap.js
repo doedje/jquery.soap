@@ -1,6 +1,6 @@
 /*==========================
 jquery.soap.js  http://plugins.jquery.com/soap/ or https://github.com/doedje/jquery.soap
-version: 1.3.5
+version: 1.3.6
 
 jQuery plugin for communicating with a web service using SOAP.
 
@@ -31,7 +31,7 @@ For information about how to use jQuery.soap, authors, changelog, the latest ver
 Visit: https://github.com/doedje/jquery.soap
 
 Documentation about THIS version is found here:
-https://github.com/doedje/jquery.soap/blob/1.3.5/README.md
+https://github.com/doedje/jquery.soap/blob/1.3.6/README.md
 
 ======================*/
 
@@ -394,6 +394,9 @@ https://github.com/doedje/jquery.soap/blob/1.3.5/README.md
 					soapObject = SOAPTool.json2soap(options.name, options.data, options.prefix);
 					if (!!options.namespaceQualifier && !!options.namespaceURL) {
 						soapObject.addNamespace(options.namespaceQualifier, options.namespaceURL);
+					} 
+					else if (!!options.namespaceURL) {
+						soapObject.attr('xmlns', options.namespaceURL);
 					}
 				}
 			} else if ($.isFunction(options.data)) {
