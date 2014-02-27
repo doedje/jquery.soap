@@ -376,7 +376,7 @@ https://github.com/doedje/jquery.soap/blob/1.3.7/README.md
 		},
 		SOAP12: {
 			type: 'application/soap+xml',
-			namespaceURL: 'http://www.w3.org/2003/05/soap-envelope/'
+			namespaceURL: 'http://www.w3.org/2003/05/soap-envelope'
 		},
 		processData: function(options) {
 			var soapObject;
