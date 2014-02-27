@@ -1,7 +1,7 @@
 jQuery Soap
 ===========
 **file:** jquery.soap.js  
-**version:** 1.3.6
+**version:** 1.3.7
 
 jQuery plugin for communicating with a web service using SOAP.
 --------------------------------------------------------------
@@ -311,6 +311,7 @@ Version numbers are [semver](http://semver.org/) compatible from version 1.0.0 a
 
 Version | Date | Changes
 --- | --- | ---
+1.3.7 | 2014-02-27 | fix for #40: removed trailing slash on SOAP1.2 namespaceURL: thanx [AlexandreFournier](https://github.com/AlexandreFournier)
 1.3.6 | 2014-02-26 | fix for issue #38: specifying only namespaceURL works too
 1.3.5 | 2014-02-20 | bugfix for #36: correct handling of setting null values using SOAPObject
 1.3.4 | 2014-02-08 | Fix to the manifest file, new version# needed to publish to plugins.jquery.com

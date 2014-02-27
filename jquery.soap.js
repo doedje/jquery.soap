@@ -1,6 +1,6 @@
 /*==========================
 jquery.soap.js  http://plugins.jquery.com/soap/ or https://github.com/doedje/jquery.soap
-version: 1.3.6
+version: 1.3.7
 
 jQuery plugin for communicating with a web service using SOAP.
 
@@ -31,7 +31,7 @@ For information about how to use jQuery.soap, authors, changelog, the latest ver
 Visit: https://github.com/doedje/jquery.soap
 
 Documentation about THIS version is found here:
-https://github.com/doedje/jquery.soap/blob/1.3.6/README.md
+https://github.com/doedje/jquery.soap/blob/1.3.7/README.md
 
 ======================*/
 
@@ -202,6 +202,8 @@ https://github.com/doedje/jquery.soap/blob/1.3.6/README.md
 			if (!soapEnv.attr('xmlns:' + this.prefix)) {
 				soapEnv.addNamespace(this.prefix, this.soapConfig.namespaceURL);
 			}
+			// maybe add xsi here?
+			// xsi="http://www.w3.org/2001/XMLSchema-instance
 			return soapEnv.toString();
 		},
 		send: function(options) {
@@ -253,7 +255,7 @@ https://github.com/doedje/jquery.soap/blob/1.3.6/README.md
 		};
 		this.val = function(value) {
 			if (value === undefined) {
-				if (this.attr('xsi:nil') === 'true') {
+				if (this.attr('nil') === 'true') {
 					return null;
 				} else {
 					return this.value;
@@ -262,7 +264,7 @@ https://github.com/doedje/jquery.soap/blob/1.3.6/README.md
 				this.value = value;
 				return this;
 			} else {
-				this.attr("xsi:nil","true");
+				this.attr("nil","true");
 				return this;
 			}
 		};
