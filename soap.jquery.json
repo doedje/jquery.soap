@@ -27,6 +27,6 @@
 		}
 	],
 	"dependencies": {
-		"jquery": ">=1.6"
+		"jquery": ">=1.9"
 	}
 }

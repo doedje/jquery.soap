@@ -1,0 +1,13 @@
+{
+	"name": "jquery.soap",
+	"version": "1.3.7",
+	"keywords": [
+		"soap",
+		"ajax",
+		"wss"
+	],
+	"main": "jquery.soap.js",
+	"dependencies": {
+		"jquery": ">=1.9"
+	}
+}
