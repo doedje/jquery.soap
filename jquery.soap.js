@@ -1,6 +1,6 @@
 /*==========================
 jquery.soap.js  http://plugins.jquery.com/soap/ or https://github.com/doedje/jquery.soap
-version: 1.3.7
+version: 1.3.8
 
 jQuery plugin for communicating with a web service using SOAP.
 
@@ -31,7 +31,7 @@ For information about how to use jQuery.soap, authors, changelog, the latest ver
 Visit: https://github.com/doedje/jquery.soap
 
 Documentation about THIS version is found here:
-https://github.com/doedje/jquery.soap/blob/1.3.7/README.md
+https://github.com/doedje/jquery.soap/blob/1.3.8/README.md
 
 ======================*/
 
@@ -228,7 +228,16 @@ https://github.com/doedje/jquery.soap/blob/1.3.7/README.md
 				dataType: "xml",
 				processData: false,
 				data: this.toString(),
-				contentType: contentType + "; charset=UTF-8"
+				contentType: contentType + "; charset=UTF-8",
+				xhrFields: {
+				  onprogress: function(e) {
+				    if (e.lengthComputable) {
+				      log("jquery.soap - progress:", (e.loaded / e.total * 100));
+				    } else {
+				      log("jquery.soap - progress:","Length not computable.");
+				    }
+				  }
+				}
 			});
 		}
 	};
