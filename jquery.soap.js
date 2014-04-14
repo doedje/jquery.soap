@@ -422,6 +422,10 @@ https://github.com/doedje/jquery.soap/blob/1.3.7/README.md
 						childObject = this.json2soap(name, params[x], prefix, parentNode);
 						parentNode.appendChild(childObject);
 					}
+				} else if (params.constructor.toString().indexOf("String") > -1) { // type is string
+					// handle String objects as string primitive value
+					soapObject = new SOAPObject(prefix+name);
+					soapObject.val(''+params); // the ''+ is added to fix issues with falsey values.
 				} else {
 					soapObject = new SOAPObject(prefix+name);
 					for(var y in params) {
