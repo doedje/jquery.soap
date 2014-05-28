@@ -51,9 +51,9 @@ https://github.com/doedje/jquery.soap/blob/1.3.8/README.md
 		// a configuration call will not have 'data' specified ('params' is used for backwards compatibility)
 		if (options && !options.params && !options.data) {
 			$.extend(globalConfig, options); // update global config
-			enableLogging = true;
-			log('jQuery.soap: globalConfig updated:', globalConfig);
-			return;
+			enableLogging = options.enableLogging;
+			log('jQuery.soap - globalConfig updated:', globalConfig);
+			return globalConfig;
 		}
 		$.extend(config, globalConfig, options);
 		// function log will only work below this line!
@@ -102,7 +102,7 @@ https://github.com/doedje/jquery.soap/blob/1.3.8/README.md
 				beforeSend: config.beforeSend
 			}).done(function(data, textStatus, jqXHR) {
 				var response = new SOAPResponse(textStatus, jqXHR);
-				log('jquery.soap - receive:', $.parseXML(response.toString()).firstChild);
+				log('jquery.soap - receive:', response.toXML().firstChild);
 				if ($.isFunction(config.success)) {
 					config.success(response);
 				}
@@ -112,6 +112,13 @@ https://github.com/doedje/jquery.soap/blob/1.3.8/README.md
 					config.error(new SOAPResponse(textStatus, jqXHR));
 				}
 			});
+		} else {
+			if (!soapObject) {
+				warn('jquery.soap - no soapObject');
+			}
+			if (!config.url) {
+				warn('jquery.soap - no url');
+			}
 		}
 	};
 
