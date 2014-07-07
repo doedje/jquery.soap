@@ -1,6 +1,6 @@
 /*==========================
 demo.js  http://plugins.jquery.com/soap/ or https://github.com/doedje/jquery.soap
-part of the jQuery.soap distribution version: 1.3.8
+part of the jQuery.soap distribution version: 1.3.9
 
 this file contains the javascript for the jQuery.soap demo
 ===========================*/
@@ -57,10 +57,10 @@ $(document).ready(function() {
 				$('#feedback').text(SOAPResponse.toString());
 
 // console.log($(SOAPResponse.toString()).find('ns\\:return').html())
-console.log('toString()', SOAPResponse.toString());
-console.log('toXML()', SOAPResponse.toXML());
-console.log('toJSON()', SOAPResponse.toJSON());
-console.log('$.xml2json(soapResponse.toXML());',$.xml2json(SOAPResponse.toString()))
+//console.log('toString()', SOAPResponse.toString());
+//console.log('toXML()', SOAPResponse.toXML());
+//console.log('toJSON()', SOAPResponse.toJSON());
+//console.log('$.xml2json(soapResponse.toXML());',$.xml2json(SOAPResponse.toString()))
 
 			},
 			error: function(SOAPResponse) {
