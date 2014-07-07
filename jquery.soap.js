@@ -77,7 +77,7 @@ https://github.com/doedje/jquery.soap/blob/1.3.8/README.md
 			var soapEnvelope = new SOAPEnvelope(soapObject);
 			// Additional attributes and namespaces for the Envelope
 			if (config.envAttributes) {
-				for (var i in config.envAttributes) {
+				for (var i = 0; i < config.envAttributes.length; i++) {
 					soapEnvelope.addAttribute(i, config.envAttributes[i]);
 				}
 			}
@@ -144,25 +144,25 @@ https://github.com/doedje/jquery.soap/blob/1.3.8/README.md
 			// Envelope
 			var env = soapObject.find(this.prefix + ':Envelope');
 			if (env && env.attributes) {
-				for (var i in env.attributes) {
+				for (var i = 0; i < env.attributes.length; i++) {
 					this.addAttribute(i, env.attributes[i]);
 				}
 			}
 			// headers
 			header = soapObject.find(this.prefix + ':Header');
 			if (header && header.children) {
-				for (var j in header.children) {
+				for (var j = 0; j < header.children.length; j++) {
 					this.addHeader(header.children[j]);
 				}
 			}
 			// body
 			body = soapObject.find(this.prefix + ':Body');
 			if (body && body.children) {
-				for (var k in body.children) {
+				for (var k = 0; k < body.children.length; k++) {
 					this.addBody(body.children[k]);
 				}
 			} else {
-				for (var l in soapObject.children) {
+				for (var l = 0; l < soapObject.children.length; l++) {
 					this.addBody(soapObject.children[l]);
 				}
 			}
@@ -194,14 +194,14 @@ https://github.com/doedje/jquery.soap/blob/1.3.8/README.md
 			//Add Headers
 			if (this.headers.length > 0) {
 				var soapHeader = soapEnv.newChild(this.prefix + ':Header');
-				for (var i in this.headers) {
+				for (var i = 0; i < this.headers.length; i++) {
 					soapHeader.appendChild(this.headers[i]);
 				}
 			}
 			//Add Bodies
 			if (this.bodies.length > 0) {
 				var soapBody = soapEnv.newChild(this.prefix + ':Body');
-				for (var j in this.bodies) {
+				for (var j = 0; j < this.bodies.length; j++) {
 					soapBody.appendChild(this.bodies[j]);
 				}
 			}
@@ -311,7 +311,7 @@ https://github.com/doedje/jquery.soap/blob/1.3.8/README.md
 			if (this.name === name) {
 				return this;
 			} else {
-				for (var i in this.children) {
+				for (var i = 0; i < this.children.length; i++) {
 					var result = this.children[i].find(name);
 					if (result) {
 						return result;
@@ -460,11 +460,11 @@ https://github.com/doedje/jquery.soap/blob/1.3.8/README.md
 		dom2soap: function (xmldom) {
 			var whitespace = /^\s+$/;
 			var soapObject = new SOAPObject(xmldom.nodeName);
-			for (var i in xmldom.attributes) {
+			for (var i = 0; i < xmldom.attributes.length; i++) {
 				var attribute = xmldom.attributes[i];
 				soapObject.attr(attribute.name, attribute.value);
 			}
-			for (var j in xmldom.childNodes) {
+			for (var j = 0; j < xmldom.childNodes.length; j++) {
 				var child = xmldom.childNodes[j];
 				if (child.nodeType === 1) {
 					var childObject = SOAPTool.dom2soap(child);
