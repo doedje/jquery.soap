@@ -1,0 +1,14 @@
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<soap:Body>
+<GetBranchMasterAsJsonResponse xmlns="http://tempuri.org/">
+<GetBranchMasterAsJsonResult>
+[{"BRANCHID":1.0,"BRANCHNAME":"abc","BANKID":1.0},
+{"BRANCHID":2.0,"BRANCHNAME":"def","BANKID":1.0},
+{"BRANCHID":3.0,"BRANCHNAME":"ghi","BANKID":2.0},
+{"BRANCHID":4.0,"BRANCHNAME":"jkl","BANKID":3.0},
+{"BRANCHID":5.0,"BRANCHNAME":"mno","BANKID":4.0},
+{"BRANCHID":6.0,"BRANCHNAME":"pqr","BANKID":5.0}]
+</GetBranchMasterAsJsonResult>
+</GetBranchMasterAsJsonResponse>
+</soap:Body>
+</soap:Envelope>

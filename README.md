@@ -55,7 +55,7 @@ http://my.server.com/soapservices/helloWorld
 
 Options overview
 ----------------
-[More detailed list of the available options for jQuery.soap](options.md)
+[More detailed list of the available options for jQuery.soap](doc/options.md)
 ```Javascript
 options = {
 	url: 'http://my.server.com/soapservices/',		//endpoint address for the service

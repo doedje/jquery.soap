@@ -1,6 +1,6 @@
 /*==========================
 demo.js  http://plugins.jquery.com/soap/ or https://github.com/doedje/jquery.soap
-part of the jQuery.soap distribution version: 1.3.6
+part of the jQuery.soap distribution version: 1.3.8
 
 this file contains the javascript for the jQuery.soap demo
 ===========================*/
@@ -37,7 +37,8 @@ $(document).ready(function() {
 			wss: wss,
 
 			HTTPHeaders: {
-				Authorization: 'Basic ' + btoa('test:test')
+				Authorization: 'Basic ' + btoa('test:test'),
+				SOAPAction: ''
 			},
 
 			namespaceQualifier:  $('#namespaceQualifier').val(),
@@ -54,6 +55,13 @@ $(document).ready(function() {
 			success: function(SOAPResponse) {
 				$('#feedbackHeader').html('Success!');
 				$('#feedback').text(SOAPResponse.toString());
+
+// console.log($(SOAPResponse.toString()).find('ns\\:return').html())
+console.log('toString()', SOAPResponse.toString());
+console.log('toXML()', SOAPResponse.toXML());
+console.log('toJSON()', SOAPResponse.toJSON());
+console.log('$.xml2json(soapResponse.toXML());',$.xml2json(SOAPResponse.toString()))
+
 			},
 			error: function(SOAPResponse) {
 				$('#feedbackHeader').html('Error!');

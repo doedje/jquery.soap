@@ -211,7 +211,7 @@ https://github.com/doedje/jquery.soap/blob/1.3.8/README.md
 			}
 			// maybe add xsi here?
 			// xsi="http://www.w3.org/2001/XMLSchema-instance
-			return soapEnv.toString();
+			return '<?xml version="1.0" encoding="UTF-8"?>' + soapEnv.toString();
 		},
 		send: function(options) {
 			if (!this.soapConfig) {
