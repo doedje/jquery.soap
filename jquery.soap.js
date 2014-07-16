@@ -1,6 +1,6 @@
 /*==========================
 jquery.soap.js  http://plugins.jquery.com/soap/ or https://github.com/doedje/jquery.soap
-version: 1.3.9
+version: 1.3.10
 
 jQuery plugin for communicating with a web service using SOAP.
 
@@ -31,7 +31,7 @@ For information about how to use jQuery.soap, authors, changelog, the latest ver
 Visit: https://github.com/doedje/jquery.soap
 
 Documentation about THIS version is found here:
-https://github.com/doedje/jquery.soap/blob/1.3.9/README.md
+https://github.com/doedje/jquery.soap/blob/1.3.10/README.md
 
 ======================*/
 
@@ -77,7 +77,7 @@ https://github.com/doedje/jquery.soap/blob/1.3.9/README.md
 			var soapEnvelope = new SOAPEnvelope(soapObject);
 			// Additional attributes and namespaces for the Envelope
 			if (config.envAttributes) {
-				for (var i = 0; i < config.envAttributes.length; i++) {
+				for (var i in config.envAttributes) {
 					soapEnvelope.addAttribute(i, config.envAttributes[i]);
 				}
 			}

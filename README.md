@@ -1,15 +1,13 @@
 jQuery Soap
 ===========
 **file:** jquery.soap.js  
-**version:** 1.3.9
+**version:** 1.3.10
 
 jQuery plugin for communicating with a web service using SOAP.
 --------------------------------------------------------------
 This script uses $.ajax to send a SOAPEnvelope. It can take XML DOM, XML string or JSON as input and the response can be returned as either XML DOM, XML string or JSON too.
 
-Thanx to proton17, Diccon Towns, 
-[Zach Shelton](https://github.com/zachofalltrades/jquery.soap) and 
-[anthony-redFox](https://github.com/anthony-redFox/jquery.soap)!
+Big thanx to everybody that contributed to $.soap!
 
 **Let's $.soap()!**
 
@@ -242,7 +240,7 @@ I included a simple demo page that you can use for testing. It allows you to pla
 Dependencies
 ------------
 jQuery -- built and tested with v1.10.2, MAY work back to v1.6  
-SOAPResponse.toJSON() depends on **jQuery.xml2json.js**
+SOAPResponse.toJSON() depends on **jQuery.xml2json.js** from [fyneworks](http://www.fyneworks.com/jquery/xml-to-json/)
 
 Contacting me
 -------------
@@ -279,38 +277,22 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-**I may consider permitting uses outside of the license terms on a by-case basis.**
+**I may consider permitting uses outside of the license terms on a case-by-case basis.**
 
-Authors / History
------------------
-2013-10 >> total rewrite, triggered by pull request #21 by anthony-redFox == https://github.com/anthony-redFox/jquery.soap/
-Remy Blom == https://github.com/doedje/jquery.soap
+History
+-------
+$.soap was originally based on jqSOAPClient.beta.js by proton17 (written in 2007) and started as just a jquery wrapper in 2009.
+I published it to the new plugins.jquery.com website in 2013 which uses github. Being on github was a good thing for $.soap as a lot of people started to use it and reported bugs, contributed code and even did complete rewrites!
 
-2013-06 >> fix for SOAPServer and SOAPAction headers, better params object to SOAPObject function  
-Remy Blom == https://github.com/doedje/jquery.soap
-
-2013-03 >> update internal OO structure, enable XML & object input as well as JSON  
-Zach Shelton == zachofalltrades.net  
-https://github.com/zachofalltrades/jquery.soap
-
-2013-02-19 >> published to plugins.jquery.com/soap/  
-Remy Blom == https://github.com/doedje/jquery.soap
-
-2011-10-31 >> fix handling of arrays in JSON paramaters  
-Diccon Towns == dtowns@reapit.com
-
-2009-12-03 >> wrap jqSOAPClient as plugin  
-Remy Blom == https://github.com/doedje/jquery.soap
-
-2007-12-20 >> jqSOAPClient.beta.js by proton17  
-http://archive.plugins.jquery.com/project/jqSOAPClient
+Especially [Zach Shelton](http://zachofalltrades.net) and [Anthony-redFox](https://github.com/anthony-redFox) helped me improve $.soap a lot! **A big thank you to everybody involved!**
 
 Changelog
 ---------
-Version numbers are [semver](http://semver.org/) compatible from version 1.0.0 and up.
+Version numbers are [semver](http://semver.org/) compatible.
 
 Version | Date | Changes
 --- | --- | ---
+1.3.10 | 2014-07-16 | fix for #54: overzealous loop conversion
 1.3.9 | 2014-07-07 | fix for #30: for (var in obj) does not work well in IE8: thanx [todd-lockhart](https://github.com/todd-lockhart), fix for #51: XML header missing, some minor updates
 1.3.8 | 2014-04-14 | fix for #45: handle string objects in json2soap: thanx [PALLEAU Michel](https://github.com/mic006)
 1.3.7 | 2014-02-27 | fix for #40: removed trailing slash on SOAP1.2 namespaceURL: thanx [AlexandreFournier](https://github.com/AlexandreFournier)
@@ -320,9 +302,9 @@ Version | Date | Changes
 1.3.3 | 2014-02-08 | bugfix: fixed json2soap for arrays
 1.3.2 | 2014-01-16 | bugfix: _async_ defaulted to **false**? should have been **true**
 1.3.1 | 2013-11-04 | minor changes: SOAPRequest is now SOAPEnvelope, request is now beforeSend
-1.3.0 | 2013-10-31 | massive rewrite (fixes #14, #19, #20, lot of stuff from #21, #23)
+1.3.0 | 2013-10-31 | massive rewrite (fixes #14, #19, #20, lot of stuff from #21, #23) Triggered by [anthony-redFox](https://github.com/anthony-redFox)
 1.2.2 | 2013-10-31 | fix for #24: a parameter set to NULL should be translated as &lt;language nil="true" /&gt;
-1.2.1 | 2013-09-09 | fixed WSS namespace: from Soap:Security to wsse:Security (pull request #17)
+1.2.1 | 2013-09-09 | fixed WSS namespace: from Soap:Security to wsse:Security (pull request #17) thanx [Giacomo Trezzi](https://github.com/G3z)
 1.2.0 | 2013-08-26 | added noPrefix option and fixed bug of double namespace prefixes for nested objects (#13, #15)
 1.1.0 | 2013-07-11 | Added WSS functionality (issue #9)
 1.0.7 | 2013-07-03 | Changed the license to GNU GPLv3, I could never have used the MIT license since jqSOAPClient.beta.js is already licensed GNU GPLv3
@@ -333,7 +315,7 @@ Version | Date | Changes
 1.0.2 | 2013-04-02 | Fix to the manifest file, new version# needed to publish to plugins.jquery.com
 1.0.1 | 2013-04-02 | Fix to the manifest file, new version# needed to publish to plugins.jquery.com
 1.0.0 | 2013-04-02 | Minor fix (return for dom2string in reponse)
-0.10.0 | 2013-03-29 | The **First Zach Shelton version**, better code, XML DOM, XML string and JSON in and out
+0.10.0 | 2013-03-29 | The **First Zach Shelton version**, better code, XML DOM, XML string and JSON in and out: thanx [Zach Shelton](https://github.com/zachofalltrades)
 0.9.4 | 2013-02-26 | changed the charset of the $.ajax call to UTF-8 and removed the " quotes
 0.9.3 | 2013-02-26 | Added the possibility to call **$.soap** just to set extra config values.
 0.9.2 | 2013-02-21 | some extra cleaning of stupid code in my part of the script. Now it uses the addNamespace function to properly set namespaces.

@@ -1,6 +1,6 @@
 /*==========================
 unittest.js  http://plugins.jquery.com/soap/ or https://github.com/doedje/jquery.soap
-part of the jQuery.soap distribution version: 1.3.9
+part of the jQuery.soap distribution version: 1.3.10
 
 this file contains the javascript for the jQuery.soap unittest
 ===========================*/
