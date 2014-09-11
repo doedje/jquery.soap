@@ -327,11 +327,13 @@ https://github.com/doedje/jquery.soap/blob/1.3.10/README.md
 			out.push('<'+this.name);
 			//Namespaces
 			for (var name in this.ns) {
-					out.push(' xmlns:' + name + '="' + this.ns[name] + '"');
+				out.push(' xmlns:' + name + '="' + this.ns[name] + '"');
 			}
 			//Node Attributes
 			for (var attr in this.attributes) {
+				if (typeof(this.attributes[attr]) === 'string') {
 					out.push(' ' + attr + '="' + this.attributes[attr] + '"');
+				}
 			}
 			out.push('>');
 			//Node children
@@ -434,8 +436,8 @@ https://github.com/doedje/jquery.soap/blob/1.3.10/README.md
 				// added by DT - check if object is in fact an Array and treat accordingly
 				if(params.constructor.toString().indexOf("Array") > -1) { // type is array
 					// soapObject = parentNode;
-					for(var x in params) {
-						childObject = this.json2soap(name, params[x], prefix, parentNode);
+					for(var i = 0; i < params.length; i++) {
+						childObject = this.json2soap(name, params[i], prefix, parentNode);
 						parentNode.appendChild(childObject);
 					}
 				} else if (params.constructor.toString().indexOf("String") > -1) { // type is string
