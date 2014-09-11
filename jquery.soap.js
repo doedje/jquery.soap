@@ -332,7 +332,7 @@ https://github.com/doedje/jquery.soap/blob/1.3.10/README.md
 			//Node Attributes
 			for (var attr in this.attributes) {
 				if (typeof(this.attributes[attr]) === 'string') {
-                    out.push(' ' + attr + '="' + this.attributes[attr] + '"');
+					out.push(' ' + attr + '="' + this.attributes[attr] + '"');
                 }
 			}
 			out.push('>');
@@ -437,8 +437,8 @@ https://github.com/doedje/jquery.soap/blob/1.3.10/README.md
 				if(params.constructor.toString().indexOf("Array") > -1) { // type is array
 					// soapObject = parentNode;
 					for(var i = 0; i < params.length; i++) {
-                        childObject = this.json2soap(name, params[i], prefix, parentNode);
-                        parentNode.appendChild(childObject);
+						childObject = this.json2soap(name, params[i], prefix, parentNode);
+						parentNode.appendChild(childObject);
                     }
 				} else if (params.constructor.toString().indexOf("String") > -1) { // type is string
 					// handle String objects as string primitive value
