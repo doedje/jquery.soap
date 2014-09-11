@@ -1,7 +1,7 @@
 jQuery Soap
 ===========
 **file:** jquery.soap.js  
-**version:** 1.3.10
+**version:** 1.4.0
 
 jQuery plugin for communicating with a web service using SOAP.
 --------------------------------------------------------------
@@ -292,6 +292,7 @@ Version numbers are [semver](http://semver.org/) compatible.
 
 Version | Date | Changes
 --- | --- | ---
+1.4.0 | 2014-09-11 | fix for #56: overzealous loop conversion, #57: feature request, pull request #58, improved demo page
 1.3.10 | 2014-07-16 | fix for #54: overzealous loop conversion
 1.3.9 | 2014-07-07 | fix for #30: for (var in obj) does not work well in IE8: thanx [todd-lockhart](https://github.com/todd-lockhart), fix for #51: XML header missing, some minor updates
 1.3.8 | 2014-04-14 | fix for #45: handle string objects in json2soap: thanx [PALLEAU Michel](https://github.com/mic006)

@@ -1,7 +1,7 @@
 jQuery.soap Detailed Options List
 =================================
 **file:** jquery.soap.js  
-**version:** 1.3.10
+**version:** 1.4.0
 
 Note that all options are optional. To actually send a request [url](#url) en [data](#data) are the minimal requirements. More [general information about the usage of jQuery.soap](README.md)
 
@@ -31,7 +31,7 @@ beforeSend
 ----------
 type: **function(SOAPEnvelope)**  
 
-Callback function which passes back the SOAPEnvelope object prior to the $.ajax call
+Callback function which passes back the SOAPEnvelope object prior to the $.ajax call. Returning **false** in the `beforeSend` function will cancel the request.
 ```
 $.soap({
 	beforeSend: function(SOAPEnvelope) {

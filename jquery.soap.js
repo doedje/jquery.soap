@@ -1,6 +1,6 @@
 /*==========================
 jquery.soap.js  http://plugins.jquery.com/soap/ or https://github.com/doedje/jquery.soap
-version: 1.3.10
+version: 1.4.0
 
 jQuery plugin for communicating with a web service using SOAP.
 
@@ -31,7 +31,7 @@ For information about how to use jQuery.soap, authors, changelog, the latest ver
 Visit: https://github.com/doedje/jquery.soap
 
 Documentation about THIS version is found here:
-https://github.com/doedje/jquery.soap/blob/1.3.10/README.md
+https://github.com/doedje/jquery.soap/blob/1.4.0/README.md
 
 ======================*/
 
@@ -127,7 +127,7 @@ https://github.com/doedje/jquery.soap/blob/1.3.10/README.md
 		this.typeOf = "SOAPEnvelope";
 		this.prefix = 'soap';
 		this.soapConfig = null;
-		this.attributes = [];
+		this.attributes = {};
 		this.headers = [];
 		this.bodies = [];
 		
@@ -144,7 +144,7 @@ https://github.com/doedje/jquery.soap/blob/1.3.10/README.md
 			// Envelope
 			var env = soapObject.find(this.prefix + ':Envelope');
 			if (env && env.attributes) {
-				for (var i = 0; i < env.attributes.length; i++) {
+				for (var i in env.attributes) {
 					this.addAttribute(i, env.attributes[i]);
 				}
 			}
@@ -214,6 +214,7 @@ https://github.com/doedje/jquery.soap/blob/1.3.10/README.md
 			return '<?xml version="1.0" encoding="UTF-8"?>' + soapEnv.toString();
 		},
 		send: function(options) {
+			var self = this;
 			if (!this.soapConfig) {
 				this.soapConfig = (options.soap12) ? SOAPTool.SOAP12 : SOAPTool.SOAP11;
 			}
@@ -222,10 +223,6 @@ https://github.com/doedje/jquery.soap/blob/1.3.10/README.md
 				options.headers.SOAPAction = options.action;
 			}
 			log('jquery.soap - beforeSend:', $.parseXML(this.toString()).firstChild);
-			// function to preview the SOAPEnvelope before it is send to the server
-			if ($.isFunction(options.beforeSend)) {
-				options.beforeSend(this);
-			}
 			return $.ajax({
 				type: "POST",
 				url: options.url,
@@ -244,6 +241,11 @@ https://github.com/doedje/jquery.soap/blob/1.3.10/README.md
 				      log("jquery.soap - progress:","Length not computable.");
 				    }
 				  }
+				},
+				beforeSend: function() {
+					if ($.isFunction(options.beforeSend)) {
+						return options.beforeSend(self);
+					}
 				}
 			});
 		}
@@ -432,10 +434,8 @@ https://github.com/doedje/jquery.soap/blob/1.3.10/README.md
 				soapObject = new SOAPObject(prefix+name);
 				soapObject.attr('nil', true);
 			} else if (typeof params == 'object') {
-				// soapObject = new SOAPObject(prefix+name);
 				// added by DT - check if object is in fact an Array and treat accordingly
 				if(params.constructor.toString().indexOf("Array") > -1) { // type is array
-					// soapObject = parentNode;
 					for(var i = 0; i < params.length; i++) {
 						childObject = this.json2soap(name, params[i], prefix, parentNode);
 						parentNode.appendChild(childObject);
