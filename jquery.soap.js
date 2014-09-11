@@ -325,7 +325,15 @@ https://github.com/doedje/jquery.soap/blob/1.4.0/README.md
 			return this._parent;
 		};
 		this.toString = function() {
-			var out = [];
+			var out = [],
+			    xmlCharMap = {
+		            '<': '&lt;',
+    		        '>': '&gt',
+    		        '&': '&amp;',
+    		        '"': '&quot;',
+    		        "'": '&apos;'
+		        },
+		        encodedValue;
 			out.push('<'+this.name);
 			//Namespaces
 			for (var name in this.ns) {
@@ -349,7 +357,10 @@ https://github.com/doedje/jquery.soap/blob/1.4.0/README.md
 			}
 			//Node Value
 			if (!!this.value) {
-				out.push(this.value);
+			    encodedValue = this.value.replace(/[<>&"']/g, function (ch) {
+			        return xmlCharMap[ch];
+			    });
+				out.push(encodedValue);
 			}
 			//Close Tag
 			out.push('</' + this.name + '>');
