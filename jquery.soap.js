@@ -328,7 +328,7 @@ https://github.com/doedje/jquery.soap/blob/1.4.0/README.md
 			var out = [],
 			    xmlCharMap = {
 		            '<': '&lt;',
-    		        '>': '&gt',
+    		        '>': '&gt;',
     		        '&': '&amp;',
     		        '"': '&quot;',
     		        "'": '&apos;'
