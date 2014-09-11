@@ -1,8 +1,50 @@
 jQuery.soap Description of Classes
 ==================================
 **file:** jquery.soap.js  
-**version:** 1.4.0
+**version:** 1.4.1
 
-Note that all options are optional. To actually send a request [url](#url) en [data](#data) are the minimal requirements. More [general information about the usage of jQuery.soap](README.md)
+This document is giving an overview of the classes used within $.soap. 
 
-appendMethodToUrl
+##_WORK IN PROGRESS_
+
+new SOAPObject(name)
+--------------------
+attributes  
+children  
+name  
+ns  
+_parent  
+value  
+typeOf = 'SOAPObject'  
+
+###**methods:**
+
+#####addNamespace(name, url)
+
+#####addParameter(name, value)
+
+#####appendChild(soapObject)
+
+#####attr(name, value)
+
+#####end()
+
+#####find(name)
+
+#####hasChildren()
+
+#####newChild(name)
+
+#####parent()
+
+#####toString()
+
+#####val(value)
+
+
+
+new SOAPEnvelope(soapObject)
+============================
+**constructor:** `new SOAPEnvelope(soapObject);`
+
+**properties:**
