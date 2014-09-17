@@ -357,9 +357,11 @@ https://github.com/doedje/jquery.soap/blob/1.4.1/README.md
 			}
 			//Node Value
 			if (!!this.value) {
-			    encodedValue = this.value.replace(/[<>&"']/g, function (ch) {
-			        return xmlCharMap[ch];
-			    });
+			    encodedValue = this.value.match(/<!\[CDATA\[.*?\]\]>/)?
+			        this.value:
+			        this.value.replace(/[<>&"']/g, function (ch) {
+			            return xmlCharMap[ch];
+			        });
 				out.push(encodedValue);
 			}
 			//Close Tag
@@ -485,6 +487,9 @@ https://github.com/doedje/jquery.soap/blob/1.4.1/README.md
 				}
 				if (child.nodeType === 3 && !whitespace.test(child.nodeValue)) {
 					soapObject.val(child.nodeValue);
+				}
+				if (child.nodeType === 4){
+				  soapObject.val('<![CDATA[' + child.nodeValue + ']]>');
 				}
 			}
 			return soapObject;
