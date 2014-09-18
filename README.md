@@ -1,7 +1,7 @@
 jQuery Soap
 ===========
 **file:** jquery.soap.js  
-**version:** 1.4.2
+**version:** 1.4.3
 
 jQuery plugin for communicating with a web service using SOAP.
 --------------------------------------------------------------
@@ -292,6 +292,7 @@ Version numbers are [semver](http://semver.org/) compatible.
 
 Version | Date | Changes
 --- | --- | ---
+1.4.3 | 2014-09-18 | fix for empty namespaces like xmlns="" as found by XGreen on [StackOverflow](http://stackoverflow.com/questions/25809803/cdata-gets-removed-before-being-sent)
 1.4.2 | 2014-09-17 | pull request #61: hot fix for the CData issue [StackOverflow](http://stackoverflow.com/questions/25809803/cdata-gets-removed-before-being-sent), Thanx [josepot](https://github.com/josepot)
 1.4.1 | 2014-09-11 | pull request #59: Encode XML special chars, thanx [Simon St&uuml;cher](https://github.com/stchr)
 1.4.0 | 2014-09-11 | fix for #56: overzealous loop conversion, #57: feature request - thanx [miljbee](https://github.com/miljbee), pull request #58 thanx [Brian Mooney](https://github.com/irishshagua), improved demo page

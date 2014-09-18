@@ -1,6 +1,6 @@
 /*==========================
 demo.js  http://plugins.jquery.com/soap/ or https://github.com/doedje/jquery.soap
-part of the jQuery.soap distribution version: 1.4.2
+part of the jQuery.soap distribution version: 1.4.3
 
 this file contains the javascript for the jQuery.soap demo
 ===========================*/
@@ -133,8 +133,11 @@ function dom2html(xmldom, tabcount) {
 		if (child.nodeType === 3 && !whitespace.test(child.nodeValue)) {
 			xmlout.push(child.nodeValue);
 		}
+		if (child.nodeType === 4) {
+			xmlout.push('<![CDATA[' + child.nodeValue + ']]>');
+		}
 	}
- 	if (xmldom.childNodes.length === 1 && xmldom.childNodes[0].nodeType === 3) {
+ 	if (xmldom.childNodes.length === 1 && (xmldom.childNodes[0].nodeType === 3 || xmldom.childNodes[0].nodeType === 4)) {
 		xmlout.push('</', xmldom.nodeName, '>');
 	} else {
 		xmlout.push('\n', repeat(tabs, --tabcount),'</', xmldom.nodeName, '>');
