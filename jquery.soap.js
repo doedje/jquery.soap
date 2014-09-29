@@ -233,14 +233,24 @@ https://github.com/doedje/jquery.soap/blob/1.4.3/README.md
 				processData: false,
 				data: this.toString(),
 				contentType: contentType + "; charset=UTF-8",
-				xhrFields: {
-				  onprogress: function(e) {
-				    if (e.lengthComputable) {
-				      log("jquery.soap - progress:", (e.loaded / e.total * 100));
-				    } else {
-				      log("jquery.soap - progress:","Length not computable.");
-				    }
-				  }
+				// second attempt to get some progres info (but still a no go)
+				// I still keep this in tho, we might see it working one day when browsers mature...
+				xhr: function() {
+					var xhr = new window.XMLHttpRequest();
+					xhr.upload.addEventListener("progress", function(evt) {
+						if (evt.lengthComputable) {
+							var progress = evt.loaded / evt.total;
+							log("jquery.soap - progress up: ", (progress * 100) + '% total: ' + evt.total);
+						}
+					}, false);
+					xhr.addEventListener("progress", function(evt) {
+						if (evt.lengthComputable) {
+							var progress = evt.loaded / evt.total;
+							log("jquery.soap - progress down: ", (progress * 100) + '% total: ' + evt.total);
+						}
+					}, false);
+
+					return xhr;
 				},
 				beforeSend: function() {
 					if ($.isFunction(options.beforeSend)) {
@@ -357,9 +367,9 @@ https://github.com/doedje/jquery.soap/blob/1.4.3/README.md
 			}
 			//Node Value
 			if (!!this.value) {
-			    encodedValue = this.value.match(/<!\[CDATA\[.*?\]\]>/)?
+			    encodedValue = this.value.toString().match(/<!\[CDATA\[.*?\]\]>/)?
 			        this.value:
-			        this.value.replace(/[<>&"']/g, function (ch) {
+			        this.value.toString().replace(/[<>&"']/g, function (ch) {
 			            return xmlCharMap[ch];
 			        });
 				out.push(encodedValue);
