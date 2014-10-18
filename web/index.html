@@ -45,6 +45,19 @@
 				<input type='checkbox' id='async' class='no_width' checked='checked' />
 			</fieldset>
 			<fieldset>
+				<label>HTTPHeaders:</label>
+				<textarea id='HTTPHeaders' rows='5' cols='50'>{
+  // Authentication: 'Basic ' + btoa('test:test')
+}</textarea>
+			</fieldset>
+			<fieldset>
+				<label>envAttributes:</label>
+				<textarea id='envAttributes' rows='5' cols='50'>{
+  'xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance',
+  'xmlns:xsd': 'http://www.w3.org/2001/XMLSchema'
+}</textarea>
+			</fieldset>
+			<fieldset>
 				<label>data:</label> 
 				<select id='dataType'>
 					<option value='xml'>XML String</option>
