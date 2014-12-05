@@ -67,6 +67,7 @@ https://github.com/doedje/jquery.soap/blob/1.4.4/README.md
 		var soapObject = SOAPTool.processData({
 			data: config.data,
 			name: (!!config.elementName) ? config.elementName : config.method,
+			context: options.context,
 			prefix: (!!config.namespaceQualifier && !config.noPrefix) ? config.namespaceQualifier+':' : '',
 			namespaceURL: config.namespaceURL,
 			namespaceQualifier: config.namespaceQualifier
@@ -95,6 +96,7 @@ https://github.com/doedje/jquery.soap/blob/1.4.4/README.md
 			}
 			return soapEnvelope.send({
 				url: config.url,
+				context: config.context,
 				async: config.async,
 				headers: (config.HTTPHeaders) ? config.HTTPHeaders : {},
 				action: (!!config.SOAPAction) ? config.SOAPAction : config.method,
@@ -104,7 +106,7 @@ https://github.com/doedje/jquery.soap/blob/1.4.4/README.md
 				var response = new SOAPResponse(textStatus, jqXHR);
 				log('jquery.soap - receive:', response.toXML().firstChild);
 				if ($.isFunction(config.success)) {
-					config.success(response);
+					config.success(response, this);
 				}
 			}).fail(function(jqXHR, textStatus, errorThrown) {
 				log('jquery.soap - error:', errorThrown);
@@ -229,6 +231,7 @@ https://github.com/doedje/jquery.soap/blob/1.4.4/README.md
 			log('jquery.soap - beforeSend:', $.parseXML(this.toString()).firstChild);
 			return $.ajax({
 				type: "POST",
+				context: options.context,
 				url: options.url,
 				async: options.async,
 				headers: options.headers,
@@ -256,7 +259,7 @@ https://github.com/doedje/jquery.soap/blob/1.4.4/README.md
 	};
 
 	// SOAPObject - an abstraction layer to build SOAP Objects.
-	var SOAPObject = function(name) {
+	var SOAPObject = function(name, context) {
 		this.typeOf = 'SOAPObject';
 		this.name = name;
 		this.ns = {};
@@ -264,6 +267,7 @@ https://github.com/doedje/jquery.soap/blob/1.4.4/README.md
 		this._parent = null;
 		this.children = [];
 		this.value = undefined;
+		this.context = context;
 
 		this.attr = function(name, value) {
 			if (!!name && !!value || !!name && value === "") {
@@ -361,12 +365,17 @@ https://github.com/doedje/jquery.soap/blob/1.4.4/README.md
 			}
 			//Node Value
 			if (!!this.value) {
-			    encodedValue = this.value.match(/<!\[CDATA\[.*?\]\]>/)?
-			        this.value:
-			        this.value.replace(/[<>&"']/g, function (ch) {
-			            return xmlCharMap[ch];
-			        });
-				out.push(encodedValue);
+                            if (typeof(this.value) === 'string') {
+                                encodedValue = this.value.match(/<!\[CDATA\[.*?\]\]>/)?
+			            this.value:
+			            this.value.replace(/[<>&"']/g, function (ch) {
+			                return xmlCharMap[ch];
+			            });
+                            }
+                            else if (typeof(this.value) === 'number') {
+				encodedValue = this.value.toString();
+                            }
+			    out.push(encodedValue);
 			}
 			//Close Tag
 			out.push('</' + this.name + '>');
@@ -427,6 +436,24 @@ https://github.com/doedje/jquery.soap/blob/1.4.4/README.md
 			if ($.isXMLDoc(options.data)) {
 				// if data is XML DOM, parse to SOAPObject
 				soapObject = SOAPTool.dom2soap(options.data.firstChild);
+			} else if ($.isArray(options.data)) {
+				soapObject = new SOAPObject('soap:Envelope');
+				soapObject.addNamespace('soap', 'http://schemas.xmlsoap.org/soap/envelope/');
+				var body = soapObject.newChild('soap:Body');
+				var action = body.newChild(options.name);
+				action.attr("xmlns", options.namespaceURL);
+				for (var index = 0; index < options.data.length; index++) {
+					if ($.isArray(options.data[index])) {
+						var new_item = action.newChild('soapenc:Array');
+						new_item.attr('soapenc:arrayType', 'xsd:string[' + (options.data[index].length) + ']');
+						for (var item = 0; item < options.data[index].length; item++) {
+							new_item.newChild('item').attr('type', 'xsd:string').val(options.data[index][item]).end();
+						}
+					} else {
+						action.newChild('c-gensym' + index).attr('type', 'xsd:string').val(options.data[index]).end();
+					}
+				}
+				return soapObject;
 			} else if ($.isPlainObject(options.data)) {
 				// if data is JSON, parse to SOAPObject
 				if (!!options.name) {
@@ -440,7 +467,7 @@ https://github.com/doedje/jquery.soap/blob/1.4.4/README.md
 				}
 			} else if ($.isFunction(options.data)) {
 				// if data is function, the function should return a SOAPObject
-				soapObject = options.data(SOAPObject);
+				soapObject = options.data(SOAPObject, options.context);
 			}
 			return soapObject;
 		},
@@ -591,4 +618,3 @@ https://github.com/doedje/jquery.soap/blob/1.4.4/README.md
 		}
 	}
 })(jQuery);
-
