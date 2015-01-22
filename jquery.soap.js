@@ -132,7 +132,7 @@ https://github.com/doedje/jquery.soap/blob/1.4.4/README.md
 		this.attributes = {};
 		this.headers = [];
 		this.bodies = [];
-		
+
 		// let's get the soap namespace prefix
 		var parts = soapObject.name.split(':');
 		if (parts[1] === 'Envelope' || parts[1] === 'Body') {
@@ -240,14 +240,24 @@ https://github.com/doedje/jquery.soap/blob/1.4.4/README.md
 				processData: false,
 				data: this.toString(),
 				contentType: contentType + "; charset=UTF-8",
-				xhrFields: {
-				  onprogress: function(e) {
-				    if (e.lengthComputable) {
-				      log("jquery.soap - progress:", (e.loaded / e.total * 100));
-				    } else {
-				      log("jquery.soap - progress:","Length not computable.");
-				    }
-				  }
+				// second attempt to get some progres info (but still a no go)
+				// I still keep this in tho, we might see it working one day when browsers mature...
+				xhr: function() {
+					var xhr = new window.XMLHttpRequest();
+					xhr.upload.addEventListener("progress", function(evt) {
+						if (evt.lengthComputable) {
+							var progress = evt.loaded / evt.total;
+							log("jquery.soap - progress up: ", (progress * 100) + '% total: ' + evt.total);
+						}
+					}, false);
+					xhr.addEventListener("progress", function(evt) {
+						if (evt.lengthComputable) {
+							var progress = evt.loaded / evt.total;
+							log("jquery.soap - progress down: ", (progress * 100) + '% total: ' + evt.total);
+						}
+					}, false);
+
+					return xhr;
 				},
 				beforeSend: function() {
 					if ($.isFunction(options.beforeSend)) {
@@ -335,13 +345,13 @@ https://github.com/doedje/jquery.soap/blob/1.4.4/README.md
 		this.toString = function() {
 			var out = [],
 			    xmlCharMap = {
-		            '<': '&lt;',
-    		        '>': '&gt;',
-    		        '&': '&amp;',
-    		        '"': '&quot;',
-    		        "'": '&apos;'
-		        },
-		        encodedValue;
+			    	'<': '&lt;',
+			    	'>': '&gt;',
+			    	'&': '&amp;',
+			    	'"': '&quot;',
+			    	"'": '&apos;'
+			    },
+			    encodedValue;
 			out.push('<'+this.name);
 			//Namespaces
 			for (var name in this.ns) {
@@ -365,17 +375,16 @@ https://github.com/doedje/jquery.soap/blob/1.4.4/README.md
 			}
 			//Node Value
 			if (!!this.value) {
-                            if (typeof(this.value) === 'string') {
-                                encodedValue = this.value.match(/<!\[CDATA\[.*?\]\]>/)?
-			            this.value:
-			            this.value.replace(/[<>&"']/g, function (ch) {
-			                return xmlCharMap[ch];
-			            });
-                            }
-                            else if (typeof(this.value) === 'number') {
-				encodedValue = this.value.toString();
-                            }
-			    out.push(encodedValue);
+				if (typeof(this.value) === 'string') {
+					encodedValue = this.value.match(/<!\[CDATA\[.*?\]\]>/) ?
+						this.value :
+						this.value.replace(/[<>&"']/g, function (ch) {
+							return xmlCharMap[ch];
+						});
+				} else if (typeof(this.value) === 'number') {
+					encodedValue = this.value.toString();
+				}
+				out.push(encodedValue);
 			}
 			//Close Tag
 			out.push('</' + this.name + '>');
@@ -437,30 +446,15 @@ https://github.com/doedje/jquery.soap/blob/1.4.4/README.md
 				// if data is XML DOM, parse to SOAPObject
 				soapObject = SOAPTool.dom2soap(options.data.firstChild);
 			} else if ($.isArray(options.data)) {
-				soapObject = new SOAPObject('soap:Envelope');
-				soapObject.addNamespace('soap', 'http://schemas.xmlsoap.org/soap/envelope/');
-				var body = soapObject.newChild('soap:Body');
-				var action = body.newChild(options.name);
-				action.attr("xmlns", options.namespaceURL);
-				for (var index = 0; index < options.data.length; index++) {
-					if ($.isArray(options.data[index])) {
-						var new_item = action.newChild('soapenc:Array');
-						new_item.attr('soapenc:arrayType', 'xsd:string[' + (options.data[index].length) + ']');
-						for (var item = 0; item < options.data[index].length; item++) {
-							new_item.newChild('item').attr('type', 'xsd:string').val(options.data[index][item]).end();
-						}
-					} else {
-						action.newChild('c-gensym' + index).attr('type', 'xsd:string').val(options.data[index]).end();
-					}
-				}
-				return soapObject;
+				// if data is an Array, asume SOAP::Lite
+				soapObject = SOAPTools.array2soap(options.data);
 			} else if ($.isPlainObject(options.data)) {
 				// if data is JSON, parse to SOAPObject
 				if (!!options.name) {
 					soapObject = SOAPTool.json2soap(options.name, options.data, options.prefix);
 					if (!!options.namespaceQualifier && !!options.namespaceURL) {
 						soapObject.addNamespace(options.namespaceQualifier, options.namespaceURL);
-					} 
+					}
 					else if (!!options.namespaceURL) {
 						soapObject.attr('xmlns', options.namespaceURL);
 					}
@@ -521,6 +515,25 @@ https://github.com/doedje/jquery.soap/blob/1.4.4/README.md
 				}
 				if (child.nodeType === 4){
 				  soapObject.val('<![CDATA[' + child.nodeValue + ']]>');
+				}
+			}
+			return soapObject;
+		},
+		array2soap: function(array) {
+			soapObject = new SOAPObject('soap:Envelope');
+			soapObject.addNamespace('soap', 'http://schemas.xmlsoap.org/soap/envelope/');
+			var body = soapObject.newChild('soap:Body');
+			var action = body.newChild(options.name);
+			action.attr("xmlns", options.namespaceURL);
+			for (var index = 0; index < options.data.length; index++) {
+				if ($.isArray(options.data[index])) {
+					var new_item = action.newChild('soapenc:Array');
+					new_item.attr('soapenc:arrayType', 'xsd:string[' + (options.data[index].length) + ']');
+					for (var item = 0; item < options.data[index].length; item++) {
+						new_item.newChild('item').attr('type', 'xsd:string').val(options.data[index][item]).end();
+					}
+				} else {
+					action.newChild('c-gensym' + index).attr('type', 'xsd:string').val(options.data[index]).end();
 				}
 			}
 			return soapObject;

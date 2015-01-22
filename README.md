@@ -122,7 +122,7 @@ napespaceUrl | namespaceURL | to capitalize URL is quite common
 params | data | $.ajax uses data too, more consistent
 request | beforeSend | $.ajax uses beforeSend too, more consistent
 
-The old names are mapped to the new names and will be deprecated at version 2.0.0 (that might take years, or decades). A warning is printed to the console when you use an old name.
+The old names are mapped to the new names and will be _removed_ at version 2.0.0 (that might take years, or decades). A warning is printed to the console when you use an old name.
 
 Promise
 -------
