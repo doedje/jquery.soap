@@ -115,12 +115,20 @@ https://github.com/doedje/jquery.soap/blob/1.4.4/README.md
 				}
 			});
 		} else {
+			var errDeferred = new $.Deferred(),
+			    errNoSoapObject = 'jquery.soap - no soapObject',
+			    errNoUrl = 'jquery.soap - no url';
+			    
 			if (!soapObject) {
-				warn('jquery.soap - no soapObject');
+				warn(errNoSoapObject);
+				errDeferred.reject(errNoSoapObject);
 			}
 			if (!config.url) {
-				warn('jquery.soap - no url');
+				warn(errNoUrl);
+				errDeferred.reject(errNoUrl);
 			}
+			
+			return errDeferred.promise();
 		}
 	};
 
