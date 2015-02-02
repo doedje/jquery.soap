@@ -401,9 +401,6 @@ https://github.com/doedje/jquery.soap/blob/1.5.0/README.md
 				}
 			}
 			//Node Value
-
-			console.log(this.value, this.value !== undefined)
-
 			if (this.value !== undefined) {
 				if (typeof(this.value) === 'string') {
 					encodedValue = this.value.match(/<!\[CDATA\[.*?\]\]>/) ?
