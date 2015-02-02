@@ -1,7 +1,7 @@
 jQuery Soap
 ===========
 **file:** jquery.soap.js  
-**version:** 1.4.4
+**version:** 1.5.0
 
 jQuery plugin for communicating with a web service using SOAP.
 --------------------------------------------------------------
@@ -24,7 +24,7 @@ $.soap({
 		name: 'Remy Blom',
 		msg: 'Hi!'
 	},
-	
+
 	success: function (soapResponse) {
 		// do stuff with soapResponse
 		// if you want to have the response as JSON use soapResponse.toJSON();
@@ -64,6 +64,7 @@ options = {
 	appendMethodToURL: true,						// method name will be appended to URL defaults to true
 	SOAPAction: 'action',							// manually set the Request Header 'SOAPAction', defaults to the method specified above (optional)
 	soap12: false,									// use SOAP 1.2 namespace and HTTP headers - default to false
+	context:											// Used to set this in beforeSend, success, error and data callback functions
 
 	// addional headers and namespaces
 	envAttributes: {								// additional attributes (like namespaces) for the Envelope:
@@ -80,7 +81,7 @@ options = {
 		name: 'Remy Blom',
 		msg: 'Hi!'
 	},
-	data: function(SOAPObject) {					// function returning an instance of the SOAPObject class 
+	data: function(SOAPObject) {					// function returning an instance of the SOAPObject class
 		return new SOAPObject('soap:Envelope')
 			.addNamespace('soap', 'http://schemas.xmlsoap.org/soap/envelope/')
 			.newChild('soap:Body')
@@ -94,6 +95,11 @@ options = {
 	noPrefix: false,								// set to true if you don't want the namespaceQualifier to be the prefix for the nodes in params. defaults to false (optional)
 	elementName: 'requestElementName',				// override 'method' as outer element (optional)
 
+	//callback functions
+	beforeSend: function (SOAPEnvelope)  {},		// callback function - SOAPEnvelope object is passed back prior to ajax call (optional)
+	success: function (SOAPResponse) {},			// callback function to handle successful return (optional)
+	error:   function (SOAPResponse) {},			// callback function to handle fault return (optional)
+
 	// WS-Security
 	wss: {
 		username: 'user',
@@ -101,11 +107,6 @@ options = {
 		nonce: 'w08370jf7340qephufqp3r4',
 		created: new Date().getTime()
 	},
-
-	//callback functions
-	beforeSend: function (SOAPEnvelope)  {},			// callback function - SOAPEnvelope object is passed back prior to ajax call (optional)
-	success: function (SOAPResponse) {},			// callback function to handle successful return (optional)
-	error:   function (SOAPResponse) {},			// callback function to handle fault return (optional)
 
 	// debugging
 	enableLogging: false							// to enable the local log function set to true, defaults to false (optional)
@@ -253,7 +254,7 @@ Please note I don't mind you contacting me when you run into trouble implementin
 	- your $.soap call
 	- the request as sent to the server
 	- the response from the server
-- Being polite helps, especially when you want me to help you with _your_ problems. So please take the time to formulate something like a question. Opening an issue with just some code sniplets and error messages will be regarded as **unpolite** and will receive a ditto reply. 
+- Being polite helps, especially when you want me to help you with _your_ problems. So please take the time to formulate something like a question. Opening an issue with just some code sniplets and error messages will be regarded as **unpolite** and will receive a ditto reply.
 (I just don't like receiving stuff like [issue #18](https://github.com/doedje/jquery.soap/issues/18) on a sunday)
 
 _I also have a dayjob with deadlines and I'm a dad of two lovely little girls, so please understand I am not always able to reply to you asap..._
@@ -262,7 +263,7 @@ _I also have a dayjob with deadlines and I'm a dad of two lovely little girls, s
 
 License GNU/GPLv3
 -----------------
-jquery.soap is based on jqSOAPClient.beta.js which was licensed under GNU/GPLv3
+Copyright (C) 2009-2015 - Remy Blom, the Netherlands
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -277,7 +278,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-**I may consider permitting uses outside of the license terms on a case-by-case basis.**
+**When GPL is not an option for you, contact me for information about the commercial license**
 
 History
 -------
@@ -292,6 +293,7 @@ Version numbers are [semver](http://semver.org/) compatible.
 
 Version | Date | Changes
 --- | --- | ---
+1.5.0 | 2015-01-31 | pull request #67: context added, some SOAP::Lite support, Thanx [ShaunMaher](https://github.com/ShaunMaher), pull request #69: return deferred object when !SOAPObject or !config.url, thanx [maxgrass](https://github.com/maxgrass), added SOAPHeader option as requested by [Adam Malcontenti-Wilson](https://github.com/adammw) in #62, fix for falsey values.
 1.4.4 | 2014-10-18 | pull request #65: fix namespace and type for nil attribute, Thanx [philipc](https://github.com/philipc)
 1.4.3 | 2014-09-18 | fix for empty namespaces like xmlns="" as found by XGreen on [StackOverflow](http://stackoverflow.com/questions/25809803/cdata-gets-removed-before-being-sent)
 1.4.2 | 2014-09-17 | pull request #61: hot fix for the CData issue [StackOverflow](http://stackoverflow.com/questions/25809803/cdata-gets-removed-before-being-sent), Thanx [josepot](https://github.com/josepot)

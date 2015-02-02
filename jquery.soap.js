@@ -1,6 +1,6 @@
 /*==========================
 jquery.soap.js  http://plugins.jquery.com/soap/ or https://github.com/doedje/jquery.soap
-version: 1.4.4
+version: 1.5.0
 
 jQuery plugin for communicating with a web service using SOAP.
 
@@ -8,6 +8,8 @@ One function to send a SOAPEnvelope that takes a complex object as a data
 
 License GNU/GPLv3
 -----------------
+
+Copyright (C) 2009-2015 - Remy Blom, the Netherlands
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -22,7 +24,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-I may consider permitting uses outside of the license terms on a by-case basis.
+When GPL is not an option for you, contact me for information about the commercial license.
 
 Information
 -----------
@@ -31,7 +33,7 @@ For information about how to use jQuery.soap, authors, changelog, the latest ver
 Visit: https://github.com/doedje/jquery.soap
 
 Documentation about THIS version is found here:
-https://github.com/doedje/jquery.soap/blob/1.4.4/README.md
+https://github.com/doedje/jquery.soap/blob/1.5.0/README.md
 
 ======================*/
 
@@ -68,10 +70,15 @@ https://github.com/doedje/jquery.soap/blob/1.4.4/README.md
 			data: config.data,
 			name: (!!config.elementName) ? config.elementName : config.method,
 			context: config.context,
-			prefix: (!!config.namespaceQualifier && !config.noPrefix) ? config.namespaceQualifier+':' : '',
-			namespaceURL: config.namespaceURL,
-			namespaceQualifier: config.namespaceQualifier
+			prefix: (!!config.namespaceQualifier && !config.noPrefix) ? config.namespaceQualifier+':' : ''
 		});
+
+		if (!!config.namespaceQualifier && !!config.namespaceURL) {
+			soapObject.addNamespace(config.namespaceQualifier, config.namespaceURL);
+		}
+		else if (!!config.namespaceURL) {
+			soapObject.attr('xmlns', config.namespaceURL);
+		}
 
 		if (!!soapObject && !!config.url) { // we have a request and somewhere to send it
 			// Create a SOAPEnvelope with the soapObject
@@ -80,6 +87,19 @@ https://github.com/doedje/jquery.soap/blob/1.4.4/README.md
 			if (config.envAttributes) {
 				for (var i in config.envAttributes) {
 					soapEnvelope.addAttribute(i, config.envAttributes[i]);
+				}
+			}
+			// SOAPHeader
+			if (!!config.SOAPHeader) {
+				var soapHeader = SOAPTool.processData({
+					data: config.SOAPHeader,
+					name: 'temp',
+					prefix: ''
+				});
+				if (!!soapHeader) {
+					for (var j in soapHeader.children) {
+						soapEnvelope.addHeader(soapHeader.children[j]);
+					}
 				}
 			}
 			// WSS
@@ -116,18 +136,18 @@ https://github.com/doedje/jquery.soap/blob/1.4.4/README.md
 			});
 		} else {
 			var errDeferred = new $.Deferred(),
-			    errNoSoapObject = 'jquery.soap - no soapObject',
-			    errNoUrl = 'jquery.soap - no url';
-			    
+			    errmsg;
+
 			if (!soapObject) {
-				warn(errNoSoapObject);
-				errDeferred.reject(errNoSoapObject);
+				errmsg = 'jquery.soap - no soapObject';
 			}
 			if (!config.url) {
-				warn(errNoUrl);
-				errDeferred.reject(errNoUrl);
+				errmsg = 'jquery.soap - no url';
 			}
-			
+			if (!!errmsg) {
+				warn(errmsg);
+				errDeferred.reject(errmsg);
+			}
 			return errDeferred.promise();
 		}
 	};
@@ -269,7 +289,7 @@ https://github.com/doedje/jquery.soap/blob/1.4.4/README.md
 				},
 				beforeSend: function() {
 					if ($.isFunction(options.beforeSend)) {
-						return options.beforeSend(self);
+						return options.beforeSend.call(options.context, self);
 					}
 				}
 			});
@@ -381,7 +401,10 @@ https://github.com/doedje/jquery.soap/blob/1.4.4/README.md
 				}
 			}
 			//Node Value
-			if (!!this.value) {
+
+			console.log(this.value, this.value !== undefined)
+
+			if (this.value !== undefined) {
 				if (typeof(this.value) === 'string') {
 					encodedValue = this.value.match(/<!\[CDATA\[.*?\]\]>/) ?
 						this.value :
@@ -457,15 +480,7 @@ https://github.com/doedje/jquery.soap/blob/1.4.4/README.md
 				soapObject = SOAPTool.array2soap(options);
 			} else if ($.isPlainObject(options.data)) {
 				// if data is JSON, parse to SOAPObject
-				if (!!options.name) {
-					soapObject = SOAPTool.json2soap(options.name, options.data, options.prefix);
-					if (!!options.namespaceQualifier && !!options.namespaceURL) {
-						soapObject.addNamespace(options.namespaceQualifier, options.namespaceURL);
-					}
-					else if (!!options.namespaceURL) {
-						soapObject.attr('xmlns', options.namespaceURL);
-					}
-				}
+				soapObject = SOAPTool.json2soap(options.name, options.data, options.prefix);
 			} else if ($.isFunction(options.data)) {
 				// if data is function, the function should return a SOAPObject
 				soapObject = options.data.call(options.context, SOAPObject);
@@ -488,7 +503,7 @@ https://github.com/doedje/jquery.soap/blob/1.4.4/README.md
 				} else if (params.constructor.toString().indexOf("String") > -1) { // type is string
 					// handle String objects as string primitive value
 					soapObject = new SOAPObject(prefix+name);
-					soapObject.val(''+params); // the ''+ is added to fix issues with falsey values.
+					soapObject.val(params);
 				} else {
 					soapObject = new SOAPObject(prefix+name);
 					for(var y in params) {
@@ -500,7 +515,7 @@ https://github.com/doedje/jquery.soap/blob/1.4.4/README.md
 				}
 			} else {
 				soapObject = new SOAPObject(prefix+name);
-				soapObject.val(''+params); // the ''+ is added to fix issues with falsey values.
+				soapObject.val(params);
 			}
 			return soapObject;
 		},
@@ -533,10 +548,10 @@ https://github.com/doedje/jquery.soap/blob/1.4.4/README.md
 					var new_item = soapObject.newChild('soapenc:Array');
 					new_item.attr('soapenc:arrayType', 'xsd:string[' + (options.data[index].length) + ']');
 					for (var item = 0; item < options.data[index].length; item++) {
-						new_item.newChild('item').attr('type', 'xsd:string').val(''+options.data[index][item]).end(); // the ''+ is added to fix issues with falsey values.
+						new_item.newChild('item').attr('type', 'xsd:string').val(options.data[index][item]).end();
 					}
 				} else {
-					soapObject.newChild('c-gensym' + index).attr('type', 'xsd:string').val(options.data[index]).end(); // the ''+ is added to fix issues with falsey values.
+					soapObject.newChild('c-gensym' + index).attr('type', 'xsd:string').val(options.data[index]).end();
 				}
 			}
 			return soapObject;

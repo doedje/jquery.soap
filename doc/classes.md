@@ -1,9 +1,9 @@
 jQuery.soap Description of Classes
 ==================================
 **file:** jquery.soap.js  
-**version:** 1.4.4
+**version:** 1.5.0
 
-This document is giving an overview of the classes used within $.soap. 
+This document is giving an overview of the classes used within $.soap.
 
 ##_WORK IN PROGRESS_
 

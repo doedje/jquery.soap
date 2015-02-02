@@ -15,7 +15,7 @@
 	<body>
 		<header>
 			<h1>jQuery.soap demo page</h1>
-			In this demo you can test all features of jQuery.soap version 1.4.4
+			In this demo you can test all features of jQuery.soap version 1.5.0
 		</header>
 		<hr />
 		<form>
@@ -53,12 +53,22 @@
 			<fieldset>
 				<label>envAttributes:</label>
 				<textarea id='envAttributes' rows='5' cols='50'>{
-  'xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance',
-  'xmlns:xsd': 'http://www.w3.org/2001/XMLSchema'
+  'xmlns:test': 'http://www.test.org/'
 }</textarea>
 			</fieldset>
 			<fieldset>
-				<label>data:</label> 
+				<label>SOAPHeader:</label>
+				<select id='SOAPHeaderType'>
+					<option value='xml'>XML String</option>
+					<option value='json'>JSON</option>
+				</select>
+			</fieldset>
+			<fieldset>
+				<label>XML String:<br />&lt;test&gt;some text here...&lt;/test&gt;<br /><br />JSON example:<br />{ test: 'some text here...' }</label>
+				<textarea id='SOAPHeader' rows='5' cols='50'><test>some text here...</test></textarea>
+			</fieldset>
+			<fieldset>
+				<label>data:</label>
 				<select id='dataType'>
 					<option value='xml'>XML String</option>
 					<option value='json'>JSON</option>
@@ -106,7 +116,7 @@
 		<div id='feedbackpanel'>
 			<pre id='soapcall'></pre>
 			<pre id='requestXML'></pre>
-			
+
 			<hr />
 			<h2 id='feedbackHeader'></h2>
 			<pre id='feedback'></pre>

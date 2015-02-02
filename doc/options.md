@@ -1,7 +1,7 @@
 jQuery.soap Detailed Options List
 =================================
 **file:** jquery.soap.js  
-**version:** 1.4.4
+**version:** 1.5.0
 
 Note that all options are optional. To actually send a request [url](#url) en [data](#data) are the minimal requirements. More [general information about the usage of jQuery.soap](README.md)
 
@@ -40,6 +40,21 @@ $.soap({
 });
 ```
 
+context
+-------
+type: _any_
+default: the $.ajax settings
+
+Used to set `this` in `beforeSend`, `success`, `error` and `data` callback functions
+```
+$.soap({
+	context: document.body,
+	success: function(SOAPResponse) {
+		console.log(this);
+	}
+});
+```
+
 data
 ----
 type: **string** or **XMLDOM** or **JSON** or **function(SOAPObject)**  
@@ -49,7 +64,7 @@ The data to be sent to the WebService, mainly the contents of the soap:Body, alt
 
 In the first example `var xml` is an array of strings which is joined together to form one XML string which is used as the `data`.
 ```
-var xml = 
+var xml =
 	['<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope/">',
 		'<soap:Body>',
 			'<requestNode>',
@@ -113,7 +128,7 @@ default: _null_
 Set additional attributes (like namespaces) on the soap:Envelope node
 ```
 $.soap({
-	envAttributes: {		
+	envAttributes: {
 		'xmlns:another': 'http://anotherNamespace.com/'
 	}
 })
@@ -166,7 +181,7 @@ error
 -----
 type: **function(SOAPResponse)**  
 
-Allows to set a callback function for when the underlying $.ajax call goes wrong. 
+Allows to set a callback function for when the underlying $.ajax call goes wrong.
 
 _Note that $.soap() also returns a jqXHR object that implements the [Promise interface](README.md#promise), so instead of the error option you can also use `jqXHR.fail()`._
 ```
@@ -188,14 +203,14 @@ $.soap({
 	HTTPHeaders: {
 		'Authorization': 'Basic ' + btoa('user:pass')
 	}
-}): 
+}):
 ```
 
 method
 ------
 type: **string**
 
-The service operation name. 
+The service operation name.
 
 - Will be appended to the [url](#url) by default unless [appendMethodToURL](#appendMethodToURL) is set to _false_.
 - Will be used to set SOAPAction request header unless a [SOAPAction](#SOAPAction) is specified
@@ -341,6 +356,19 @@ $.soap({
 	url: 'http://server.com/webServices/',
 	method: 'getItem',
 	SOAPAction: 'getAnItem'
+})
+```
+
+SOAPHeader
+----------
+type: **string** or **XMLDOM** or **JSON** or **function(SOAPObject)**
+
+Allows to set the SOAP:Header.
+```
+$.soap({
+	SOAPHeader: {
+		test: [1,2,3]
+	}
 })
 ```
 

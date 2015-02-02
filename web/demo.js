@@ -1,6 +1,6 @@
 /*==========================
 demo.js  http://plugins.jquery.com/soap/ or https://github.com/doedje/jquery.soap
-part of the jQuery.soap distribution version: 1.4.4
+part of the jQuery.soap distribution version: 1.5.0
 
 this file contains the javascript for the jQuery.soap demo
 ===========================*/
@@ -11,11 +11,22 @@ $(document).ready(function() {
 		e.preventDefault();
 		// empty all elements with results and feedback
 		$('#feedbackHeader, #feedback, #soapcall, #requestXML').empty();
+		// gather the SOAPHeader
+		var SOAPHeader = $('#SOAPHeader').val();
+		if ($('#SOAPHeaderType').val() == 'json') {
+			SOAPHeader = eval("("+SOAPHeader+")");
+		}
 		// gather the data
 		var data = $('#data').val();
 		if ($('#dataType').val() == 'json') {
 			data = eval("("+data+")");
 		}
+		// gather the envAttributes
+		var envAttributes = $('#envAttributes').val();
+		envAttributes = eval("("+envAttributes+")");
+		// gather the HTTPHeaders
+		var HTTPHeaders = $('#HTTPHeaders').val();
+		HTTPHeaders = eval("("+HTTPHeaders+")");
 
 		var wss;
 		if ($('#enableWSS').prop('checked')) {
@@ -30,7 +41,7 @@ $(document).ready(function() {
 		var callout = writeSoapCall();
 		$('#soapcall').text(callout);
 
-		$.soap({
+		var ajaxReturn = $.soap({
 			url: $('#url').val(),
 			method: $('#method').val(),
 
@@ -42,17 +53,9 @@ $(document).ready(function() {
 			data: data,
 			wss: wss,
 
-			/*
-			HTTPHeaders: {
-				Authorization: 'Basic ' + btoa('test:test'),
-				SOAPAction: ''
-			},
-			*/
-
-			envAttributes: {
-				'xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance',
-				'xmlns:xsd': 'http://www.w3.org/2001/XMLSchema'
-			},
+			HTTPHeaders: HTTPHeaders,
+			envAttributes: envAttributes,
+			SOAPHeader: SOAPHeader,
 
 			namespaceQualifier:  $('#namespaceQualifier').val(),
 			namespaceURL: $('#namespaceURL').val(),
@@ -61,19 +64,28 @@ $(document).ready(function() {
 
 			enableLogging: $('#enableLogging').prop('checked'),
 
+			context: $('#feedback'),
+
 			beforeSend: function(SOAPEnvelope) {
 				var xmlout = dom2html($.parseXML(SOAPEnvelope.toString()).firstChild);
 				$('#requestXML').text(xmlout);
 			},
 			success: function(SOAPResponse) {
+
+			//	console.log(this)
+
 				$('#feedbackHeader').html('Response: Success!');
 				$('#feedback').text(dom2html(SOAPResponse.toXML().firstChild));
 			},
 			error: function(SOAPResponse) {
+
+			//	console.log(this)
+
 				$('#feedbackHeader').html('Response: Error!');
 			//	$('#feedback').text(SOAPResponse.toString());
 			}
 		});
+		// console.log(ajaxReturn);
 	});
 });
 
@@ -85,6 +97,18 @@ function writeSoapCall() {
 	if ($('#SOAPAction').val()) { options.push('  SOAPAction: "' + $('#SOAPAction').val() + '"'); }
 	if ($('#soap12').prop('checked') == true) { options.push('  soap12: true'); }
 	if ($('#async').prop('checked') == false) { options.push('  async: false'); }
+	var HTTPHeaders = $('#HTTPHeaders').val();
+	HTTPHeaders = HTTPHeaders.replace(/\n/g,'\n  ');
+	if ($('#HTTPHeaders').val()) { options.push('  HTTPHeaders: ' + HTTPHeaders); }
+	var envAttributes = $('#envAttributes').val();
+	envAttributes = envAttributes.replace(/\n/g,'\n  ');
+	if ($('#envAttributes').val()) { options.push('  envAttributes: ' + envAttributes); }
+	var SOAPHeader = $('#SOAPHeader').val();
+	if ($('#SOAPHeaderType').val() == 'xml') {
+		SOAPHeader = '"' + SOAPHeader.replace(/\"/g,'\\"') + '"';
+	}
+	SOAPHeader = SOAPHeader.replace(/\n/g,'\n  ');
+	if ($('#SOAPHeader').val()) { options.push('  SOAPHeader: ' + SOAPHeader); }
 	var prettyData = $('#data').val();
 	if ($('#dataType').val() == 'xml') {
 		prettyData = '"' + prettyData.replace(/\"/g,'\\"') + '"';

@@ -1,7 +1,7 @@
 {
 	"name": "soap",
 	"title": "jQuery Soap",
-	"version": "1.4.4",
+	"version": "1.5.0",
 	"description": "jQuery plugin for communicating with a web service using SOAP. This script uses $.ajax to send the SOAP message. It can take XML DOM, XML string or JSON as input and the response can be returned as either XML DOM, XML string or JSON too. Big thanx to everybody that contributed! Let's $.soap()!",
 	"keywords": [
 		"soap",
