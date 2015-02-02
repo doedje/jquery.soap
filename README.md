@@ -64,7 +64,7 @@ options = {
 	appendMethodToURL: true,						// method name will be appended to URL defaults to true
 	SOAPAction: 'action',							// manually set the Request Header 'SOAPAction', defaults to the method specified above (optional)
 	soap12: false,									// use SOAP 1.2 namespace and HTTP headers - default to false
-	context: document.body			// Used to set this in beforeSend, success, error and data callback functions
+	context: document.body							// Used to set this in beforeSend, success, error and data callback functions
 
 	// addional headers and namespaces
 	envAttributes: {								// additional attributes (like namespaces) for the Envelope:
