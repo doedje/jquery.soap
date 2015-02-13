@@ -2,6 +2,7 @@
 	"name": "jquery.soap",
 	"version": "1.5.0",
 	"keywords": [
+		"jquery",
 		"soap",
 		"ajax",
 		"wss"
