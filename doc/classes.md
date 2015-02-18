@@ -11,58 +11,62 @@ This document is giving an overview of the classes used within $.soap.
 SOAPEnvelope
 ------------
 
-###**constructor:** `new SOAPEnvelope(soapObject);`
+###constructor
 
-###**properties:**
+`new SOAPEnvelope(soapObject);`
 
-attributes
-bodies
-headers
-prefix
-soapConfig
-typeof = 'SOAPEnvelope'
+###properties
 
-###**methods:**
+#####`attributes`
+#####`bodies`
+#####`headers`
+#####'prefix`
+#####`soapConfig`
+#####`typeof = 'SOAPEnvelope'`
 
+###methods:
 
+#####`addAttribute(name, value)`
 
 SOAPObject
 --------------------
 
-###**constructor:** `new SOAPObject(name);`
+###**constructor
+
+`new SOAPObject(name);`
 
 Creates a new SOAPObject with _name_
 
-###**properties:**
+###properties
 
-attributes  
-children  
-name  
-ns  
-_parent  
-value  
-typeOf = 'SOAPObject'  
+#####`attributes`  
+#####`children`  
+#####`name`  
+#####`ns`  
+#####`_parent`  
+#####`value`  
+#####`typeOf = 'SOAPObject'`
 
-###**methods:**
+###methods
 
-#####addNamespace(name, url)
+#####`addNamespace(name, url)`
 
-#####addParameter(name, value)
+#####`addParameter(name, value)`
 
-#####appendChild(soapObject)
+#####`appendChild(soapObject)`
 
-#####attr(name, value)
+#####`attr(name, value)`
 
-#####end()
+#####`end()`
 
-#####find(name)
+#####`find(name)`
 
-#####hasChildren()
+#####`hasChildren()`
 
-#####newChild(name)
+#####`newChild(name)`
 
-#####parent()
+#####`parent()`
 
-#####toString()
+#####`toString()`
 
-#####val(value)
+#####`val(value)`
