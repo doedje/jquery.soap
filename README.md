@@ -1,7 +1,7 @@
 jQuery Soap
 ===========
 **file:** jquery.soap.js  
-**version:** 1.5.0
+**version:** 1.6.0
 
 jQuery plugin for communicating with a web service using SOAP.
 --------------------------------------------------------------
@@ -99,6 +99,14 @@ options = {
 	beforeSend: function (SOAPEnvelope)  {},		// callback function - SOAPEnvelope object is passed back prior to ajax call (optional)
 	success: function (SOAPResponse) {},			// callback function to handle successful return (optional)
 	error:   function (SOAPResponse) {},			// callback function to handle fault return (optional)
+	statusCode: {									// callback functions based on statusCode
+		404: function() {
+			console.log('404 Not Found')
+		},
+		200: function() {
+			console.log('200 OK')
+		}
+	}
 
 	// WS-Security
 	wss: {
@@ -293,6 +301,7 @@ Version numbers are [semver](http://semver.org/) compatible.
 
 Version | Date | Changes
 --- | --- | ---
+1.6.0 | 2015-02-16 | feature request #71: added statusCode, like $.ajax has... Thanx [AndersMygind](https://github.com/AndersMygind), fixed setting SOAPHeader as XML (did not work properly)
 1.5.0 | 2015-01-31 | pull request #67: context added, some SOAP::Lite support, Thanx [ShaunMaher](https://github.com/ShaunMaher), pull request #69: return deferred object when !SOAPObject or !config.url, thanx [maxgrass](https://github.com/maxgrass), added SOAPHeader option as requested by [Adam Malcontenti-Wilson](https://github.com/adammw) in #62, fix for falsey values.
 1.4.4 | 2014-10-18 | pull request #65: fix namespace and type for nil attribute, Thanx [philipc](https://github.com/philipc)
 1.4.3 | 2014-09-18 | fix for empty namespaces like xmlns="" as found by XGreen on [StackOverflow](http://stackoverflow.com/questions/25809803/cdata-gets-removed-before-being-sent)

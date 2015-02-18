@@ -1,7 +1,7 @@
 jQuery.soap Detailed Options List
 =================================
 **file:** jquery.soap.js  
-**version:** 1.5.0
+**version:** 1.6.0
 
 Note that all options are optional. To actually send a request [url](#url) en [data](#data) are the minimal requirements. More [general information about the usage of jQuery.soap](README.md)
 
@@ -22,14 +22,17 @@ will send a request to `http://server.com/webServices/`
 
 async
 -----
-type: **boolean**
-default: _true_
+type: **boolean**  
+default: _true_  
+available since: **1.3.0**
 
-Set to false when you want the $.ajax call to be sync.
+Set to false when you want the $.ajax call to be sync. This setting is directly fed to the $.ajax call withing $.soap and should perform equally.
+More info: [jquery.ajax](http://api.jquery.com/jquery.ajax/)
 
 beforeSend
 ----------
 type: **function(SOAPEnvelope)**  
+available since: **1.3.1**
 
 Callback function which passes back the SOAPEnvelope object prior to the $.ajax call. From version 1.4.0 returning **false** in the `beforeSend` function will cancel the request.
 ```
@@ -42,10 +45,11 @@ $.soap({
 
 context
 -------
-type: _any_
-default: the $.ajax settings
+type: _any_  
+default: the $.ajax settings  
+available since: **1.5.0**
 
-Used to set `this` in `beforeSend`, `success`, `error` and `data` callback functions
+Used to set `this` in `beforeSend`, `success`, `error` and `data` callback functions. This setting mimics the behavior of context in [jquery.ajax](http://api.jquery.com/jquery.ajax/)
 ```
 $.soap({
 	context: document.body,
@@ -58,7 +62,8 @@ $.soap({
 data
 ----
 type: **string** or **XMLDOM** or **JSON** or **function(SOAPObject)**  
-default: _null_
+default: _null_  
+available since: **1.3.0**
 
 The data to be sent to the WebService, mainly the contents of the soap:Body, although it may also contain the complete soap:Envelope (with optional soap:Header).
 
@@ -168,7 +173,8 @@ will result in:
 enableLogging
 -------------
 type: **boolean**  
-default: _false_
+default: _false_  
+available since: **1.0.5**
 
 Set to true if you want some debug information in the console about the information send and received, errors and [globalConfig](#globalConfig) updates.
 ```
@@ -195,9 +201,12 @@ $.soap({
 HTTPHeaders
 -----------
 type: **object**  
-default: _null_
+default: _null_  
+available since: **1.3.0**
 
-Set additional http request headers, will be passed to $.ajax({ headers: }). A possible use is setting the `Authorization` header to do HTTP Basic Authorization as in the following example:
+Set additional http request headers. A possible use is setting the `Authorization` header to do HTTP Basic Authorization as in the example below.
+This setting is directly fed to the $.ajax call as **headers** withing $.soap and should perform equally.
+More info: [jquery.ajax](http://api.jquery.com/jquery.ajax/)
 ```
 $.soap({
 	HTTPHeaders: {
@@ -264,7 +273,7 @@ namespaceURL
 type: **string**  
 default: _null_
 
-Used as the namespace url added to the request element in combination with [namespaceQualifier](#namespaceQualifier)
+Used as the namespace url added to the request element in combination with [namespaceQualifier](#namespaceQualifier). From version 1.3.6 it also possible to supply only the namespaceURL.
 
 _This option ONLY applies when the request XML is going to be built from JSON [data](#data)._
 ```
@@ -288,7 +297,8 @@ will result in:
 noPrefix
 --------
 type: **boolean**  
-default: _false_
+default: _false_  
+available since: **1.2.0**
 
 Set to true if you don't want the [namespaceQualifier](#namespaceQualifier) to be the prefix for the nodes in the request element.
 
@@ -363,13 +373,46 @@ SOAPHeader
 ----------
 type: **string** or **XMLDOM** or **JSON** or **function(SOAPObject)**
 
-Allows to set the SOAP:Header.
+Allows to set the SOAP:Header. More info on different options see [data](#data)
 ```
 $.soap({
 	SOAPHeader: {
 		test: [1,2,3]
 	}
 })
+```
+will result in:
+```
+<soap:Envelope>
+	<soap:Header>
+		<test>1</test>
+		<test>2</test>
+		<test>3</test>
+	</soap:Header>
+	<soap:Body>
+		...
+	</soap:Body>
+</soap:Envelope>
+```
+
+statusCode
+----------
+type: **object**  
+available since: **1.6.0**
+
+An object of numeric HTTP codes and functions to be called when the response has the corresponding code. This setting is directly fed to the $.ajax call withing $.soap and should perform equally.
+More info: [jquery.ajax](http://api.jquery.com/jquery.ajax/)
+```
+$.soap({
+	statusCode: {
+		404: function() {
+			console.log('404 Not Found')
+		},
+		200: function() {
+			console.log('200 OK')
+		}
+	}
+});
 ```
 
 success
@@ -401,7 +444,8 @@ $.soap({
 
 wss
 ---
-type: **object**
+type: **object**  
+available since: **1.1.0**
 
 To create a soap:Header with credentials for WS-Security
 ```

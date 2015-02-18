@@ -1,6 +1,6 @@
 /*==========================
 demo.js  http://plugins.jquery.com/soap/ or https://github.com/doedje/jquery.soap
-part of the jQuery.soap distribution version: 1.5.0
+part of the jQuery.soap distribution version: 1.6.0
 
 this file contains the javascript for the jQuery.soap demo
 ===========================*/
@@ -83,6 +83,15 @@ $(document).ready(function() {
 
 				$('#feedbackHeader').html('Response: Error!');
 			//	$('#feedback').text(SOAPResponse.toString());
+			},
+
+			statusCode: {
+				404: function() {
+					console.log('404')
+				},
+				200: function() {
+					console.log('200')
+				}
 			}
 		});
 		// console.log(ajaxReturn);

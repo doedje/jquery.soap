@@ -5,9 +5,6 @@ jQuery.soap Description of Classes
 
 This document is giving an overview of the classes used within $.soap.
 
-##_WORK IN PROGRESS_
-
-
 SOAPEnvelope
 ------------
 
@@ -20,13 +17,18 @@ SOAPEnvelope
 #####`attributes`
 #####`bodies`
 #####`headers`
-#####'prefix`
+#####`prefix`
 #####`soapConfig`
 #####`typeof = 'SOAPEnvelope'`
 
-###methods:
+###methods
 
 #####`addAttribute(name, value)`
+#####`addNamespace(name, uri)`
+#####`addHeader(soapObject)`
+#####`addBody(soapObject)`
+#####`toString()`
+#####`send(options)`
 
 SOAPObject
 --------------------

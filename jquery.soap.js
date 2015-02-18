@@ -1,6 +1,6 @@
 /*==========================
 jquery.soap.js  http://plugins.jquery.com/soap/ or https://github.com/doedje/jquery.soap
-version: 1.5.0
+version: 1.6.0
 
 jQuery plugin for communicating with a web service using SOAP.
 
@@ -33,7 +33,7 @@ For information about how to use jQuery.soap, authors, changelog, the latest ver
 Visit: https://github.com/doedje/jquery.soap
 
 Documentation about THIS version is found here:
-https://github.com/doedje/jquery.soap/blob/1.5.0/README.md
+https://github.com/doedje/jquery.soap/blob/1.6.0/README.md
 
 ======================*/
 
@@ -97,8 +97,12 @@ https://github.com/doedje/jquery.soap/blob/1.5.0/README.md
 					prefix: ''
 				});
 				if (!!soapHeader) {
-					for (var j in soapHeader.children) {
-						soapEnvelope.addHeader(soapHeader.children[j]);
+					if (soapHeader.hasChildren()) {
+						for (var j in soapHeader.children) {
+							soapEnvelope.addHeader(soapHeader.children[j]);
+						}
+					} else {
+						soapEnvelope.addHeader(soapHeader);
 					}
 				}
 			}
@@ -121,7 +125,8 @@ https://github.com/doedje/jquery.soap/blob/1.5.0/README.md
 				headers: (config.HTTPHeaders) ? config.HTTPHeaders : {},
 				action: (!!config.SOAPAction) ? config.SOAPAction : config.method,
 				soap12: config.soap12,
-				beforeSend: config.beforeSend
+				beforeSend: config.beforeSend,
+				statusCode: config.statusCode,
 			}).done(function(data, textStatus, jqXHR) {
 				var response = new SOAPResponse(textStatus, jqXHR);
 				log('jquery.soap - receive:', response.toXML().firstChild);
@@ -260,6 +265,7 @@ https://github.com/doedje/jquery.soap/blob/1.5.0/README.md
 			return $.ajax({
 				type: "POST",
 				context: options.context,
+				statusCode: options.statusCode,
 				url: options.url,
 				async: options.async,
 				headers: options.headers,
@@ -305,8 +311,10 @@ https://github.com/doedje/jquery.soap/blob/1.5.0/README.md
 		this._parent = null;
 		this.children = [];
 		this.value = undefined;
+	}
 
-		this.attr = function(name, value) {
+	SOAPObject.prototype = {
+		attr: function(name, value) {
 			if (!!name && !!value || !!name && value === "") {
 				this.attributes[name] = value;
 				return this;
@@ -315,8 +323,8 @@ https://github.com/doedje/jquery.soap/blob/1.5.0/README.md
 			} else {
 				return this.attributes;
 			}
-		};
-		this.val = function(value) {
+		},
+		val: function(value) {
 			if (value === undefined) {
 				if (this.attr('xsi:nil') === 'true') {
 					return null;
@@ -330,31 +338,31 @@ https://github.com/doedje/jquery.soap/blob/1.5.0/README.md
 				this.value = value;
 				return this;
 			}
-		};
-		this.addNamespace = function(name, url) {
+		},
+		addNamespace: function(name, url) {
 			this.ns[name] = url;
 			return this;
-		};
-		this.appendChild = function(obj) {
+		},
+		appendChild: function(obj) {
 			obj._parent = this;
 			this.children.push(obj);
 			return obj;
-		};
-		this.newChild = function(name) {
+		},
+		newChild: function(name) {
 			var obj = new SOAPObject(name);
 			this.appendChild(obj);
 			return obj;
-		};
-		this.addParameter = function(name, value) {
+		},
+		addParameter: function(name, value) {
 			var obj = new SOAPObject(name);
 			obj.val(value);
 			this.appendChild(obj);
 			return this;
-		};
-		this.hasChildren = function() {
+		},
+		hasChildren: function() {
 			return (this.children.length > 0) ? true : false;
-		};
-		this.find = function(name) {
+		},
+		find: function(name) {
 			if (this.name === name) {
 				return this;
 			} else {
@@ -365,20 +373,23 @@ https://github.com/doedje/jquery.soap/blob/1.5.0/README.md
 					}
 				}
 			}
-		};
-		this.end = this.parent = function() {
+		},
+		end: function() {
+			return parent();
+		},
+		parent: function() {
 			return this._parent;
-		};
-		this.toString = function() {
+		},
+		toString: function() {
 			var out = [],
-			    xmlCharMap = {
-			    	'<': '&lt;',
-			    	'>': '&gt;',
-			    	'&': '&amp;',
-			    	'"': '&quot;',
-			    	"'": '&apos;'
-			    },
-			    encodedValue;
+					xmlCharMap = {
+						'<': '&lt;',
+						'>': '&gt;',
+						'&': '&amp;',
+						'"': '&quot;',
+						"'": '&apos;'
+					},
+					encodedValue;
 			out.push('<'+this.name);
 			//Namespaces
 			for (var name in this.ns) {
@@ -416,10 +427,10 @@ https://github.com/doedje/jquery.soap/blob/1.5.0/README.md
 			//Close Tag
 			out.push('</' + this.name + '>');
 			return out.join('');
-		};
+		}
 	};
 
-	//Soap response - this will be passed to the callback from SOAPClient.SendRequest
+	//Soap response - this will be passed to the callback from SOAPEnvelope.send
 	var SOAPResponse = function(status, xhr) {
 		this.typeOf = "SOAPResponse";
 		this.status = status;
