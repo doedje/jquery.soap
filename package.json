@@ -6,7 +6,8 @@
     "jquery",
     "soap",
     "ajax",
-    "wss"
+    "wss",
+    "jquery-plugin"
   ],
   "bugs": "https://github.com/doedje/jquery.soap",
   "license": "GPL-3.0+",

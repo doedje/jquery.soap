@@ -51,6 +51,18 @@ will result in
 And this will be send to: url + method  
 http://my.server.com/soapservices/helloWorld
 
+Installation
+------------
+You can download the [latest version](https://github.com/doedje/jquery.soap/archive/1.6.1.zip)
+
+Or install by bower or npm:
+
+```
+npm install jquery.soap
+
+bower install jquery.soap
+```
+
 Options overview
 ----------------
 [More detailed list of the available options for jQuery.soap](doc/options.md)
