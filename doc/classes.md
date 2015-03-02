@@ -14,26 +14,26 @@ SOAPEnvelope
 
 ###properties
 
-#####`attributes`
-#####`bodies`
-#####`headers`
-#####`prefix`
-#####`soapConfig`
+#####`attributes = {}`
+#####`bodies = []`
+#####`headers = []`
+#####`prefix = 'soap'`
+#####`soapConfig = null`
 #####`typeof = 'SOAPEnvelope'`
 
 ###methods
 
 #####`addAttribute(name, value)`
-#####`addNamespace(name, uri)`
-#####`addHeader(soapObject)`
 #####`addBody(soapObject)`
+#####`addHeader(soapObject)`
+#####`addNamespace(name, uri)`
 #####`toString()`
 #####`send(options)`
 
 SOAPObject
 --------------------
 
-###**constructor
+###constructor
 
 `new SOAPObject(name);`
 
@@ -41,12 +41,12 @@ Creates a new SOAPObject with _name_
 
 ###properties
 
-#####`attributes`  
-#####`children`  
-#####`name`  
-#####`ns`  
-#####`_parent`  
-#####`value`  
+#####`attributes = {}`
+#####`children = []`
+#####`name = _string_`
+#####`ns = {}`
+#####`_parent = null`
+#####`value = undefined`
 #####`typeOf = 'SOAPObject'`
 
 ###methods
