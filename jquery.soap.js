@@ -521,6 +521,9 @@ https://github.com/doedje/jquery.soap/blob/1.6.0/README.md
 						}
 					}
 				}
+			} else if (typeof params == 'boolean') {
+				soapObject = new SOAPObject(prefix+name);
+				soapObject.val(params ? 'true' : 'false');
 			} else {
 				soapObject = new SOAPObject(prefix+name);
 				soapObject.val(params);
