@@ -53,14 +53,16 @@ http://my.server.com/soapservices/helloWorld
 
 Installation
 ------------
-You can download the [latest version](https://github.com/doedje/jquery.soap/archive/1.6.1.zip)
+You can download the [latest version](https://github.com/doedje/jquery.soap/archive/1.6.1.zip) as a zip, which contains all the files within this repository.
+
+Or just get the file [jquery.soap](https://raw.githubusercontent.com/doedje/jquery.soap/master/jquery.soap.js)
 
 Or install by bower or npm:
 
 ```
-npm install jquery.soap
+$ npm install jquery.soap
 
-bower install jquery.soap
+$ bower install jquery.soap
 ```
 
 Options overview
