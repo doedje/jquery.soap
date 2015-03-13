@@ -1,6 +1,6 @@
 /*==========================
 jquery.soap.js  http://plugins.jquery.com/soap/ or https://github.com/doedje/jquery.soap
-version: 1.6.3
+version: 1.6.4
 
 jQuery plugin for communicating with a web service using SOAP.
 
@@ -33,7 +33,7 @@ For information about how to use jQuery.soap, authors, changelog, the latest ver
 Visit: https://github.com/doedje/jquery.soap
 
 Documentation about THIS version is found here:
-https://github.com/doedje/jquery.soap/blob/1.6.3/README.md
+https://github.com/doedje/jquery.soap/blob/1.6.4/README.md
 
 ======================*/
 
@@ -375,7 +375,7 @@ https://github.com/doedje/jquery.soap/blob/1.6.3/README.md
 			}
 		},
 		end: function() {
-			return parent();
+			return this.parent();
 		},
 		parent: function() {
 			return this._parent;
