@@ -1,7 +1,7 @@
 jQuery Soap
 ===========
 **file:** jquery.soap.js  
-**version:** 1.6.2
+**version:** 1.6.3
 
 jQuery plugin for communicating with a web service using SOAP.
 --------------------------------------------------------------
@@ -53,7 +53,7 @@ http://my.server.com/soapservices/helloWorld
 
 Installation
 ------------
-You can download the [latest version](https://github.com/doedje/jquery.soap/archive/1.6.2.zip) as a zip, which contains all the files within this repository.
+You can download the [latest version](https://github.com/doedje/jquery.soap/archive/1.6.3.zip) as a zip, which contains all the files within this repository.
 
 Or just get the file [jquery.soap.js](https://raw.github.com/doedje/jquery.soap/master/jquery.soap.js)
 
@@ -315,6 +315,7 @@ Version numbers are [semver](http://semver.org/) compatible.
 
 Version | Date | Changes
 --- | --- | ---
+1.6.3 | 2015-03-13 | fix the dependency for xml2json to be >=1.3 instead of >1.3
 1.6.2 | 2015-03-13 | fix for #74: added xml2json as a dependency in bower.json
 1.6.1 | 2015-03-02 | pull request #73: Fix regression on SOAPTool.json2soap serialization for boolean type: thanx [AlexandreFournier](https://github.com/AlexandreFournier)
 1.6.0 | 2015-02-16 | feature request #71: added statusCode, like $.ajax has... Thanx [AndersMygind](https://github.com/AndersMygind), fixed setting SOAPHeader as XML (did not work properly)
