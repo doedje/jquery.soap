@@ -10,6 +10,6 @@
 	"main": "jquery.soap.js",
 	"dependencies": {
 		"jquery": ">=1.9",
-		"jquery.xml2json": ">1.3"
+		"jquery.xml2json": ">=1.3"
 	}
 }
