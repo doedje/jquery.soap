@@ -1,6 +1,6 @@
 {
 	"name": "jquery.soap",
-	"version": "1.6.1",
+	"version": "1.6.2",
 	"keywords": [
 		"jquery",
 		"soap",
@@ -9,6 +9,7 @@
 	],
 	"main": "jquery.soap.js",
 	"dependencies": {
-		"jquery": ">=1.9"
+		"jquery": ">=1.9",
+		"jquery.xml2json": ">1.3"
 	}
 }
