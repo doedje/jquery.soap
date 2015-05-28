@@ -512,6 +512,10 @@ https://github.com/doedje/jquery.soap/blob/1.6.4/README.md
 					// handle String objects as string primitive value
 					soapObject = new SOAPObject(prefix+name);
 					soapObject.val(params);
+				} else if (params.constructor.toString().indexOf("Date") > -1) { // type is Date
+					// handle Date objects as ISO8601 formated value
+					soapObject = new SOAPObject(prefix+name);
+					soapObject.val(params.toISOString());
 				} else {
 					soapObject = new SOAPObject(prefix+name);
 					for(var y in params) {
