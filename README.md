@@ -3,6 +3,8 @@ jQuery Soap
 **file:** jquery.soap.js  
 **version:** 1.6.5
 
+![SOAP](https://raw.githubusercontent.com/doedje/jquery.soap/master/Icon.jpg)
+
 jQuery plugin for communicating with a web service using SOAP.
 --------------------------------------------------------------
 This script uses $.ajax to send a SOAPEnvelope. It can take XML DOM, XML string or JSON as input and the response can be returned as either XML DOM, XML string or JSON too.
