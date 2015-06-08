@@ -1,7 +1,7 @@
 jQuery Soap
 ===========
 **file:** jquery.soap.js  
-**version:** 1.6.4
+**version:** 1.6.5
 
 jQuery plugin for communicating with a web service using SOAP.
 --------------------------------------------------------------
@@ -53,7 +53,7 @@ http://my.server.com/soapservices/helloWorld
 
 Installation
 ------------
-You can download the [latest version](https://github.com/doedje/jquery.soap/archive/1.6.4.zip) as a zip, which contains all the files within this repository.
+You can download the [latest version](https://github.com/doedje/jquery.soap/archive/1.6.5.zip) as a zip, which contains all the files within this repository.
 
 Or just get the file [jquery.soap.js](https://raw.github.com/doedje/jquery.soap/master/jquery.soap.js)
 
@@ -315,6 +315,7 @@ Version numbers are [semver](http://semver.org/) compatible.
 
 Version | Date | Changes
 --- | --- | ---
+1.6.5 | 2015-06-08 | pull request #78: Added Date object serialization to ISO8601, thanx [AlexandreFournier](https://github.com/AlexandreFournier)
 1.6.4 | 2015-03-13 | fix for SOAPObject.end() throwing error parent() is not a function, bug introduced in 1.6.0
 1.6.3 | 2015-03-13 | fix the dependency for xml2json to be >=1.3 instead of >1.3
 1.6.2 | 2015-03-13 | fix for #74: added xml2json as a dependency in bower.json
