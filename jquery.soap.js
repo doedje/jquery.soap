@@ -276,6 +276,8 @@ https://github.com/doedje/jquery.soap/blob/1.6.5/README.md
 				contentType: contentType + "; charset=UTF-8",
 				// second attempt to get some progres info (but still a no go)
 				// I still keep this in tho, we might see it working one day when browsers mature...
+				/*
+				//WRT issue #80 (https://github.com/doedje/jquery.soap/issues/80) commenting out the xhr function below for IE8 and IE9 compatability. Issue exists when used alongside any script that modifies the XMLHttpRequest object like, for example, the xdomain or xhook libraries. This could be explicitly enabled by users on a per-case basis if it is mentioned somewhere in the readme.md file. 
 				xhr: function() {
 					var xhr = new window.XMLHttpRequest();
 					xhr.upload.addEventListener("progress", function(evt) {
@@ -293,6 +295,7 @@ https://github.com/doedje/jquery.soap/blob/1.6.5/README.md
 
 					return xhr;
 				},
+				*/
 				beforeSend: function() {
 					if ($.isFunction(options.beforeSend)) {
 						return options.beforeSend.call(options.context, self);
