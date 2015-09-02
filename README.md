@@ -1,7 +1,7 @@
 jQuery Soap
 ===========
 **file:** jquery.soap.js  
-**version:** 1.6.5
+**version:** 1.6.6
 
 ![SOAP](https://raw.githubusercontent.com/doedje/jquery.soap/master/Icon.jpg)
 
@@ -55,7 +55,7 @@ http://my.server.com/soapservices/helloWorld
 
 Installation
 ------------
-You can download the [latest version](https://github.com/doedje/jquery.soap/archive/1.6.5.zip) as a zip, which contains all the files within this repository.
+You can download the [latest version](https://github.com/doedje/jquery.soap/archive/1.6.6.zip) as a zip, which contains all the files within this repository.
 
 Or just get the file [jquery.soap.js](https://raw.github.com/doedje/jquery.soap/master/jquery.soap.js)
 
@@ -317,6 +317,7 @@ Version numbers are [semver](http://semver.org/) compatible.
 
 Version | Date | Changes
 --- | --- | ---
+1.6.6 | 2015-09-02 | pull request #82: XHR for progress support may break IE8/IE9 cross-domain requests, thanx [Arun Menon](https://github.com/arunmenon1975)
 1.6.5 | 2015-06-08 | pull request #78: Added Date object serialization to ISO8601, thanx [AlexandreFournier](https://github.com/AlexandreFournier)
 1.6.4 | 2015-03-13 | fix for SOAPObject.end() throwing error parent() is not a function, bug introduced in 1.6.0
 1.6.3 | 2015-03-13 | fix the dependency for xml2json to be >=1.3 instead of >1.3
