@@ -1,5 +1,5 @@
 /**
- * @fileoverview Externs for jquery.soap.js - 1.6.6 (works with Google Closure Compiler running in ADVANCED_OPTIMIZATIONS mode)
+ * @fileoverview Externs for jquery.soap.js - 1.6.7 (works with Google Closure Compiler running in ADVANCED_OPTIMIZATIONS mode)
  *
  * @see https://github.com/doedje/jquery.soap
  * @externs

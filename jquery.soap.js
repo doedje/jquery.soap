@@ -1,6 +1,6 @@
 /*==========================
 jquery.soap.js - https://github.com/doedje/jquery.soap
-version: 1.6.6
+version: 1.6.7
 
 jQuery plugin for communicating with a web service using SOAP.
 
@@ -33,7 +33,7 @@ For information about how to use jQuery.soap, authors, changelog, the latest ver
 Visit: https://github.com/doedje/jquery.soap
 
 Documentation about THIS version is found here:
-https://github.com/doedje/jquery.soap/blob/1.6.6/README.md
+https://github.com/doedje/jquery.soap/blob/1.6.7/README.md
 
 ======================*/
 
@@ -129,7 +129,7 @@ https://github.com/doedje/jquery.soap/blob/1.6.6/README.md
 				statusCode: config.statusCode,
 			}).done(function(data, textStatus, jqXHR) {
 				var response = new SOAPResponse(textStatus, jqXHR);
-				log('jquery.soap - receive:', response.toXML().firstChild);
+				log('jquery.soap - receive:', response.toString());
 				if ($.isFunction(config.success)) {
 					config.success.call(this, response);
 				}
@@ -261,7 +261,7 @@ https://github.com/doedje/jquery.soap/blob/1.6.6/README.md
 			if (contentType === SOAPTool.SOAP11.type && !!options.action) {
 				options.headers.SOAPAction = options.action;
 			}
-			log('jquery.soap - beforeSend:', $.parseXML(this.toString()).firstChild);
+			log('jquery.soap - beforeSend:', this.toString());
 			return $.ajax({
 				type: "POST",
 				context: options.context,
@@ -277,7 +277,7 @@ https://github.com/doedje/jquery.soap/blob/1.6.6/README.md
 				// second attempt to get some progres info (but still a no go)
 				// I still keep this in tho, we might see it working one day when browsers mature...
 				/*
-				//WRT issue #80 (https://github.com/doedje/jquery.soap/issues/80) commenting out the xhr function below for IE8 and IE9 compatability. Issue exists when used alongside any script that modifies the XMLHttpRequest object like, for example, the xdomain or xhook libraries. This could be explicitly enabled by users on a per-case basis if it is mentioned somewhere in the readme.md file. 
+				//WRT issue #80 (https://github.com/doedje/jquery.soap/issues/80) commenting out the xhr function below for IE8 and IE9 compatability. Issue exists when used alongside any script that modifies the XMLHttpRequest object like, for example, the xdomain or xhook libraries. This could be explicitly enabled by users on a per-case basis if it is mentioned somewhere in the readme.md file.
 				xhr: function() {
 					var xhr = new window.XMLHttpRequest();
 					xhr.upload.addEventListener("progress", function(evt) {
@@ -460,7 +460,7 @@ https://github.com/doedje/jquery.soap/blob/1.6.6/README.md
 			if ($.xml2json) {
 				return $.xml2json(this.content);
 			}
-			warn("jQuery.soap: Missing JQuery Plugin 'xml2json'");
+			warn("jQuery.soap - Missing JQuery Plugin 'xml2json', info at: https://github.com/doedje/jquery.soap#dependencies");
 		};
 	};
 

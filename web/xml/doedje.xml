@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!-- interesting stuff -->
+<root>
+	<test attr1="test" attr2="10">
+		first node
+	</test>
+	<test>
+		<![CDATA[Second node with < and &...]]>
+	</test>
+	<_test>
+		Let's test
+	</_test>
+</root>

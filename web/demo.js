@@ -1,6 +1,6 @@
 /*==========================
 demo.js - https://github.com/doedje/jquery.soap
-part of the jQuery.soap distribution version: 1.6.6
+part of the jQuery.soap distribution version: 1.6.7
 
 this file contains the javascript for the jQuery.soap demo
 ===========================*/
@@ -75,7 +75,12 @@ $(document).ready(function() {
 			//	console.log(this)
 
 				$('#feedbackHeader').html('Response: Success!');
-				$('#feedback').text(dom2html(SOAPResponse.toXML().firstChild));
+				$('#feedback').text(dom2html(SOAPResponse.toXML()));
+
+				responseJSON = SOAPResponse.toJSON()
+
+				console.log(responseJSON);
+				console.log(JSON.stringify(responseJSON, null, 2));
 			},
 			error: function(SOAPResponse) {
 
@@ -164,7 +169,7 @@ function dom2html(xmldom, tabcount) {
 			xmlout.push(dom2html(child, tabcount));
 		}
 		if (child.nodeType === 3 && !whitespace.test(child.nodeValue)) {
-			xmlout.push(child.nodeValue);
+			xmlout.push(child.nodeValue.trim());
 		}
 		if (child.nodeType === 4) {
 			xmlout.push('<![CDATA[' + child.nodeValue + ']]>');

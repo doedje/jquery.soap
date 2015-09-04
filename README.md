@@ -1,7 +1,7 @@
 jQuery Soap
 ===========
 **file:** jquery.soap.js  
-**version:** 1.6.6
+**version:** 1.6.7
 
 ![SOAP](https://raw.githubusercontent.com/doedje/jquery.soap/master/Icon.jpg)
 
@@ -55,7 +55,7 @@ http://my.server.com/soapservices/helloWorld
 
 Installation
 ------------
-You can download the [latest version](https://github.com/doedje/jquery.soap/archive/1.6.6.zip) as a zip, which contains all the files within this repository.
+You can download the [latest version](https://github.com/doedje/jquery.soap/archive/1.6.7.zip) as a zip, which contains all the files within this repository.
 
 Or just get the file [jquery.soap.js](https://raw.github.com/doedje/jquery.soap/master/jquery.soap.js)
 
@@ -66,6 +66,21 @@ $ npm install jquery.soap
 
 $ bower install jquery.soap
 ```
+
+Dependencies
+------------
+[jQuery](http://jquery.com/download/) -- Should work fine with any version 1.9 or up, MAY work back to v1.6  
+
+the function `SOAPResponse.toJSON()` depends on any 3rd party **jQuery.xml2json** plugin
+
+Previously the bower.json mentioned the one from fyneworks, published by [XTREEM](https://github.com/xtreemrage/jquery.xml2json), as a dependency but that has been removed due to the fact that it has jquery 1.11 as dependency and is thus not usable with 1.9, 1.10 or 2.x versions of jquery.
+
+As from version 1.6.7 you must manually install any 3rd party jQuery.xml2json plugin when you wish to use the `SOAPResponse.toJSON` function, like one from the list below:
+
+[sparkbuzz/jQuery-xml2json](https://github.com/sparkbuzz/jQuery-xml2json)  
+[fyneworks](http://www.fyneworks.com/jquery/xml-to-json/)
+
+_Keep in mind that changing the plugin you are using might break your existing code that is already using `SOAPResonse.toJSON` because all plugins create objects with different structures!_
 
 Options overview
 ----------------
@@ -262,11 +277,6 @@ Demo page
 ---------
 I included a simple demo page that you can use for testing. It allows you to play around with all the options for $.soap. Please take note that to make it work with your SOAP services you are again bound by the **same origin policy**.
 
-Dependencies
-------------
-jQuery -- built and tested with v1.10.2, MAY work back to v1.6  
-SOAPResponse.toJSON() depends on **jQuery.xml2json.js** from [fyneworks](http://www.fyneworks.com/jquery/xml-to-json/)
-
 Contacting me
 -------------
 Please note I don't mind you contacting me when you run into trouble implementing this plugin, but to keep things nice for me too, just follow these simple guidelines when you do:
@@ -317,6 +327,7 @@ Version numbers are [semver](http://semver.org/) compatible.
 
 Version | Date | Changes
 --- | --- | ---
+1.6.7 | 2015-09-04 | removed the dependency on jquery.xml2json from bower.json as discussed in [#83](https://github.com/doedje/jquery.soap/issues/83)
 1.6.6 | 2015-09-02 | pull request #82: XHR for progress support may break IE8/IE9 cross-domain requests, thanx [Arun Menon](https://github.com/arunmenon1975)
 1.6.5 | 2015-06-08 | pull request #78: Added Date object serialization to ISO8601, thanx [AlexandreFournier](https://github.com/AlexandreFournier)
 1.6.4 | 2015-03-13 | fix for SOAPObject.end() throwing error parent() is not a function, bug introduced in 1.6.0
