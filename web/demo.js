@@ -71,25 +71,13 @@ $(document).ready(function() {
 				$('#requestXML').text(xmlout);
 			},
 			success: function(SOAPResponse) {
-
-			//	console.log(this)
-
 				$('#feedbackHeader').html('Response: Success!');
 				$('#feedback').text(dom2html(SOAPResponse.toXML()));
-
-				responseJSON = SOAPResponse.toJSON()
-
-				console.log(responseJSON);
-				console.log(JSON.stringify(responseJSON, null, 2));
 			},
 			error: function(SOAPResponse) {
-
-			//	console.log(this)
-
 				$('#feedbackHeader').html('Response: Error!');
 			//	$('#feedback').text(SOAPResponse.toString());
 			},
-
 			statusCode: {
 				404: function() {
 					console.log('404')
@@ -99,7 +87,6 @@ $(document).ready(function() {
 				}
 			}
 		});
-		// console.log(ajaxReturn);
 	});
 });
 
