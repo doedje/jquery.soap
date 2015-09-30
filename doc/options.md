@@ -179,7 +179,7 @@ available since: **1.0.5**
 Set to true if you want some debug information in the console about the information send and received, errors and [globalConfig](#globalConfig) updates.
 ```
 $.soap({
-	enableLoggin: true
+	enableLogging: true
 })
 ```
 
