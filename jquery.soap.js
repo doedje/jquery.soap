@@ -37,7 +37,13 @@ https://github.com/doedje/jquery.soap/blob/1.6.7/README.md
 
 ======================*/
 
-(function($) {
+(function(factory) {
+	if(typeof module === 'object' && typeof module.exports === 'object') {
+	  module.exports = factory(require('jquery'));
+	} else {
+	  factory(jQuery);
+	}
+})(function($) {
 	var enableLogging;
 	var globalConfig = { // this setup once, defaults go here
 		appendMethodToURL: true,
@@ -666,4 +672,5 @@ https://github.com/doedje/jquery.soap/blob/1.6.7/README.md
 			}
 		}
 	}
-})(jQuery);
+	return $.soap;
+});
