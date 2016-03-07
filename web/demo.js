@@ -14,19 +14,27 @@ $(document).ready(function() {
 		// gather the SOAPHeader
 		var SOAPHeader = $('#SOAPHeader').val();
 		if ($('#SOAPHeaderType').val() == 'json') {
-			SOAPHeader = eval("("+SOAPHeader+")");
+			if (SOAPHeader !== "") {
+				SOAPHeader = eval("("+SOAPHeader+")");
+			}
 		}
 		// gather the data
 		var data = $('#data').val();
 		if ($('#dataType').val() == 'json') {
-			data = eval("("+data+")");
+			if (data !== "") {
+				data = eval("("+data+")");
+			}
 		}
 		// gather the envAttributes
 		var envAttributes = $('#envAttributes').val();
-		envAttributes = eval("("+envAttributes+")");
+		if (envAttributes !== "") {
+			envAttributes = eval("("+envAttributes+")");
+		}
 		// gather the HTTPHeaders
 		var HTTPHeaders = $('#HTTPHeaders').val();
-		HTTPHeaders = eval("("+HTTPHeaders+")");
+		if (HTTPHeaders !== "") {
+			HTTPHeaders = eval("("+HTTPHeaders+")");
+		}
 
 		var wss;
 		if ($('#enableWSS').prop('checked')) {
