@@ -1,7 +1,7 @@
 jQuery Soap
 ===========
 **file:** jquery.soap.js  
-**version:** 1.6.7
+**version:** 1.6.8
 
 ![SOAP](https://raw.githubusercontent.com/doedje/jquery.soap/master/Icon.jpg)
 
@@ -55,7 +55,7 @@ http://my.server.com/soapservices/helloWorld
 
 Installation
 ------------
-You can download the [latest version](https://github.com/doedje/jquery.soap/archive/1.6.7.zip) as a zip, which contains all the files within this repository.
+You can download the [latest version](https://github.com/doedje/jquery.soap/archive/1.6.8.zip) as a zip, which contains all the files within this repository.
 
 Or just get the file [jquery.soap.js](https://raw.github.com/doedje/jquery.soap/master/jquery.soap.js)
 
@@ -266,12 +266,18 @@ $.soap({
 
 Same Origin Policy
 ------------------
-You won't be able to have a page on http://www.example.com do an ajax call ($.soap is using $.ajax internally) to http://www.anotherdomain.com due to Same Origin Policy. To overcome this you should either install a proxy on http://www.example.com or use CORS. Keep in mind that it also not allowed to go from http://www.example.com to http://soap.example.com or even to http://www.example.com:8080
+You won't be able to have a page on http://www.example.com do an ajax call ($.soap is using $.ajax internally) to http://www.anotherdomain.com due to Same Origin Policy. To overcome this you should either use some kind of proxy on http://www.example.com or use CORS. Keep in mind that it also not allowed to go from http://www.example.com to http://soap.example.com or even to http://www.example.com:8080
 
-Some links on **circumventing same origin policy**
+Basically, when you are not able to do a call to your webService with a relative url, you will have to do something to circumvent same origin policy, here are some links to help you out:
 
 http://stackoverflow.com/questions/3076414/ways-to-circumvent-the-same-origin-policy  
-http://usamadar.com/2012/06/24/getting-around-browsers-same-origin-policy-sop-with-proxies-script-injection-jsonp-and-cors/  
+
+If you have full control over the apache or nginx server you are serving your html from, the easiest way to setup a proxy is by using their reverse proxy abilities:
+
+[Setting up a reverse proxy in apache](http://lmgtfy.com/?q=setting+up+a+reverse+proxy+in+apache)  
+[Setting up a reverse proxy in nginx](http://lmgtfy.com/?q=setting+up+a+reverse+proxy+in+nginx)
+
+_I apologise when you get upset for using lmgtfy.com in the previous links, I just **love** that site! ;)_
 
 Demo page
 ---------
@@ -327,6 +333,7 @@ Version numbers are [semver](http://semver.org/) compatible.
 
 Version | Date | Changes
 --- | --- | ---
+1.6.8 | 2016-03-07 | Tried to add proper nodejs support, but I failed at that. If someone knows how to get it to work, please send a pull request :)
 1.6.7 | 2015-09-04 | removed the dependency on jquery.xml2json from bower.json as discussed in [#83](https://github.com/doedje/jquery.soap/issues/83)
 1.6.6 | 2015-09-02 | pull request #82: XHR for progress support may break IE8/IE9 cross-domain requests, thanx [Arun Menon](https://github.com/arunmenon1975)
 1.6.5 | 2015-06-08 | pull request #78: Added Date object serialization to ISO8601, thanx [AlexandreFournier](https://github.com/AlexandreFournier)
