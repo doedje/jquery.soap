@@ -26,7 +26,7 @@ type: **boolean**
 default: _true_  
 available since: **1.3.0**
 
-Set to false when you want the $.ajax call to be sync. This setting is directly fed to the $.ajax call withing $.soap and should perform equally.
+Set to false when you want the $.ajax call to be sync. This setting is directly fed to the $.ajax call and should perform equally.
 More info: [jquery.ajax](http://api.jquery.com/jquery.ajax/)
 
 beforeSend

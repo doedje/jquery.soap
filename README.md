@@ -13,7 +13,26 @@ Big thanx to everybody that contributed to $.soap!
 
 **Let's $.soap()!**
 
-_**NOTE:** Please see my note on contacting me about issues, bugs, problems or any other questions below before sending me mail...._
+_**NOTE:** Please see my note on contacting me about issues, bugs, problems or any other questions below. I really prefer you use the issue tracker on github instead of sending me mail...._
+
+License GNU/GPLv3
+-----------------
+Copyright (C) 2009-2016 - Remy Blom, the Netherlands
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+**When GPL is not an option for you, contact me for information about the commercial license**
 
 Example
 -------
@@ -272,7 +291,7 @@ Basically, when you are not able to do a call to your webService with a relative
 
 http://stackoverflow.com/questions/3076414/ways-to-circumvent-the-same-origin-policy  
 
-If you have full control over the apache or nginx server you are serving your html from, the easiest way to setup a proxy is by using their reverse proxy abilities:
+If you have full control over the apache or nginx server you are serving your html from, the easiest way to setup a proxy is by using their reverse proxy capabilities:
 
 [Setting up a reverse proxy in apache](http://lmgtfy.com/?q=setting+up+a+reverse+proxy+in+apache)  
 [Setting up a reverse proxy in nginx](http://lmgtfy.com/?q=setting+up+a+reverse+proxy+in+nginx)
@@ -287,93 +306,27 @@ Contacting me
 -------------
 Please note I don't mind you contacting me when you run into trouble implementing this plugin, but to keep things nice for me too, just follow these simple guidelines when you do:
 
-- First make sure you're not getting an error because of **same origin policy**!
+- First make sure you're not getting an error because of **same origin policy**! Please double check!! About 80% of the people that contact me because they have trouble getting $.soap to work are having problems because of same origin policy.
 - Check the [issues section](https://github.com/doedje/jquery.soap/issues/) and the [closed issues section](https://github.com/doedje/jquery.soap/issues?page=1&state=closed) to see if someone else already had your problem, if not
 - Open an issue in the [issues section](https://github.com/doedje/jquery.soap/issues/) instead of sending me mail. This way others can learn from your case too! Please include the following:
 	- the versions of your jquery and jquery.soap
 	- your $.soap call
 	- the request as sent to the server
 	- the response from the server
-- Being polite helps, especially when you want me to help you with _your_ problems. So please take the time to formulate something like a question. Opening an issue with just some code sniplets and error messages will be regarded as **unpolite** and will receive a ditto reply.
-(I just don't like receiving stuff like [issue #18](https://github.com/doedje/jquery.soap/issues/18) on a sunday)
+- Being polite helps, especially when you want me to help you with _your_ problems. So please take the time to formulate something like a question. Opening an issue with just some code and/or error messages will be regarded as **unpolite** and will receive a ditto reply.
+(I just don't like receiving stuff like [issue #18](https://github.com/doedje/jquery.soap/issues/18) on my day off...)
 
-_I also have a dayjob with deadlines and I'm a dad of two lovely little girls, so please understand I am not always able to reply to you asap..._
+_I also have a dayjob with deadlines, I'm a dad of two lovely little girls and I like to go out camping a lot, so please understand I am not always able to reply to you asap..._
 
 **Thanx for understanding!! =]**
-
-License GNU/GPLv3
------------------
-Copyright (C) 2009-2015 - Remy Blom, the Netherlands
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program. If not, see <http://www.gnu.org/licenses/>.
-
-**When GPL is not an option for you, contact me for information about the commercial license**
 
 History
 -------
 $.soap was originally based on jqSOAPClient.beta.js by proton17 (written in 2007) and started as just a jquery wrapper in 2009.
-I published it to the new plugins.jquery.com website in 2013 which uses github. Being on github was a good thing for $.soap as a lot of people started to use it and reported bugs, contributed code and even did complete rewrites!
+I published it to the new plugins.jquery.com website in 2013 which used github. Being on github was a good thing for $.soap as a lot of people started to use it and reported bugs, contributed code and even did complete rewrites!
 
 Especially [Zach Shelton](http://zachofalltrades.net) and [Anthony-redFox](https://github.com/anthony-redFox) helped me improve $.soap a lot! **A big thank you to everybody involved!**
 
-Changelog
----------
 Version numbers are [semver](http://semver.org/) compatible.
 
-Version | Date | Changes
---- | --- | ---
-1.6.8 | 2016-03-07 | Tried to add proper nodejs support, but I failed at that. If someone knows how to get it to work, please send a pull request :)
-1.6.7 | 2015-09-04 | removed the dependency on jquery.xml2json from bower.json as discussed in [#83](https://github.com/doedje/jquery.soap/issues/83)
-1.6.6 | 2015-09-02 | pull request #82: XHR for progress support may break IE8/IE9 cross-domain requests, thanx [Arun Menon](https://github.com/arunmenon1975)
-1.6.5 | 2015-06-08 | pull request #78: Added Date object serialization to ISO8601, thanx [AlexandreFournier](https://github.com/AlexandreFournier)
-1.6.4 | 2015-03-13 | fix for SOAPObject.end() throwing error parent() is not a function, bug introduced in 1.6.0
-1.6.3 | 2015-03-13 | fix the dependency for xml2json to be >=1.3 instead of >1.3
-1.6.2 | 2015-03-13 | fix for #74: added xml2json as a dependency in bower.json
-1.6.1 | 2015-03-02 | pull request #73: Fix regression on SOAPTool.json2soap serialization for boolean type: thanx [AlexandreFournier](https://github.com/AlexandreFournier)
-1.6.0 | 2015-02-16 | feature request #71: added statusCode, like $.ajax has... Thanx [AndersMygind](https://github.com/AndersMygind), fixed setting SOAPHeader as XML (did not work properly)
-1.5.0 | 2015-01-31 | pull request #67: context added, some SOAP::Lite support, Thanx [ShaunMaher](https://github.com/ShaunMaher), pull request #69: return deferred object when !SOAPObject or !config.url, thanx [maxgrass](https://github.com/maxgrass), added SOAPHeader option as requested by [Adam Malcontenti-Wilson](https://github.com/adammw) in #62, fix for falsey values.
-1.4.4 | 2014-10-18 | pull request #65: fix namespace and type for nil attribute, Thanx [philipc](https://github.com/philipc)
-1.4.3 | 2014-09-18 | fix for empty namespaces like xmlns="" as found by XGreen on [StackOverflow](http://stackoverflow.com/questions/25809803/cdata-gets-removed-before-being-sent)
-1.4.2 | 2014-09-17 | pull request #61: hot fix for the CData issue [StackOverflow](http://stackoverflow.com/questions/25809803/cdata-gets-removed-before-being-sent), Thanx [josepot](https://github.com/josepot)
-1.4.1 | 2014-09-11 | pull request #59: Encode XML special chars, thanx [Simon St&uuml;cher](https://github.com/stchr)
-1.4.0 | 2014-09-11 | fix for #56: overzealous loop conversion, #57: feature request - thanx [miljbee](https://github.com/miljbee), pull request #58 thanx [Brian Mooney](https://github.com/irishshagua), improved demo page
-1.3.10 | 2014-07-16 | fix for #54: overzealous loop conversion
-1.3.9 | 2014-07-07 | fix for #30: for (var in obj) does not work well in IE8: thanx [todd-lockhart](https://github.com/todd-lockhart), fix for #51: XML header missing, some minor updates
-1.3.8 | 2014-04-14 | fix for #45: handle string objects in json2soap: thanx [PALLEAU Michel](https://github.com/mic006)
-1.3.7 | 2014-02-27 | fix for #40: removed trailing slash on SOAP1.2 namespaceURL: thanx [AlexandreFournier](https://github.com/AlexandreFournier)
-1.3.6 | 2014-02-26 | fix for issue #38: specifying only namespaceURL works too
-1.3.5 | 2014-02-20 | bugfix for #36: correct handling of setting null values using SOAPObject
-1.3.4 | 2014-02-08 | Fix to the manifest file, new version# needed to publish to plugins.jquery.com
-1.3.3 | 2014-02-08 | bugfix: fixed json2soap for arrays
-1.3.2 | 2014-01-16 | bugfix: _async_ defaulted to **false**? should have been **true**
-1.3.1 | 2013-11-04 | minor changes: SOAPRequest is now SOAPEnvelope, request is now beforeSend
-1.3.0 | 2013-10-31 | massive rewrite (fixes #14, #19, #20, lot of stuff from #21, #23) Triggered by [anthony-redFox](https://github.com/anthony-redFox)
-1.2.2 | 2013-10-31 | fix for #24: a parameter set to NULL should be translated as &lt;language nil="true" /&gt;
-1.2.1 | 2013-09-09 | fixed WSS namespace: from Soap:Security to wsse:Security (pull request #17) thanx [Giacomo Trezzi](https://github.com/G3z)
-1.2.0 | 2013-08-26 | added noPrefix option and fixed bug of double namespace prefixes for nested objects (#13, #15)
-1.1.0 | 2013-07-11 | Added WSS functionality (issue #9)
-1.0.7 | 2013-07-03 | Changed the license to GNU GPLv3, I could never have used the MIT license since jqSOAPClient.beta.js is already licensed GNU GPLv3
-1.0.6 | 2013-06-27 | params object to SOAPObject code fixed for complex object/array combi's
-1.0.5 | 2013-06-20 | enableLogging is an option, changed namespaceUrl to namespaceURL (with fallback)
-1.0.4 | 2013-06-20 | Fix to the manifest file, new version# needed to publish to plugins.jquery.com
-1.0.3 | 2013-06-20 | Included a little demo and fixed SOAPServer and SOAPAction request headers
-1.0.2 | 2013-04-02 | Fix to the manifest file, new version# needed to publish to plugins.jquery.com
-1.0.1 | 2013-04-02 | Fix to the manifest file, new version# needed to publish to plugins.jquery.com
-1.0.0 | 2013-04-02 | Minor fix (return for dom2string in reponse)
-0.10.0 | 2013-03-29 | The **First Zach Shelton version**, better code, XML DOM, XML string and JSON in and out: thanx [Zach Shelton](https://github.com/zachofalltrades)
-0.9.4 | 2013-02-26 | changed the charset of the $.ajax call to UTF-8 and removed the " quotes
-0.9.3 | 2013-02-26 | Added the possibility to call **$.soap** just to set extra config values.
-0.9.2 | 2013-02-21 | some extra cleaning of stupid code in my part of the script. Now it uses the addNamespace function to properly set namespaces.
-0.9.1 | 2013-02-20 | minor changes to keep LINT happy.
-0.9.0 | 2013-02-20 | first version to go on the new jQuery plugin page, changed the name of the function from $.soapRequest to **$.soap**
+[In depth overview of all changes to $.soap](HISTORY.md)
