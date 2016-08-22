@@ -279,6 +279,14 @@ https://github.com/doedje/jquery.soap/blob/1.6.8/README.md
 				processData: false,
 				data: this.toString(),
 				contentType: contentType + "; charset=UTF-8",
+				xhrFields: {
+					// Add xhrFields, and set xhrFields.withCredentials = true by default, otherwise,
+					// it can't send a cross-domain request successfully in Chrome without this settings.
+					// You can use it to set withCredentials to true for cross-domain requests if needed.
+					// More about it is in jQuery official website. (http://api.jquery.com/jquery.ajax/).
+					// I hope it's useful and tested in Chrome & IE 11+ & IE Edge, Thanks.
+					withCredentials: true
+				},
 				// second attempt to get some progres info (but still a no go)
 				// I still keep this in tho, we might see it working one day when browsers mature...
 				/*
