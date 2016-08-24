@@ -1,6 +1,6 @@
 /*==========================
 demo.js - https://github.com/doedje/jquery.soap
-part of the jQuery.soap distribution version: 1.6.8
+part of the jQuery.soap distribution version: 1.6.9
 
 this file contains the javascript for the jQuery.soap demo
 ===========================*/

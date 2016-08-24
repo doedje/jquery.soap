@@ -7,6 +7,7 @@ Version numbers are [semver](http://semver.org/) compatible.
 
 Version | Date | Changes
 --- | --- | ---
+1.6.9 | 2016-08-24 | pull request #100: fix for #99 General issue - Bad in cross-domain url calls, thanx [nothingmi](https://github.com/nothingmi)
 1.6.8 | 2016-03-07 | Tried to add proper nodejs support, but I failed at that. If someone knows how to get it to work, please send a pull request :)
 1.6.7 | 2015-09-04 | removed the dependency on jquery.xml2json from bower.json as discussed in [#83](https://github.com/doedje/jquery.soap/issues/83)
 1.6.6 | 2015-09-02 | pull request #82: XHR for progress support may break IE8/IE9 cross-domain requests, thanx [Arun Menon](https://github.com/arunmenon1975)

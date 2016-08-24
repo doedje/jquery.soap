@@ -1,6 +1,6 @@
 /*==========================
 jquery.soap.js - https://github.com/doedje/jquery.soap
-version: 1.6.8
+version: 1.6.9
 
 jQuery plugin for communicating with a web service using SOAP.
 
@@ -33,18 +33,19 @@ For information about how to use jQuery.soap, authors, changelog, the latest ver
 Visit: https://github.com/doedje/jquery.soap
 
 Documentation about THIS version is found here:
-https://github.com/doedje/jquery.soap/blob/1.6.8/README.md
+https://github.com/doedje/jquery.soap/blob/1.6.9/README.md
 
 ======================*/
 
 (function(factory) {
 	if(typeof module === 'object' && typeof module.exports === 'object') {
 	  module.exports = factory(require('jquery'));
-	} else {
+	} else if (jQuery) {
 	  factory(jQuery);
+	} else {
+		console.error('no jQuery found!')
 	}
-})(function(jQuery) {
-	var $ = jQuery;
+})(function($) {
 	var enableLogging;
 	var globalConfig = { // this setup once, defaults go here
 		appendMethodToURL: true,
@@ -680,5 +681,5 @@ https://github.com/doedje/jquery.soap/blob/1.6.8/README.md
 			}
 		}
 	}
-	return $.soap = soap;
+	return $.soap = soap; 
 });
