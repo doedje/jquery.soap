@@ -190,14 +190,14 @@ https://github.com/doedje/jquery.soap/blob/1.6.9/README.md
 				}
 			}
 			// headers
-			header = soapObject.find(this.prefix + ':Header');
+			var header = soapObject.find(this.prefix + ':Header');
 			if (header && header.children) {
 				for (var j = 0; j < header.children.length; j++) {
 					this.addHeader(header.children[j]);
 				}
 			}
 			// body
-			body = soapObject.find(this.prefix + ':Body');
+			var body = soapObject.find(this.prefix + ':Body');
 			if (body && body.children) {
 				for (var k = 0; k < body.children.length; k++) {
 					this.addBody(body.children[k]);
@@ -681,5 +681,5 @@ https://github.com/doedje/jquery.soap/blob/1.6.9/README.md
 			}
 		}
 	}
-	return $.soap = soap; 
+	return $.soap = soap;
 });
