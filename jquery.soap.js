@@ -279,7 +279,7 @@ https://github.com/doedje/jquery.soap/blob/1.6.9/README.md
 				dataType: "xml",
 				processData: false,
 				data: this.toString(),
-				contentType: contentType + "; charset=UTF-8",
+				contentType: contentType + "; charset=UTF-8" + (options.soap12 ? "; action=" + options.action : ""),
 				xhrFields: {
 					// Add xhrFields, and set xhrFields.withCredentials = true by default, otherwise,
 					// it can't send a cross-domain request successfully in Chrome without this settings.
@@ -681,5 +681,5 @@ https://github.com/doedje/jquery.soap/blob/1.6.9/README.md
 			}
 		}
 	}
-	return $.soap = soap; 
+	return $.soap = soap;
 });
