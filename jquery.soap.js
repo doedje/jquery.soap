@@ -415,7 +415,10 @@ https://github.com/doedje/jquery.soap/blob/1.6.10/README.md
 			//Node Attributes
 			for (var attr in this.attributes) {
 				if (typeof(this.attributes[attr]) === 'string') {
-					out.push(' ' + attr + '="' + this.attributes[attr] + '"');
+					encodedValue = this.attributes[attr].replace(/[<>&"']/g, function (ch) {
+						return xmlCharMap[ch];
+					});
+					out.push(' ' + attr + '="' + encodedValue + '"');
 				}
 			}
 			out.push('>');
