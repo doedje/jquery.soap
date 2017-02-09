@@ -1,7 +1,7 @@
 jQuery.soap Detailed Options List
 =================================
 **file:** jquery.soap.js  
-**version:** 1.6.10
+**version:** 1.6.11
 
 Note that all options are optional. To actually send a request [url](#url) en [data](#data) are the minimal requirements. More [general information about the usage of jQuery.soap](README.md)
 
@@ -28,6 +28,11 @@ available since: **1.3.0**
 
 Set to false when you want the $.ajax call to be sync. This setting is directly fed to the $.ajax call and should perform equally.
 More info: [jquery.ajax](http://api.jquery.com/jquery.ajax/)
+
+Note that most browsers will throw a warning when using `async: false`!
+```
+Synchronous XMLHttpRequest on the main thread is deprecated because of its detrimental effects to the end user’s experience. For more help http://xhr.spec.whatwg.org/
+```
 
 beforeSend
 ----------
@@ -441,6 +446,15 @@ $.soap({
 	method: 'getItem'
 })
 ```
+
+withCredentials
+---
+type: **bool**  
+default: _true_  
+available since: **1.6.11**
+
+Set to false when you want the $.ajax call to be send _without_ credentials. This setting is directly fed to the $.ajax call by the xhrFields and should perform equally.
+More info: [jquery.ajax](http://api.jquery.com/jquery.ajax/)
 
 wss
 ---

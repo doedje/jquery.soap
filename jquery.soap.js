@@ -1,6 +1,6 @@
 /*==========================
 jquery.soap.js - https://github.com/doedje/jquery.soap
-version: 1.6.10
+version: 1.6.11
 
 jQuery plugin for communicating with a web service using SOAP.
 
@@ -33,7 +33,7 @@ For information about how to use jQuery.soap, authors, changelog, the latest ver
 Visit: https://github.com/doedje/jquery.soap
 
 Documentation about THIS version is found here:
-https://github.com/doedje/jquery.soap/blob/1.6.10/README.md
+https://github.com/doedje/jquery.soap/blob/1.6.11/README.md
 
 ======================*/
 
@@ -52,7 +52,8 @@ https://github.com/doedje/jquery.soap/blob/1.6.10/README.md
 		async: true,
 		enableLogging: false,
 		noPrefix: false,
-		soap12: false
+		soap12: false,
+		withCredentials: false
 	};
 	function soap(options) {
 		var config = {};
@@ -286,7 +287,7 @@ https://github.com/doedje/jquery.soap/blob/1.6.10/README.md
 					// You can use it to set withCredentials to true for cross-domain requests if needed.
 					// More about it is in jQuery official website. (http://api.jquery.com/jquery.ajax/).
 					// I hope it's useful and tested in Chrome & IE 11+ & IE Edge, Thanks.
-					withCredentials: true
+					withCredentials: options.withCredentials
 				},
 				// second attempt to get some progres info (but still a no go)
 				// I still keep this in tho, we might see it working one day when browsers mature...
@@ -398,15 +399,7 @@ https://github.com/doedje/jquery.soap/blob/1.6.10/README.md
 			return this._parent;
 		},
 		toString: function() {
-			var out = [],
-					xmlCharMap = {
-						'<': '&lt;',
-						'>': '&gt;',
-						'&': '&amp;',
-						'"': '&quot;',
-						"'": '&apos;'
-					},
-					encodedValue;
+			var out = [], encodedValue;
 			out.push('<'+this.name);
 			//Namespaces
 			for (var name in this.ns) {
@@ -415,10 +408,7 @@ https://github.com/doedje/jquery.soap/blob/1.6.10/README.md
 			//Node Attributes
 			for (var attr in this.attributes) {
 				if (typeof(this.attributes[attr]) === 'string') {
-					encodedValue = this.attributes[attr].replace(/[<>&"']/g, function (ch) {
-						return xmlCharMap[ch];
-					});
-					out.push(' ' + attr + '="' + encodedValue + '"');
+					out.push(' ' + attr + '="' + SOAPTool.encodeXmlValue(this.attributes[attr]) + '"');
 				}
 			}
 			out.push('>');
@@ -435,11 +425,8 @@ https://github.com/doedje/jquery.soap/blob/1.6.10/README.md
 			if (this.value !== undefined) {
 				if (typeof(this.value) === 'string') {
 				//	encodedValue = this.value.match(/<!\[CDATA\[.*?\]\]>/) ?
-				encodedValue = this.value.match(/<!\[CDATA\[\s\S\]*\]>/) ?
-					this.value :
-						this.value.replace(/[<>&"']/g, function (ch) {
-							return xmlCharMap[ch];
-						});
+					encodedValue = this.value.match(/<!\[CDATA\[\s\S\]*\]>/) ?
+						this.value : SOAPTool.encodeXmlValue(this.value);
 				} else if (typeof(this.value) === 'number') {
 					encodedValue = this.value.toString();
 				}
@@ -515,6 +502,22 @@ https://github.com/doedje/jquery.soap/blob/1.6.10/README.md
 				soapObject = options.data.call(options.context, SOAPObject);
 			}
 			return soapObject;
+		},
+		encodeXmlValue: function(value) {
+			var encodedValue,
+					xmlCharMap = {
+						'<': '&lt;',
+						'>': '&gt;',
+						'&': '&amp;',
+						'"': '&quot;',
+						"'": '&apos;'
+					},
+					encodedValue;
+
+			encodedValue = value.replace(/[<>&"']/g, function (ch) {
+				return xmlCharMap[ch];
+			});
+			return encodedValue;
 		},
 		json2soap: function (name, params, prefix, parentNode) {
 			var soapObject;

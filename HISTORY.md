@@ -7,6 +7,7 @@ Version numbers are [semver](http://semver.org/) compatible.
 
 Version | Date | Changes
 --- | --- | ---
+1.6.11 | 2017-02-09 | PR #111, thanx [oneton](https://github.com/oneton)
 1.6.10 | 2016-10-25 | adding action to contentType for soap1.2, fix #102, thanx to [gormed](https://github.com/gormed)
 1.6.9 | 2016-08-24 | pull request #100: fix for #99 General issue - Bad in cross-domain url calls, thanx [nothingmi](https://github.com/nothingmi)
 1.6.8 | 2016-03-07 | Tried to add proper nodejs support, but I failed at that. If someone knows how to get it to work, please send a pull request :)

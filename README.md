@@ -1,7 +1,7 @@
 jQuery Soap
 ===========
 **file:** jquery.soap.js  
-**version:** 1.6.10
+**version:** 1.6.11
 
 ![SOAP](https://raw.githubusercontent.com/doedje/jquery.soap/master/Icon.jpg)
 
@@ -17,7 +17,7 @@ _**NOTE:** Please see my note on contacting me about issues, bugs, problems or a
 
 License GNU/GPLv3
 -----------------
-Copyright (C) 2009-2016 - Remy Blom, the Netherlands
+Copyright (C) 2009-2017 - Remy Blom, the Netherlands
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -74,7 +74,7 @@ http://my.server.com/soapservices/helloWorld
 
 Installation
 ------------
-You can download the [latest version](https://github.com/doedje/jquery.soap/archive/1.6.10.zip) as a zip, which contains all the files within this repository.
+You can download the [latest version](https://github.com/doedje/jquery.soap/archive/1.6.11.zip) as a zip, which contains all the files within this repository.
 
 Or just get the file [jquery.soap.js](https://raw.github.com/doedje/jquery.soap/master/jquery.soap.js)
 
