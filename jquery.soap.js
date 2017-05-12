@@ -54,6 +54,7 @@ https://github.com/doedje/jquery.soap/blob/1.6.11/README.md
 		noPrefix: false,
 		soap12: false,
 		withCredentials: false
+		timeout: 5000,
 	};
 	function soap(options) {
 		var config = {};
