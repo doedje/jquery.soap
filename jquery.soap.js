@@ -128,6 +128,7 @@ https://github.com/doedje/jquery.soap/blob/1.6.11/README.md
 			return soapEnvelope.send({
 				url: config.url,
 				context: config.context,
+				timeout:config.timeout,
 				async: config.async,
 				headers: (config.HTTPHeaders) ? config.HTTPHeaders : {},
 				action: (!!config.SOAPAction) ? config.SOAPAction : config.method,
@@ -276,6 +277,7 @@ https://github.com/doedje/jquery.soap/blob/1.6.11/README.md
 				url: options.url,
 				async: options.async,
 				headers: options.headers,
+				timeout: options.timeout,
 			//	crossDomain: true,
 				dataType: "xml",
 				processData: false,
