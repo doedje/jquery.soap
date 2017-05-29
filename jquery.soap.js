@@ -427,15 +427,17 @@ https://github.com/doedje/jquery.soap/blob/1.6.11/README.md
 					switch(this.value.indexOf('<![CDATA[')){
 						case -1 :
 							// no CDATA blocks => encode everything
-							return SOAPTool.encodeXmlValue(this.value);
+							encodedValue = SOAPTool.encodeXmlValue(this.value);
+							break;
 						case  0 :
 							if(this.value.indexOf(']]>') === this.value.length - 3){
 								// entire value wrapped in one single CDATA block => no encoding required
-								return this.value;
+								encodedValue = this.value;
+								break;
 							}
 						default :
 							// encode with more advanced CDATA check
-							return SOAPTool.encodeXmlValueWithCDataCheck(this.value);
+							encodedValue = SOAPTool.encodeXmlValueWithCDataCheck(this.value);
 					}
 				} else if (typeof(this.value) === 'number') {
 					encodedValue = this.value.toString();
