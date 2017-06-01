@@ -176,7 +176,8 @@ https://github.com/doedje/jquery.soap/blob/1.6.11/README.md
 		this.bodies = [];
 
 		// let's get the soap namespace prefix
-		var parts = soapObject.name.split(':');
+		var parts = soapObject.name.split(':'),
+		    len;
 		if (parts[1] === 'Envelope' || parts[1] === 'Body') {
 			this.prefix = parts[0];
 			if (soapObject.attr('xmlns:' + this.prefix) === SOAPTool.SOAP11.namespaceURL) {
@@ -195,18 +196,21 @@ https://github.com/doedje/jquery.soap/blob/1.6.11/README.md
 			// headers
 			var header = soapObject.find(this.prefix + ':Header');
 			if (header && header.children) {
-				for (var j = 0; j < header.children.length; j++) {
+				len = header.children.length;
+				for (var j = 0; j < len; j++) {
 					this.addHeader(header.children[j]);
 				}
 			}
 			// body
 			var body = soapObject.find(this.prefix + ':Body');
 			if (body && body.children) {
-				for (var k = 0; k < body.children.length; k++) {
+				len = body.children.length;
+				for (var k = 0; k < len; k++) {
 					this.addBody(body.children[k]);
 				}
 			} else {
-				for (var l = 0; l < soapObject.children.length; l++) {
+				len = soapObject.children.length;
+				for (var l = 0; l < len; l++) {
 					this.addBody(soapObject.children[l]);
 				}
 			}
@@ -230,22 +234,25 @@ https://github.com/doedje/jquery.soap/blob/1.6.11/README.md
 			this.bodies.push(soapObject);
 		},
 		toString: function() {
-			var soapEnv = new SOAPObject(this.prefix + ':Envelope');
+			var soapEnv = new SOAPObject(this.prefix + ':Envelope'),
+			    len;
 			//Add attributes
 			for (var name in this.attributes) {
 				soapEnv.attr(name, this.attributes[name]);
 			}
 			//Add Headers
-			if (this.headers.length > 0) {
+			len = this.headers.length;
+			if (len > 0) {
 				var soapHeader = soapEnv.newChild(this.prefix + ':Header');
-				for (var i = 0; i < this.headers.length; i++) {
+				for (var i = 0; i < len; i++) {
 					soapHeader.appendChild(this.headers[i]);
 				}
 			}
 			//Add Bodies
-			if (this.bodies.length > 0) {
+			len = this.bodies.length;
+			if (len > 0) {
 				var soapBody = soapEnv.newChild(this.prefix + ':Body');
-				for (var j = 0; j < this.bodies.length; j++) {
+				for (var j = 0; j < len; j++) {
 					soapBody.appendChild(this.bodies[j]);
 				}
 			}
@@ -387,7 +394,7 @@ https://github.com/doedje/jquery.soap/blob/1.6.11/README.md
 			if (this.name === name) {
 				return this;
 			} else {
-				for (var i = 0; i < this.children.length; i++) {
+				for (var i = 0, len = this.children.length; i < len; i++) {
 					var result = this.children[i].find(name);
 					if (result) {
 						return result;
@@ -531,7 +538,7 @@ https://github.com/doedje/jquery.soap/blob/1.6.11/README.md
 			} else if (typeof params == 'object') {
 				// added by DT - check if object is in fact an Array and treat accordingly
 				if(params.constructor.toString().indexOf("Array") > -1) { // type is array
-					for(var i = 0; i < params.length; i++) {
+					for(var i = 0, len = params.length; i < len; i++) {
 						childObject = this.json2soap(name, params[i], prefix, parentNode);
 						parentNode.appendChild(childObject);
 					}
@@ -562,13 +569,17 @@ https://github.com/doedje/jquery.soap/blob/1.6.11/README.md
 			return soapObject;
 		},
 		dom2soap: function (xmldom) {
-			var whitespace = /^\s+$/;
-			var soapObject = new SOAPObject(xmldom.nodeName);
-			for (var i = 0; i < xmldom.attributes.length; i++) {
+			var whitespace = /^\s+$/,
+			    soapObject = new SOAPObject(xmldom.nodeName),
+			    len;
+			
+			len = xmldom.attributes.length;
+			for (var i = 0; i < len; i++) {
 				var attribute = xmldom.attributes[i];
 				soapObject.attr(attribute.name, attribute.value);
 			}
-			for (var j = 0; j < xmldom.childNodes.length; j++) {
+			len = xmldom.childNodes.length;
+			for (var j = 0; j < len; j++) {
 				var child = xmldom.childNodes[j];
 				if (child.nodeType === 1) {
 					var childObject = SOAPTool.dom2soap(child);
@@ -585,11 +596,11 @@ https://github.com/doedje/jquery.soap/blob/1.6.11/README.md
 		},
 		array2soap: function(options) {
 			soapObject = new SOAPObject(options.name);
-			for (var index = 0; index < options.data.length; index++) {
+			for (var index = 0, len = options.data.length; index < len; index++) {
 				if ($.isArray(options.data[index])) {
 					var new_item = soapObject.newChild('soapenc:Array');
 					new_item.attr('soapenc:arrayType', 'xsd:string[' + (options.data[index].length) + ']');
-					for (var item = 0; item < options.data[index].length; item++) {
+					for (var item = 0, len2 = options.data[index].length; item < len2; item++) {
 						new_item.newChild('item').attr('type', 'xsd:string').val(options.data[index][item]).end();
 					}
 				} else {
