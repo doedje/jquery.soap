@@ -434,9 +434,21 @@ https://github.com/doedje/jquery.soap/blob/1.6.11/README.md
 			//Node Value
 			if (this.value !== undefined) {
 				if (typeof(this.value) === 'string') {
-				//	encodedValue = this.value.match(/<!\[CDATA\[.*?\]\]>/) ?
-					encodedValue = this.value.match(/<!\[CDATA\[\s\S\]*\]>/) ?
-						this.value : SOAPTool.encodeXmlValue(this.value);
+					switch(this.value.indexOf('<![CDATA[')){
+						case -1 :
+							// no CDATA blocks => encode everything
+							encodedValue = SOAPTool.encodeXmlValue(this.value);
+							break;
+						case  0 :
+							if(this.value.indexOf(']]>') === this.value.length - 3){
+								// entire value wrapped in one single CDATA block => no encoding required
+								encodedValue = this.value;
+								break;
+							}
+						default :
+							// encode with more advanced CDATA check
+							encodedValue = SOAPTool.encodeXmlValueWithCDataCheck(this.value);
+					}
 				} else if (typeof(this.value) === 'number') {
 					encodedValue = this.value.toString();
 				}
@@ -528,6 +540,48 @@ https://github.com/doedje/jquery.soap/blob/1.6.11/README.md
 				return xmlCharMap[ch];
 			});
 			return encodedValue;
+		},
+		encodeXmlValueWithCDataCheck: function(value){
+			// This function will only encode the parts within value that are not inside a CDATA section, allowing multiple usages of CDATA-blocks
+			//  ie. "encoding here <!CDATA[[ no encoding here ]]> encoding here <!CDATA[[ no encoding here ]]>"
+			var cdata		= false,
+				valueArray	= value.split(''),
+				encoded		= [],
+				char;
+
+			for(var i = 0, j = valueArray.length; i < j; i++){
+				switch(valueArray[i]){
+					case '<' :
+						if(cdata){
+							encoded.push('<');
+						} else if(value.substr(i, 9) === '<![CDATA[') { // if no CDATA section started, check if current char is part of CDATA start
+							encoded.push('<![CDATA[');
+							i += 8; // skip CDATA start chars
+							cdata = true;
+						} else {
+							encoded.push('&lt;');
+						}
+						break;
+
+					case ']' :
+						if(cdata && value.substr(i, 3) === ']]>'){ // if CDATA section started, check if current char is part of CDATA end
+							encoded.push(']]>');
+							i += 2; // skip CDATA end chars
+							cdata = false;
+						} else {
+							encoded.push(']');
+						}
+						break;
+
+					case '>' : encoded.push(cdata ? '>' : '&gt;');		break;
+					case '&' : encoded.push(cdata ? '&' : '&amp;');		break;
+					case '"' : encoded.push(cdata ? '"' : '&quot;');	break;
+					case "'" : encoded.push(cdata ? "'" : '&apos;');	break;
+					default	 : encoded.push(valueArray[i]);
+				}
+			}
+
+			return encoded.join('');
 		},
 		json2soap: function (name, params, prefix, parentNode) {
 			var soapObject;
