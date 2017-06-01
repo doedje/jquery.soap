@@ -1,7 +1,7 @@
 jQuery.soap Detailed Options List
 =================================
 **file:** jquery.soap.js  
-**version:** 1.6.11
+**version:** 1.7.0
 
 Note that all options are optional. To actually send a request [url](#url) en [data](#data) are the minimal requirements. More [general information about the usage of jQuery.soap](README.md)
 
@@ -432,6 +432,20 @@ $.soap({
 	success: function(SOAPResponse) {
 		console.log(SOAPResponse.toString());
 	}
+});
+```
+
+timeout
+-------
+type: **number**  
+default: _5000_  
+available since: **1.7.0**
+
+Set a timeout (in milliseconds) for the request. This setting is directly fed to the $.ajax call and should perform equally.
+More info: [jquery.ajax](http://api.jquery.com/jquery.ajax/)
+```
+$.soap({
+	timeout: 100
 });
 ```
 

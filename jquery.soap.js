@@ -1,6 +1,6 @@
 /*==========================
 jquery.soap.js - https://github.com/doedje/jquery.soap
-version: 1.6.11
+version: 1.7.0
 
 jQuery plugin for communicating with a web service using SOAP.
 
@@ -33,7 +33,7 @@ For information about how to use jQuery.soap, authors, changelog, the latest ver
 Visit: https://github.com/doedje/jquery.soap
 
 Documentation about THIS version is found here:
-https://github.com/doedje/jquery.soap/blob/1.6.11/README.md
+https://github.com/doedje/jquery.soap/blob/1.7.0/README.md
 
 ======================*/
 
@@ -626,7 +626,7 @@ https://github.com/doedje/jquery.soap/blob/1.6.11/README.md
 			var whitespace = /^\s+$/,
 			    soapObject = new SOAPObject(xmldom.nodeName),
 			    len;
-			
+
 			len = xmldom.attributes.length;
 			for (var i = 0; i < len; i++) {
 				var attribute = xmldom.attributes[i];
