@@ -1,6 +1,6 @@
 /*==========================
 demo.js - https://github.com/doedje/jquery.soap
-part of the jQuery.soap distribution version: 1.7.0
+part of the jQuery.soap distribution version: 1.7.1
 
 this file contains the javascript for the jQuery.soap demo
 ===========================*/
@@ -108,6 +108,7 @@ function writeSoapCall() {
 	if ($('#soap12').prop('checked') == true) { options.push('  soap12: true'); }
 	if ($('#async').prop('checked') == false) { options.push('  async: false'); }
 	if ($('#withCredentials').prop('checked') == false) { options.push('  withCredentials: false'); }
+	if ($('#timeout').val()) { options.push('  timeout: ' + $('#timeout').val()); }
 	var HTTPHeaders = $('#HTTPHeaders').val();
 	HTTPHeaders = HTTPHeaders.replace(/\n/g,'\n  ');
 	if ($('#HTTPHeaders').val()) { options.push('  HTTPHeaders: ' + HTTPHeaders); }

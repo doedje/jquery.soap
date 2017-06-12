@@ -7,7 +7,8 @@ Version numbers are [semver](http://semver.org/) compatible.
 
 Version | Date | Changes
 --- | --- | ---
-1.7.0 | 2017-06-01 | feature timeout from #116 in PR #117, thanx [mojovski](https://github.com/mojovski), PR #118 and #119, thanx [ChristofVerhoeven](https://github.com/ChristofVerhoeven)
+1.7.1 | 2017-06-12 | fixed a syntax error in 1.7.0, thanx to [torcu](https://github.com/torcu) for pointing that out
+1.7.0 | 2017-06-01 | **SYNTAX ERROR IN SCRIPT** - feature timeout from #116 in PR #117, thanx [mojovski](https://github.com/mojovski), PR #118 and #119, thanx [ChristofVerhoeven](https://github.com/ChristofVerhoeven)
 1.6.11 | 2017-02-09 | PR #111, thanx [oneton](https://github.com/oneton), fix for #109, updated demo to use jQuery 3.1.1
 1.6.10 | 2016-10-25 | adding action to contentType for soap1.2, fix #102, thanx to [gormed](https://github.com/gormed)
 1.6.9 | 2016-08-24 | pull request #100: fix for #99 General issue - Bad in cross-domain url calls, thanx [nothingmi](https://github.com/nothingmi)

@@ -1,7 +1,7 @@
 jQuery Soap
 ===========
 **file:** jquery.soap.js  
-**version:** 1.7.0
+**version:** 1.7.1
 
 ![SOAP](https://raw.githubusercontent.com/doedje/jquery.soap/master/Icon.jpg)
 
@@ -72,7 +72,7 @@ http://my.server.com/soapservices/helloWorld
 
 Installation
 ------------
-You can download the [latest version](https://github.com/doedje/jquery.soap/archive/1.7.0.zip) as a zip, which contains all the files within this repository.
+You can download the [latest version](https://github.com/doedje/jquery.soap/archive/1.7.1.zip) as a zip, which contains all the files within this repository.
 
 Or just get the file [jquery.soap.js](https://raw.github.com/doedje/jquery.soap/master/jquery.soap.js)
 

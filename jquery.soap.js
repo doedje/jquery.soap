@@ -1,6 +1,6 @@
 /*==========================
 jquery.soap.js - https://github.com/doedje/jquery.soap
-version: 1.7.0
+version: 1.7.1
 
 jQuery plugin for communicating with a web service using SOAP.
 
@@ -33,7 +33,7 @@ For information about how to use jQuery.soap, authors, changelog, the latest ver
 Visit: https://github.com/doedje/jquery.soap
 
 Documentation about THIS version is found here:
-https://github.com/doedje/jquery.soap/blob/1.7.0/README.md
+https://github.com/doedje/jquery.soap/blob/1.7.1/README.md
 
 ======================*/
 
@@ -53,8 +53,8 @@ https://github.com/doedje/jquery.soap/blob/1.7.0/README.md
 		enableLogging: false,
 		noPrefix: false,
 		soap12: false,
-		withCredentials: false
-		timeout: 5000,
+		withCredentials: false,
+		timeout: 5000
 	};
 	function soap(options) {
 		var config = {};
