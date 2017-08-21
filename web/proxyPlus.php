@@ -4,7 +4,7 @@ date_default_timezone_set('Europe/Berlin');
 $start = microtime(true);
 
 $url = $_GET['url'];
-$mimeType = $_GET['mimeType'];
+$mimeType = $_SERVER['CONTENT_TYPE'];
 
 $url = preg_replace('/\s/','+', $url);
 $timeout = 14000;
@@ -33,7 +33,7 @@ $session = curl_init($url);
 $headerObject = getallheaders();
 
 $headers[] = 'Connection: Keep-Alive';
-$headers[] = 'Content-Type: ' . $mimeType . '; charset=UTF-8';
+$headers[] = 'Content-Type: ' . $mimeType;
 $headers[] = 'Accept-Charset: UTF-8';
 if (isset($headerObject['Authorization'])) {
 	$headers[] = 'Authorization: ' . $headerObject['Authorization'];
@@ -43,7 +43,7 @@ if (isset($headerObject['SOAPAction'])) {
 }
 
 
-curl_setopt($session, CURLOPT_USERAGENT, "ProxyPlus/PHP/remy.blom@hku.nl");
+curl_setopt($session, CURLOPT_USERAGENT, "ProxyPlus/PHP/Remy.Blom@hku.nl");
 curl_setopt($session, CURLOPT_TIMEOUT, $timeout);
 curl_setopt($session, CURLOPT_CONNECTTIMEOUT, $timeout);
 curl_setopt($session, CURLOPT_HTTPHEADER, $headers);
@@ -59,11 +59,14 @@ if ($postvars) {
 	}
 }
 
-// get values from response
+// execute
 $response = curl_exec($session);
+
+// get values from response
 $response_httpcode = curl_getinfo($session, CURLINFO_HTTP_CODE);
 $response_mime = curl_getinfo($session, CURLINFO_CONTENT_TYPE);
 $response_time = curl_getinfo($session, CURLINFO_TOTAL_TIME);
+
 $errorNumber = curl_errno($session);
 $errorText = curl_error($session);
 
@@ -74,11 +77,11 @@ $diffTime = $end - $start;
 
 // check for error
 if ($errorNumber) {
-	header(":", true, 504);
+	http_response_code(504);
 	echo 'ProxyPlus: Error fetching remote url (' . $url . '): ' . $errorText . ' (curl_errno: ' . $errorNumber . ')';
 } else {
 	// send response to browser with the received http code
-	header(":", true, $response_httpcode);
+	http_response_code($response_httpcode);
 	// timing headers for debugging:
 	header("X-ProxyPlus-Timing: PHP: " . round(1000 * (microtime(true) - $start)) . 'ms' . ', Curl: ' . round(1000 * $response_time) . 'ms');
 
