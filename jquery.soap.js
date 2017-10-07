@@ -467,7 +467,7 @@ https://github.com/doedje/jquery.soap/blob/1.7.1/README.md
 		this.headers = xhr.getAllResponseHeaders().split('\n');
 		this.httpCode = xhr.status;
 		this.httpText = xhr.statusText;
-		this.content = (xhr.responseXML === undefined) ? xhr.responseText : xhr.responseXML;
+		this.content = (xhr.responseXML === undefined || xhr.responseXML === null) ? xhr.responseText : xhr.responseXML;
 		this.toString = function(){
 			if (typeof this.content === 'string') {
 				return this.content;
