@@ -130,6 +130,24 @@ will result in:
 </soap:Envelope>
 ```
 
+From version 1.7.2 it is also possible to set `data` to a string to set the value of a bare parameter. Keep in mind it is only possible to set one bare parameter this way. Use of `<` is not possible inside the value.
+```
+$.soap({
+	method: "bareParameter",
+	data: "bare parameter value",
+	namespaceQualifier: "myns",
+	namespaceURL: "https://myns.com"
+});
+```
+will result in:
+```
+<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope/">
+	<soap:Body>
+		<myns:bareParameter xmlns:myns="https://myns.com">bare parameter value</myns:bareParameter>
+	</soap:Body>
+</soap:Envelope>
+```
+
 envAttributes
 -------------
 type: **object**  
