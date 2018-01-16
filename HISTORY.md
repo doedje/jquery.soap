@@ -7,6 +7,7 @@ Version numbers are [semver](http://semver.org/) compatible.
 
 Version | Date | Changes
 --- | --- | ---
+1.7.2 | 2018-01-16 | fix for #125 - Support for Bare parameter style
 1.7.1 | 2017-06-12 | fixed a syntax error in 1.7.0, thanx to [torcu](https://github.com/torcu) for pointing that out
 1.7.0 | 2017-06-01 | **SYNTAX ERROR IN SCRIPT** - feature timeout from #116 in PR #117, thanx [mojovski](https://github.com/mojovski), PR #118 and #119, thanx [ChristofVerhoeven](https://github.com/ChristofVerhoeven)
 1.6.11 | 2017-02-09 | PR #111, thanx [oneton](https://github.com/oneton), fix for #109, updated demo to use jQuery 3.1.1

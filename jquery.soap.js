@@ -1,6 +1,6 @@
 /*==========================
 jquery.soap.js - https://github.com/doedje/jquery.soap
-version: 1.7.1
+version: 1.7.2
 
 jQuery plugin for communicating with a web service using SOAP.
 
@@ -33,7 +33,7 @@ For information about how to use jQuery.soap, authors, changelog, the latest ver
 Visit: https://github.com/doedje/jquery.soap
 
 Documentation about THIS version is found here:
-https://github.com/doedje/jquery.soap/blob/1.7.1/README.md
+https://github.com/doedje/jquery.soap/blob/1.7.2/README.md
 
 ======================*/
 
@@ -507,7 +507,12 @@ https://github.com/doedje/jquery.soap/blob/1.7.1/README.md
 				// if data is XML string, parse to XML DOM
 				// ensure that string is not empty and contains more than whitespace
 				if (/\S/.test(options.data)) {
-					options.data = $.parseXML(options.data);
+					if (options.data.indexOf("<") > -1) {
+						options.data = $.parseXML(options.data);
+					} else {
+						// this is for bare parameters #125
+						soapObject = SOAPTool.json2soap(options.name, options.data, options.prefix);
+					}
 				}
 			}
 			if ($.isXMLDoc(options.data)) {
@@ -580,7 +585,6 @@ https://github.com/doedje/jquery.soap/blob/1.7.1/README.md
 					default	 : encoded.push(valueArray[i]);
 				}
 			}
-
 			return encoded.join('');
 		},
 		json2soap: function (name, params, prefix, parentNode) {

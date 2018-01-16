@@ -3,6 +3,11 @@
 date_default_timezone_set('Europe/Berlin');
 $start = microtime(true);
 
+if(!function_exists('curl_init')) {
+	print 'curl_init() not defined, install php-curl!';
+	exit; 
+}
+
 $url = $_GET['url'];
 $mimeType = $_SERVER['CONTENT_TYPE'];
 
