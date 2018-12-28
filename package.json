@@ -11,7 +11,7 @@
     "ecosystem:jquery"
   ],
   "bugs": "https://github.com/doedje/jquery.soap",
-  "license": "GPL-3.0+",
+  "license": "GPL-3.0-or-later",
   "author": {
     "name": "Remy Blom",
     "email": "remy.blom@hku.nl"
